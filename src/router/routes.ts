@@ -20,8 +20,14 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'home',
         name: 'home',
-        // TODO change this to an acutal home page
-        component: () => import('pages/IndexPage.vue'),
+        component: () => import('pages/ChatLayout.vue'),
+        children: [
+          {
+            path: ':chatId',
+            name: 'chat',
+            component: () => import('pages/ChatPage.vue'),
+          },
+        ],
       },
     ],
   },
