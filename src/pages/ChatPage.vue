@@ -27,7 +27,7 @@ export default defineComponent({
 
   methods: {
     async handleSubmit() {
-      this.sendMessage(this.content)
+      await this.sendMessage(this.content)
     },
 
     async sendMessage(content: string) {
