@@ -1,12 +1,60 @@
 <template>
-  <!-- TODO maybe use QLayout here? -->
+  <!-- TODO use QLayout here? -->
   <q-page class="row">
+    <div class="col">
+      <!-- TODO i18nize -->
+      <q-btn @click="openCreateChatDialog">Create chat</q-btn>
+    </div>
     <router-view class="col" />
   </q-page>
 </template>
 
 <script lang="ts">
+import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent } from 'vue'
 
-export default defineComponent({})
+export default defineComponent({
+  setup() {
+    return {
+      pb: usePocketbase(),
+    }
+  },
+
+  methods: {
+    openCreateChatDialog() {
+      // TODO use custom component to make this comprehensive
+      this.$q
+        .dialog({
+          title: 'Create chat',
+          prompt: {
+            model: '',
+            type: 'text',
+          },
+          cancel: true,
+        })
+        .onOk(async (data: string) => {
+          try {
+            const chatId = await this.createChat(data)
+            await this.$router.push({
+              name: 'chat',
+              params: {
+                chatId,
+              },
+            })
+          } catch (e) {
+            console.error(e)
+          }
+        })
+    },
+
+    async createChat(name: string) {
+      const { id } = await this.pb.collection('chatrooms').create({
+        name,
+        members: [this.pb.authStore.model?.id],
+      })
+
+      return id
+    },
+  },
+})
 </script>
