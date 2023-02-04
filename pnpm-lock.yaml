@@ -10,6 +10,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.10.0
   autoprefixer: ^10.4.2
   axios: ^0.21.1
+  dotenv-defaults: ^5.0.2
   eslint: ^8.10.0
   eslint-config-prettier: ^8.1.0
   eslint-plugin-vue: ^9.0.0
@@ -25,6 +26,7 @@ specifiers:
 dependencies:
   '@quasar/extras': 1.15.10
   axios: 0.21.4
+  dotenv-defaults: 5.0.2
   pinia: 2.0.30_hmuptsblhheur2tugfgucj7gc4
   pocketbase: 0.10.1
   quasar: 2.11.5
@@ -1161,6 +1163,17 @@ packages:
     dependencies:
       is-obj: 2.0.0
     dev: true
+
+  /dotenv-defaults/5.0.2:
+    resolution: {integrity: sha512-y5z4NhblzwNk8XBIYVzjLcFkANK0rxbRDO6kGOfH9QrVYIGVEX52IqwSprKVsaLHM9pnNkCSxazZF/JPydDPvA==}
+    dependencies:
+      dotenv: 14.3.2
+    dev: false
+
+  /dotenv/14.3.2:
+    resolution: {integrity: sha512-vwEppIphpFdvaMCaHfCEv9IgwcxMljMw2TnAQBB4VWPvzXQLTb82jwmdOKzlEVUL3gNFT4l4TPKO+Bn+sqcrVQ==}
+    engines: {node: '>=12'}
+    dev: false
 
   /dotenv/8.6.0:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
