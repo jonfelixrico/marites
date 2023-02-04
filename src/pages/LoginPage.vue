@@ -1,8 +1,10 @@
 <template>
   <q-page>
-    <q-input name="username" v-model="credentials.username" />
-    <q-input name="password" v-model="credentials.password" type="password" />
-    <q-btn @click="authenticate" label="Log In" />
+    <q-form @submit="authenticate">
+      <q-input name="username" v-model="credentials.username" />
+      <q-input name="password" v-model="credentials.password" type="password" />
+      <q-btn label="Log In" type="submit" />
+    </q-form>
   </q-page>
 </template>
 
