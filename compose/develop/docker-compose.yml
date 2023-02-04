@@ -1,0 +1,8 @@
+version: '3.9'
+services:
+  pocketbase:
+    image: augustodelg/pocketbase:latest
+    ports:
+      - 8090:8090
+    volumes:
+      - pocketbase-data:/pb_data
