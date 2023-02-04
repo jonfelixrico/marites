@@ -1,5 +1,9 @@
 <template>
   <q-page>
+    <!--
+      basic login impl
+      TODO flesh this out
+    -->
     <q-form @submit="authenticate">
       <q-input name="username" v-model="credentials.username" />
       <q-input name="password" v-model="credentials.password" type="password" />
