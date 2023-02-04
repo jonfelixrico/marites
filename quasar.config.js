@@ -65,8 +65,8 @@ module.exports = configure(function (/* ctx */) {
       // analyze: true,
 
       env: require('dotenv-defaults').config({
-        defaults: './defaults.env',
-      }),
+        defaults: './.defaults.env',
+      }).parsed,
 
       // rawDefine: {}
       // ignorePublicFolder: true,
