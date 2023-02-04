@@ -8,12 +8,20 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         name: 'index',
-        component: () => import('pages/IndexPage.vue'),
+        redirect: {
+          name: 'login',
+        },
       },
       {
         path: 'login',
         name: 'login',
         component: () => import('pages/LoginPage.vue'),
+      },
+      {
+        path: 'home',
+        name: 'home',
+        // TODO change this to an acutal home page
+        component: () => import('pages/IndexPage.vue'),
       },
     ],
   },

@@ -32,7 +32,7 @@ export default defineComponent({
         await this.pb.collection('users').authWithPassword(username, password)
         console.log('Authetnication succeded for %s', username)
         this.$router.push({
-          name: 'index',
+          name: 'home',
         })
       } catch (e) {
         console.error(e)
