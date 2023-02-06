@@ -23,7 +23,7 @@ export const useMessageStore = defineStore('message', {
     storeMessage(message: Message) {
       const { chatRoomId } = message
 
-      if (!this.state[chatRoomId]) {
+      if (!this.$state[chatRoomId]) {
         this.$state[chatRoomId] = {}
       }
 
