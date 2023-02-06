@@ -30,7 +30,14 @@ class RealTimeMessageListenerImpl implements RealTimeMessageListener {
         }
 
         this.store.storeMessage(record)
+        console.log(
+          'Stored message %s with timestamp %s',
+          record.id,
+          record.created
+        )
       })
+
+    console.log('Started the subscription.')
   }
 
   async stop() {
@@ -40,6 +47,7 @@ class RealTimeMessageListenerImpl implements RealTimeMessageListener {
     }
 
     await this.unsubscriber()
+    console.log('Stopped the subscription.')
   }
 }
 
