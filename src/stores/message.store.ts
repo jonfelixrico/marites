@@ -11,23 +11,27 @@ export interface Message {
 }
 
 interface MessageStore {
-  [chatRoomId: string]: {
-    [messageId: string]: Message
+  chatRooms: {
+    [chatRoomId: string]: {
+      [messageId: string]: Message
+    }
   }
 }
 
 export const useMessageStore = defineStore('message', {
-  state: (): MessageStore => ({}),
+  state: (): MessageStore => ({
+    chatRooms: {},
+  }),
 
   actions: {
     storeMessage(message: Message) {
       const { chatRoomId } = message
 
-      if (!this.$state[chatRoomId]) {
-        this.$state[chatRoomId] = {}
+      if (!this.chatRooms[chatRoomId]) {
+        this.chatRooms[chatRoomId] = {}
       }
 
-      this.$state[chatRoomId][message.id] = message
+      this.chatRooms[chatRoomId][message.id] = message
     },
 
     storeMessages(...messages: Message[]) {
