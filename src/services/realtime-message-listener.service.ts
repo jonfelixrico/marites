@@ -51,6 +51,10 @@ class RealTimeMessageListenerImpl implements RealTimeMessageListener {
   }
 }
 
+/*
+ * This approach where the value is from module-wide variable is an attempt
+ * to simuilate an atomic service.
+ */
 let instance: RealTimeMessageListenerImpl
 
 export function useRealTimeMessageListener(): RealTimeMessageListener {
