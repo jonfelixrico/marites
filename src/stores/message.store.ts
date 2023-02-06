@@ -7,6 +7,7 @@ export interface Message {
   senderId: string
   id: string
   created: Date
+  updated: Date
 }
 
 interface MessageStore {
