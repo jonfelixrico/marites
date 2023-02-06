@@ -13,7 +13,7 @@ export function useChatHistory(props: Props) {
   const store = useMessageStore()
 
   const history = computed(() => {
-    const messages = store[props.chatRoomId]
+    const messages = store.$state[props.chatRoomId]
 
     if (!messages) {
       return []
