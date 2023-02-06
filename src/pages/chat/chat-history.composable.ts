@@ -6,6 +6,8 @@ interface Props {
   chatRoomId: string
 }
 
+type DoneCallback = (stop: boolean) => void
+
 export function useChatHistory(props: Props) {
   const store = useMessageStore()
 
@@ -19,7 +21,12 @@ export function useChatHistory(props: Props) {
     return orderBy<Message>(Object.values(messages), ['created'], ['asc'])
   })
 
+  async function load(cb: DoneCallback) {
+    cb(true)
+  }
+
   return {
     history,
+    load,
   }
 }
