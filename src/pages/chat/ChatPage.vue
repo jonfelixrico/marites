@@ -5,10 +5,15 @@
         {{ message.content }}
       </div>
     </q-infinite-scroll>
-    <q-form @submit="handleSubmit">
-      <div class="row">
-        <q-input type="textarea" v-model="content" />
-      </div>
+    <q-form @submit="handleSubmit" class="row" autofocus>
+      <q-input
+        type="textarea"
+        class="col"
+        name="content"
+        v-model="content"
+        outlined
+      />
+      <q-btn type="submit" label="Send" color="primary" />
     </q-form>
   </div>
 </template>
@@ -32,7 +37,8 @@ export default defineComponent({
 
   methods: {
     async handleSubmit() {
-      await this.sendMessage(this.content)
+      this.sendMessage(this.content)
+      this.content = ''
     },
 
     handleLoad(index: number, doneCb: (stop: boolean) => void) {
