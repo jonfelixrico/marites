@@ -9,14 +9,14 @@ export interface Message {
   created: Date
 }
 
-interface Store {
+interface MessageStore {
   [chatRoomId: string]: {
     [messageId: string]: Message
   }
 }
 
 export const useMessageStore = defineStore('message', {
-  state: (): Store => ({}),
+  state: (): MessageStore => ({}),
 
   actions: {
     storeMessage(message: Message) {
