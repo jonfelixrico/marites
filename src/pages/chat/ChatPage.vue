@@ -1,6 +1,10 @@
 <template>
   <div class="column">
-    <q-infinite-scroll class="col" @load="handleLoad"></q-infinite-scroll>
+    <q-infinite-scroll class="col" @load="handleLoad">
+      <div v-for="message of history" :key="message.id">
+        {{ message.content }}
+      </div>
+    </q-infinite-scroll>
     <q-form @submit="handleSubmit">
       <div class="row">
         <q-input type="textarea" v-model="content" />
