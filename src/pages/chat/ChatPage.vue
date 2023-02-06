@@ -1,7 +1,6 @@
 <template>
   <div class="column">
     <div class="col"></div>
-    <!-- TODO add validation; must not be blank -->
     <q-form @submit="handleSubmit">
       <div class="row">
         <q-input type="textarea" v-model="content" />
