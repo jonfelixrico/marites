@@ -34,11 +34,11 @@ export default defineComponent({
         })
         .onOk(async (data: string) => {
           try {
-            const chatId = await this.createChat(data)
+            const chatRoomId = await this.createChat(data)
             await this.$router.push({
               name: 'chat',
               params: {
-                chatId,
+                chatRoomId,
               },
             })
           } catch (e) {
