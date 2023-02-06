@@ -1,6 +1,6 @@
 <template>
   <div class="column">
-    <div class="col"></div>
+    <q-infinite-scroll class="col" @load="handleLoad"></q-infinite-scroll>
     <q-form @submit="handleSubmit">
       <div class="row">
         <q-input type="textarea" v-model="content" />
@@ -10,17 +10,19 @@
 </template>
 
 <script lang="ts">
-import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { useChatHistory, useSendMessage } from './chat-history.composable'
 
 export default defineComponent({
   setup() {
-    const pb = usePocketbase()
     const content = ref('')
+    const route = useRoute()
 
     return {
       content,
-      pb,
+      ...useChatHistory(route.params as { chatRoomId: string }),
+      ...useSendMessage(route.params as { chatRoomId: string }),
     }
   },
 
@@ -29,12 +31,8 @@ export default defineComponent({
       await this.sendMessage(this.content)
     },
 
-    async sendMessage(content: string) {
-      await this.pb.collection('messages').create({
-        content,
-        senderId: [this.pb.authStore.model?.id],
-        chatRoomId: this.$route.params.chatId,
-      })
+    handleLoad(index: number, doneCb: (stop: boolean) => void) {
+      this.load(doneCb)
     },
   },
 })
