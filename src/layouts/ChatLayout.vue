@@ -11,10 +11,18 @@
 
 <script lang="ts">
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { defineComponent } from 'vue'
+import { useRealTimeMessageListener } from 'src/services/realtime-message-listener.service'
+import { defineComponent, onBeforeUnmount } from 'vue'
 
 export default defineComponent({
   setup() {
+    const listener = useRealTimeMessageListener()
+    listener.start()
+
+    onBeforeUnmount(() => {
+      listener.stop()
+    })
+
     return {
       pb: usePocketbase(),
     }
