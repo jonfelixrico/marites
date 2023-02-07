@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRef } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useChatHistory } from './chat-history.composable'
 import { useSendMessage } from './send-message.composable'
