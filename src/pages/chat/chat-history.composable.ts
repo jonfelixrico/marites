@@ -17,6 +17,10 @@ export function useChatHistory(chatRoomId: Ref<string>) {
     return orderBy<Message>(Object.values(messages), ['created'], ['asc'])
   })
 
+  /**
+   * @deprecated
+   * @param cb
+   */
   async function load(cb: DoneCallback) {
     cb(true)
   }
