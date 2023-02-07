@@ -7,14 +7,14 @@
         </div>
       </template>
     </q-virtual-scroll>
-    <q-form @submit="sendMessage" class="row" autofocus>
+    <q-form @submit="sendMessage" class="row" autofocus ref="form">
       <q-input
         type="textarea"
         class="col"
         name="content"
         v-model="contentModel"
         outlined
-        @keypress.enter.exact="sendMessage"
+        @keypress.enter.exact="triggerSubmit"
       />
       <q-btn type="submit" label="Send" color="primary" />
     </q-form>
@@ -22,6 +22,7 @@
 </template>
 
 <script lang="ts">
+import type { QForm } from 'quasar'
 import { computed, defineComponent, onBeforeMount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useChatHistory } from './chat-history.composable'
@@ -51,6 +52,13 @@ export default defineComponent({
       history: computed(() => Object.freeze(history.value)),
       handleVirtualScroll,
     }
+  },
+
+  methods: {
+    triggerSubmit() {
+      const form = this.$refs.form as QForm
+      form.submit()
+    },
   },
 })
 </script>
