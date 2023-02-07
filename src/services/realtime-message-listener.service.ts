@@ -16,7 +16,7 @@ class RealTimeMessageListenerImpl implements RealTimeMessageListener {
   private unsubscriber: UnsubscribeFunc | null = null
 
   async start() {
-    if (!this.unsubscriber) {
+    if (this.unsubscriber) {
       console.warn('There is still an active subscription.')
       return
     }
