@@ -1,5 +1,4 @@
 import { orderBy } from 'lodash'
-import { usePocketbase } from 'src/services/pocketbase.service'
 import { Message, useMessageStore } from 'src/stores/message.store'
 import { computed } from 'vue'
 
@@ -29,24 +28,5 @@ export function useChatHistory(props: Props) {
   return {
     history,
     load,
-  }
-}
-
-export function useSendMessage(props: Props) {
-  const pb = usePocketbase()
-  const store = useMessageStore()
-
-  async function sendMessage(content: string) {
-    const message = await pb.collection('messages').create<Message>({
-      content,
-      senderId: [pb.authStore.model?.id],
-      chatRoomId: props.chatRoomId,
-    })
-
-    store.storeMessage(message)
-  }
-
-  return {
-    sendMessage,
   }
 }
