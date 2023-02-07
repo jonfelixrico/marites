@@ -1,7 +1,11 @@
 <template>
   <div class="column">
     <div class="col relative-position">
-      <q-virtual-scroll class="absolute fit" :items="history">
+      <q-virtual-scroll
+        class="absolute fit"
+        :items="history"
+        @virtual-scroll="handleVirtualScroll"
+      >
         <template #default="{ item }">
           <div>
             {{ item.content }}
@@ -32,7 +36,7 @@
 
 <script lang="ts">
 import type { QForm } from 'quasar'
-import { computed, defineComponent, onBeforeMount } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useChatHistory } from './chat-history.composable'
 import { useSendMessage } from './send-message.composable'
@@ -42,17 +46,7 @@ export default defineComponent({
     const route = useRoute()
     const chatRoomId = computed(() => route.params.chatRoomId as string)
 
-    const { history, handleVirtualScroll, loadOlderMessages } =
-      useChatHistory(chatRoomId)
-
-    onBeforeMount(async () => {
-      if (history.value.length) {
-        return
-      }
-
-      // this is to load initial messages, if none are loaded yet
-      await loadOlderMessages(chatRoomId.value)
-    })
+    const { history, handleVirtualScroll } = useChatHistory(chatRoomId)
 
     return {
       ...useSendMessage(chatRoomId),
