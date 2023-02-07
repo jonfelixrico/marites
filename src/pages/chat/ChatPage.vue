@@ -19,19 +19,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, toRef } from 'vue'
 import { useRoute } from 'vue-router'
-import { useChatHistory, useSendMessage } from './chat-history.composable'
+import { useChatHistory } from './chat-history.composable'
+import { useSendMessage } from './send-message.composable'
 
 export default defineComponent({
   setup() {
     const content = ref('')
     const route = useRoute()
 
+    const chatRoomId = computed(() => route.params.chatRoomId as string)
+
     return {
       content,
       ...useChatHistory(route.params as { chatRoomId: string }),
-      ...useSendMessage(route.params as { chatRoomId: string }),
+      ...useSendMessage(chatRoomId),
     }
   },
 
