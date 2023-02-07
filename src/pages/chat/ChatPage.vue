@@ -1,12 +1,14 @@
 <template>
   <div class="column">
-    <q-virtual-scroll class="col" :items="history">
-      <template #default="{ item }">
-        <div>
-          {{ item.content }}
-        </div>
-      </template>
-    </q-virtual-scroll>
+    <div class="col relative-position">
+      <q-virtual-scroll class="absolute fit" :items="history">
+        <template #default="{ item }">
+          <div>
+            {{ item.content }}
+          </div>
+        </template>
+      </q-virtual-scroll>
+    </div>
     <q-form
       @submit="sendMessage"
       class="row items-end q-gutter-x-xs"
