@@ -51,14 +51,14 @@ function useLoaders() {
   }
 
   return {
-    loadOlder: loadOlderMessages,
-    loadNewer: loadNewerMessagse,
+    loadOlderMessages,
+    loadNewerMessagse,
   }
 }
 
 export function useChatHistory(chatRoomId: Ref<string>) {
   const store = useMessageStore()
-  const { loadOlder } = useLoaders()
+  const { loadOlderMessages } = useLoaders()
 
   /*
    * A list where the messages are arranged from older to newer
@@ -80,7 +80,7 @@ export function useChatHistory(chatRoomId: Ref<string>) {
       return
     }
 
-    await loadOlder(chatRoomId.value, history.value[0])
+    await loadOlderMessages(chatRoomId.value, history.value[0])
   }
 
   /**
@@ -95,5 +95,6 @@ export function useChatHistory(chatRoomId: Ref<string>) {
     history,
     load,
     handleVirtualScroll,
+    loadOlderMessages,
   }
 }
