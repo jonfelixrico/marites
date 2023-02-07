@@ -2,6 +2,7 @@ import { orderBy } from 'lodash'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { Message, useMessageStore } from 'src/stores/message.store'
 import { computed, Ref } from 'vue'
+import type { QVirtualScrollProps } from 'quasar'
 
 type DoneCallback = (stop: boolean) => void
 
@@ -57,7 +58,11 @@ function useLoaders() {
 
 export function useChatHistory(chatRoomId: Ref<string>) {
   const store = useMessageStore()
+  const { loadOlder } = useLoaders()
 
+  /*
+   * A list where the messages are arranged from older to newer
+   */
   const history = computed(() => {
     const messages = store.chatRooms[chatRoomId.value]
 
@@ -67,6 +72,16 @@ export function useChatHistory(chatRoomId: Ref<string>) {
 
     return orderBy<Message>(Object.values(messages), ['created'], ['asc'])
   })
+
+  const handleVirtualScroll: QVirtualScrollProps['onVirtualScroll'] = async ({
+    from,
+  }) => {
+    if (from !== 0) {
+      return
+    }
+
+    await loadOlder(chatRoomId.value, history.value[0])
+  }
 
   /**
    * @deprecated
@@ -79,5 +94,6 @@ export function useChatHistory(chatRoomId: Ref<string>) {
   return {
     history,
     load,
+    handleVirtualScroll,
   }
 }
