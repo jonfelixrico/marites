@@ -1,8 +1,59 @@
 import { orderBy } from 'lodash'
+import { usePocketbase } from 'src/services/pocketbase.service'
 import { Message, useMessageStore } from 'src/stores/message.store'
 import { computed, Ref } from 'vue'
 
 type DoneCallback = (stop: boolean) => void
+
+function extractCreateDt(message?: Message) {
+  return message?.created ?? new Date()
+}
+
+function useLoaders() {
+  const pb = usePocketbase()
+  const store = useMessageStore()
+
+  async function loadNewerMessagse(
+    chatRoomId: string,
+    message?: Message,
+    limit = 30
+  ) {
+    const anchorDt = extractCreateDt(message)
+
+    const newerMessages = await pb
+      .collection('messages')
+      .getList<Message>(1, limit, {
+        sort: 'created',
+        filter: `created >= ${anchorDt} && chatRoomId = ${chatRoomId}`,
+      })
+
+    store.storeMessages(...newerMessages.items)
+    return newerMessages
+  }
+
+  async function loadOlderMessages(
+    chatRoomId: string,
+    message?: Message,
+    limit = 30
+  ) {
+    const anchorDt = extractCreateDt(message)
+
+    const olderMessages = await pb
+      .collection('messages')
+      .getList<Message>(1, limit, {
+        sort: '-created',
+        filter: `created <= ${anchorDt} && chatRoomId = ${chatRoomId}`,
+      })
+
+    store.storeMessages(...olderMessages.items)
+    return olderMessages
+  }
+
+  return {
+    loadOlder: loadOlderMessages,
+    loadNewer: loadNewerMessagse,
+  }
+}
 
 export function useChatHistory(chatRoomId: Ref<string>) {
   const store = useMessageStore()
