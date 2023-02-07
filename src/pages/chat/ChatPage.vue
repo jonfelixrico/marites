@@ -35,7 +35,6 @@ export default defineComponent({
 
     const { history, handleVirtualScroll, loadOlderMessages } =
       useChatHistory(chatRoomId)
-    const frozenHistory = computed(() => Object.freeze(history.value))
 
     onBeforeMount(async () => {
       if (history.value.length) {
@@ -49,7 +48,9 @@ export default defineComponent({
     return {
       content,
       ...useSendMessage(chatRoomId),
-      history: frozenHistory,
+
+      // freezing is recommended as per the QVirtualScroll docs (https://quasar.dev/vue-components/virtual-scroll#usage)
+      history: computed(() => Object.freeze(history.value)),
       handleVirtualScroll,
     }
   },
