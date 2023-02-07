@@ -7,7 +7,12 @@
         </div>
       </template>
     </q-virtual-scroll>
-    <q-form @submit="sendMessage" class="row" autofocus ref="form">
+    <q-form
+      @submit="sendMessage"
+      class="row items-end q-gutter-x-xs"
+      autofocus
+      ref="form"
+    >
       <q-input
         type="textarea"
         class="col"
@@ -15,6 +20,8 @@
         v-model="contentModel"
         outlined
         @keypress.enter.exact="triggerSubmit"
+        autogrow
+        dense
       />
       <q-btn type="submit" label="Send" color="primary" />
     </q-form>
