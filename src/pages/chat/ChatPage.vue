@@ -1,10 +1,12 @@
 <template>
   <div class="column">
-    <q-infinite-scroll class="col" @load="handleLoad">
-      <div v-for="message of history" :key="message.id">
-        {{ message.content }}
-      </div>
-    </q-infinite-scroll>
+    <q-virtual-scroll class="col" :items="history">
+      <template #default="{ item }">
+        <div>
+          {{ item.content }}
+        </div>
+      </template>
+    </q-virtual-scroll>
     <q-form @submit="handleSubmit" class="row" autofocus>
       <q-input
         type="textarea"
@@ -19,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, onBeforeMount, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useChatHistory } from './chat-history.composable'
 import { useSendMessage } from './send-message.composable'
@@ -27,14 +29,28 @@ import { useSendMessage } from './send-message.composable'
 export default defineComponent({
   setup() {
     const content = ref('')
-    const route = useRoute()
 
+    const route = useRoute()
     const chatRoomId = computed(() => route.params.chatRoomId as string)
+
+    const { history, handleVirtualScroll, loadOlderMessages } =
+      useChatHistory(chatRoomId)
+    const frozenHistory = computed(() => Object.freeze(history.value))
+
+    onBeforeMount(async () => {
+      if (history.value.length) {
+        return
+      }
+
+      // this is to load initial messages, if none are loaded yet
+      await loadOlderMessages(chatRoomId.value)
+    })
 
     return {
       content,
-      ...useChatHistory(chatRoomId),
       ...useSendMessage(chatRoomId),
+      history: frozenHistory,
+      handleVirtualScroll,
     }
   },
 
@@ -42,10 +58,6 @@ export default defineComponent({
     async handleSubmit() {
       this.sendMessage(this.content)
       this.content = ''
-    },
-
-    handleLoad(index: number, doneCb: (stop: boolean) => void) {
-      this.load(doneCb)
     },
   },
 })
