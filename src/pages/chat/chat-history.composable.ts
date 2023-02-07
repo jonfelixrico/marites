@@ -23,7 +23,7 @@ function useLoaders() {
       .collection('messages')
       .getList<Message>(1, limit, {
         sort: 'created',
-        filter: `created >= ${anchorDt} && chatRoomId = ${chatRoomId}`,
+        filter: `created >= "${anchorDt}" && chatRoomId = "${chatRoomId}"`,
       })
 
     store.storeMessages(...newerMessages.items)
@@ -41,7 +41,7 @@ function useLoaders() {
       .collection('messages')
       .getList<Message>(1, limit, {
         sort: '-created',
-        filter: `created <= ${anchorDt} && chatRoomId = ${chatRoomId}`,
+        filter: `created <= "${anchorDt}" && chatRoomId = "${chatRoomId}"`,
       })
 
     store.storeMessages(...olderMessages.items)
