@@ -14,6 +14,7 @@
         name="content"
         v-model="contentModel"
         outlined
+        @keypress.enter.exact="sendMessage"
       />
       <q-btn type="submit" label="Send" color="primary" />
     </q-form>
