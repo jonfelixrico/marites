@@ -84,6 +84,5 @@ export function useChatHistory(chatRoomId: Ref<string>) {
   return {
     history,
     handleVirtualScroll,
-    loadOlderMessages,
   }
 }
