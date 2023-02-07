@@ -4,8 +4,6 @@ import { Message, useMessageStore } from 'src/stores/message.store'
 import { computed, Ref } from 'vue'
 import type { QVirtualScrollProps } from 'quasar'
 
-type DoneCallback = (stop: boolean) => void
-
 function extractCreateDt(message?: Message) {
   return message?.created ?? new Date()
 }
@@ -83,17 +81,8 @@ export function useChatHistory(chatRoomId: Ref<string>) {
     await loadOlderMessages(chatRoomId.value, history.value[0])
   }
 
-  /**
-   * @deprecated
-   * @param cb
-   */
-  async function load(cb: DoneCallback) {
-    cb(true)
-  }
-
   return {
     history,
-    load,
     handleVirtualScroll,
     loadOlderMessages,
   }
