@@ -1,18 +1,14 @@
 import { orderBy } from 'lodash'
 import { Message, useMessageStore } from 'src/stores/message.store'
-import { computed } from 'vue'
-
-interface Props {
-  chatRoomId: string
-}
+import { computed, Ref } from 'vue'
 
 type DoneCallback = (stop: boolean) => void
 
-export function useChatHistory(props: Props) {
+export function useChatHistory(chatRoomId: Ref<string>) {
   const store = useMessageStore()
 
   const history = computed(() => {
-    const messages = store.chatRooms[props.chatRoomId]
+    const messages = store.chatRooms[chatRoomId.value]
 
     if (!messages) {
       return []

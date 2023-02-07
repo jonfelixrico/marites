@@ -33,7 +33,7 @@ export default defineComponent({
 
     return {
       content,
-      ...useChatHistory(route.params as { chatRoomId: string }),
+      ...useChatHistory(chatRoomId),
       ...useSendMessage(chatRoomId),
     }
   },
