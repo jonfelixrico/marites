@@ -2,8 +2,20 @@
   <div class="column">
     <q-scroll-area class="col">
       <q-infinite-scroll @load="handleLoad" reverse>
-        <div v-for="message of history" :key="message.id">
-          {{ message.content }}
+        <div class="q-px-lg">
+          <q-chat-message
+            v-for="message of history"
+            :key="message.id"
+            :sent="userId === message.senderId"
+          >
+            <template #default>
+              <div style="white-space: pre" v-text="message.content" />
+            </template>
+
+            <template #stamp>
+              {{ message.created }}
+            </template>
+          </q-chat-message>
         </div>
       </q-infinite-scroll>
     </q-scroll-area>
@@ -19,7 +31,7 @@
         name="content"
         v-model="contentModel"
         outlined
-        @keypress.enter.exact="triggerSubmit"
+        @keypress.enter.exact.prevent="triggerSubmit"
         autogrow
         dense
       />
@@ -30,6 +42,7 @@
 
 <script lang="ts">
 import type { QForm } from 'quasar'
+import { usePocketbase } from 'src/services/pocketbase.service'
 import { computed, defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useChatHistory } from './chat-history.composable'
@@ -39,10 +52,12 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const chatRoomId = computed(() => route.params.chatRoomId as string)
+    const pb = usePocketbase()
 
     return {
       ...useSendMessage(chatRoomId),
       ...useChatHistory(chatRoomId),
+      userId: pb.authStore?.model?.id,
     }
   },
 
