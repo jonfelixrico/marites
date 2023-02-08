@@ -1,6 +1,6 @@
 <template>
   <div class="column">
-    <q-scroll-area class="col" ref="scroll">
+    <q-scroll-area class="col">
       <q-infinite-scroll @load="handleLoad" reverse>
         <div v-for="message of history" :key="message.id">
           {{ message.content }}
