@@ -59,7 +59,7 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
    * @returns `true` if there are no more items left in the history, false if otherwise
    */
   async function load(): Promise<boolean> {
-    const history = store.chatRooms[chatRoomId.value]
+    const history = store.chatRooms[chatRoomId.value] ?? []
     const oldest = history[history.length - 1] ?? null
 
     const loaded = await loadOlderMessages(chatRoomId.value, oldest)
@@ -111,7 +111,7 @@ export function useChatHistory(chatRoomId: Ref<string>) {
   /*
    * A list where the messages are arranged from older to newer
    */
-  const history = computed(() => store.chatRooms[chatRoomId.value])
+  const history = computed(() => store.chatRooms[chatRoomId.value] ?? [])
 
   return {
     history,
