@@ -32,10 +32,7 @@ export default defineComponent({
     const pb = usePocketbase()
 
     onBeforeMount(async () => {
-      if (store.messagePreview[props.chatRoom.id]) {
-        return
-      }
-
+      // take the latest message for the chat room
       const { items } = await pb.collection('messages').getList<Message>(1, 1, {
         sort: '-created', // sorting by id to keep sorting consistent for same-timestamp messages
         filter: `created <= "${toFilterDate(new Date())}" && chatRoomId = "${
