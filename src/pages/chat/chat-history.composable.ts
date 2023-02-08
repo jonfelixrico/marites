@@ -24,7 +24,7 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
       .collection('messages')
       .getList<Message>(1, limit, {
         sort: '-created,id', // sorting by id to keep sorting consistent for same-timestamp messages
-        filter: `created <= "${anchorDt}" && chatRoomId = "${chatRoomId}"`,
+        filter: `created <= "${anchorDt.toISOString()}" && chatRoomId = "${chatRoomId}"`,
       })
 
     if (!message) {
