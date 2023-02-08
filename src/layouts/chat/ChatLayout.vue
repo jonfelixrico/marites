@@ -25,7 +25,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view :key="($route.params.chatRoomId as string)" />
     </q-page-container>
   </q-layout>
 </template>

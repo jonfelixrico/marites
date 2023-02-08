@@ -46,7 +46,8 @@
 <script lang="ts">
 import type { QForm } from 'quasar'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { computed, defineComponent } from 'vue'
+import { useMessageStore } from 'src/stores/message.store'
+import { computed, defineComponent, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useChatHistory } from './chat-history.composable'
 import { useSendMessage } from './send-message.composable'
@@ -56,6 +57,11 @@ export default defineComponent({
     const route = useRoute()
     const chatRoomId = computed(() => route.params.chatRoomId as string)
     const pb = usePocketbase()
+    const store = useMessageStore()
+
+    onBeforeUnmount(() => {
+      store.clearMessages(chatRoomId.value)
+    })
 
     return {
       ...useSendMessage(chatRoomId),
