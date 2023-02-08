@@ -1,9 +1,12 @@
 import { orderBy } from 'lodash'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStore } from 'src/stores/message.store'
-import { computed, Ref } from 'vue'
+import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
 import type { QVirtualScrollProps } from 'quasar'
 import { Message } from 'src/models/message.interface'
+import { useMessageObservable } from 'src/services/message-observable.service'
+import { useMessageStoreV2 } from 'src/stores/message-v2.store'
+import { filter, Subscription } from 'rxjs'
 
 function extractCreateDt(message?: Message) {
   return message?.created ?? new Date()
@@ -55,7 +58,34 @@ function useLoaders() {
   }
 }
 
+function useNewMessagesListener(chatRoomId: Ref<string>) {
+  const { observable } = useMessageObservable()
+  const store = useMessageStoreV2()
+
+  let subscription: Subscription
+  onBeforeMount(() => {
+    subscription = observable
+      .pipe(
+        filter(
+          ({ action, record }) =>
+            action === 'create' && record.chatRoomId === chatRoomId.value
+        )
+      )
+      .subscribe(({ record }) => {
+        store.storeMessage(record, 'end')
+      })
+  })
+
+  onBeforeUnmount(() => {
+    if (subscription) {
+      subscription.unsubscribe()
+    }
+  })
+}
+
 export function useChatHistory(chatRoomId: Ref<string>) {
+  useNewMessagesListener(chatRoomId)
+
   const store = useMessageStore()
   const { loadOlderMessages } = useLoaders()
 
