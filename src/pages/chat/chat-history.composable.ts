@@ -1,4 +1,3 @@
-import { orderBy } from 'lodash'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStoreV2 } from 'src/stores/message-v2.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
@@ -10,27 +9,9 @@ function extractCreateDt(message?: Message) {
   return message?.created ?? new Date()
 }
 
-function useLoaders() {
+function useHistoryLoader(chatRoomId: Ref<string>) {
   const pb = usePocketbase()
-  const store = useMessageStore()
-
-  async function loadNewerMessagse(
-    chatRoomId: string,
-    message?: Message,
-    limit = 30
-  ) {
-    const anchorDt = extractCreateDt(message)
-
-    const newerMessages = await pb
-      .collection('messages')
-      .getList<Message>(1, limit, {
-        sort: 'created',
-        filter: `created >= "${anchorDt}" && chatRoomId = "${chatRoomId}"`,
-      })
-
-    store.storeMessages(...newerMessages.items)
-    return newerMessages
-  }
+  const store = useMessageStoreV2()
 
   async function loadOlderMessages(
     chatRoomId: string,
@@ -46,13 +27,40 @@ function useLoaders() {
         filter: `created <= "${anchorDt}" && chatRoomId = "${chatRoomId}"`,
       })
 
-    store.storeMessages(...olderMessages.items)
-    return olderMessages
+    return olderMessages.items
+  }
+
+  async function load(): Promise<boolean> {
+    const history = store.chatRooms[chatRoomId.value]
+    const oldest = history[history.length - 1] ?? null
+
+    const loaded = await loadOlderMessages(chatRoomId.value, oldest)
+
+    if (!oldest) {
+      store.storeMessages('start', ...loaded)
+      return false
+    }
+
+    const toStore: Message[] = []
+    for (let i = loaded.length - 1; i <= 0; i--) {
+      const message = loaded[i]
+      if (oldest.id === message.id) {
+        break
+      }
+
+      toStore.unshift(message)
+    }
+
+    if (!toStore.length) {
+      return true
+    }
+
+    store.storeMessages('start', ...toStore)
+    return false
   }
 
   return {
-    loadOlderMessages,
-    loadNewerMessagse,
+    load,
   }
 }
 
@@ -83,6 +91,7 @@ function useNewMessagesListener(chatRoomId: Ref<string>) {
 
 export function useChatHistory(chatRoomId: Ref<string>) {
   useNewMessagesListener(chatRoomId)
+  const { load } = useHistoryLoader(chatRoomId)
 
   const store = useMessageStoreV2()
 
@@ -93,6 +102,11 @@ export function useChatHistory(chatRoomId: Ref<string>) {
 
   return {
     history,
+    load,
+
+    /**
+     * @deprecated
+     */
     handleVirtualScroll: () => {
       // empty method
     },
