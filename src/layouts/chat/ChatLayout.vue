@@ -6,7 +6,11 @@
       </q-toolbar>
     </q-header>
     <q-drawer v-model="showDrawer" class="column">
-      <div class="col"></div>
+      <div class="col relative-position">
+        <q-scroll-area class="absolute fit">
+          <ChatRoomList />
+        </q-scroll-area>
+      </div>
       <div class="q-px-xs row">
         <q-btn
           class="col"
@@ -27,11 +31,13 @@
 </template>
 
 <script lang="ts">
+import ChatRoomList from 'src/components/chat-room-list/ChatRoomList.vue'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { useCreateChatRoom } from './create-chatroom.composable'
 
 export default defineComponent({
+  components: { ChatRoomList },
   setup() {
     const { createChat } = useCreateChatRoom()
 
