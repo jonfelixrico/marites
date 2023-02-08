@@ -1,10 +1,23 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
+    <q-header>
+      <q-toolbar>
+        <q-btn icon="menu" round flat dense @click="showDrawer = !showDrawer" />
+      </q-toolbar>
+    </q-header>
     <q-drawer v-model="showDrawer" class="column">
       <div class="col"></div>
-      <q-btn @click="createChat" no-caps color="primary" unelevated>
-        Create chat
-      </q-btn>
+      <div class="q-px-xs row">
+        <q-btn
+          class="col"
+          @click="createChat"
+          no-caps
+          color="primary"
+          unelevated
+        >
+          Create chat
+        </q-btn>
+      </div>
     </q-drawer>
 
     <q-page-container>
