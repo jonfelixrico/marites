@@ -1,17 +1,39 @@
 <template>
   <div class="column">
-    <q-infinite-scroll class="col" @load="handleLoad">
-      <div v-for="message of history" :key="message.id">
-        {{ message.content }}
-      </div>
-    </q-infinite-scroll>
-    <q-form @submit="handleSubmit" class="row" autofocus>
+    <q-scroll-area class="col">
+      <q-infinite-scroll @load="handleLoad" reverse>
+        <div class="q-px-lg">
+          <q-chat-message
+            v-for="message of history"
+            :key="message.id"
+            :sent="userId === message.senderId"
+          >
+            <template #default>
+              <div style="white-space: pre" v-text="message.content" />
+            </template>
+
+            <template #stamp>
+              {{ message.created }}
+            </template>
+          </q-chat-message>
+        </div>
+      </q-infinite-scroll>
+    </q-scroll-area>
+    <q-form
+      @submit="sendMessage"
+      class="row items-end q-gutter-x-xs"
+      autofocus
+      ref="form"
+    >
       <q-input
         type="textarea"
         class="col"
         name="content"
-        v-model="content"
+        v-model="contentModel"
         outlined
+        @keypress.enter.exact.prevent="triggerSubmit"
+        autogrow
+        dense
       />
       <q-btn type="submit" label="Send" color="primary" />
     </q-form>
@@ -19,30 +41,35 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import type { QForm } from 'quasar'
+import { usePocketbase } from 'src/services/pocketbase.service'
+import { computed, defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
-import { useChatHistory, useSendMessage } from './chat-history.composable'
+import { useChatHistory } from './chat-history.composable'
+import { useSendMessage } from './send-message.composable'
 
 export default defineComponent({
   setup() {
-    const content = ref('')
     const route = useRoute()
+    const chatRoomId = computed(() => route.params.chatRoomId as string)
+    const pb = usePocketbase()
 
     return {
-      content,
-      ...useChatHistory(route.params as { chatRoomId: string }),
-      ...useSendMessage(route.params as { chatRoomId: string }),
+      ...useSendMessage(chatRoomId),
+      ...useChatHistory(chatRoomId),
+      userId: pb.authStore?.model?.id,
     }
   },
 
   methods: {
-    async handleSubmit() {
-      this.sendMessage(this.content)
-      this.content = ''
+    triggerSubmit() {
+      const form = this.$refs.form as QForm
+      form.submit()
     },
 
-    handleLoad(index: number, doneCb: (stop: boolean) => void) {
-      this.load(doneCb)
+    async handleLoad(index: number, doneFn: (stop: boolean) => void) {
+      const isDone = await this.load()
+      doneFn(isDone)
     },
   },
 })

@@ -1,22 +1,13 @@
 import { defineStore } from 'pinia'
-
-// TODO move this out into its own file
-export interface Message {
-  content: string
-  chatRoomId: string
-  senderId: string
-  id: string
-  created: Date
-  updated: Date
-}
+import { Message } from 'src/models/message.interface'
 
 interface MessageStore {
   chatRooms: {
-    [chatRoomId: string]: {
-      [messageId: string]: Message
-    }
+    [chatRoomId: string]: Message[]
   }
 }
+
+type InsertLocation = 'start' | 'end'
 
 export const useMessageStore = defineStore('message', {
   state: (): MessageStore => ({
@@ -24,19 +15,24 @@ export const useMessageStore = defineStore('message', {
   }),
 
   actions: {
-    storeMessage(message: Message) {
+    storeMessage(message: Message, location: InsertLocation) {
       const { chatRoomId } = message
 
       if (!this.chatRooms[chatRoomId]) {
-        this.chatRooms[chatRoomId] = {}
+        this.chatRooms[chatRoomId] = []
       }
 
-      this.chatRooms[chatRoomId][message.id] = message
+      const arr = this.chatRooms[chatRoomId]
+      if (location === 'end') {
+        arr.push(message)
+      } else {
+        arr.unshift(message)
+      }
     },
 
-    storeMessages(...messages: Message[]) {
+    storeMessages(location: InsertLocation, ...messages: Message[]) {
       for (const message of messages) {
-        this.storeMessage(message)
+        this.storeMessage(message, location)
       }
     },
   },
