@@ -87,7 +87,6 @@ export function useChatHistory(chatRoomId: Ref<string>) {
   useNewMessagesListener(chatRoomId)
 
   const store = useMessageStore()
-  const { loadOlderMessages } = useLoaders()
 
   /*
    * A list where the messages are arranged from older to newer
@@ -102,18 +101,10 @@ export function useChatHistory(chatRoomId: Ref<string>) {
     return orderBy<Message>(Object.values(messages), ['created'], ['asc'])
   })
 
-  const handleVirtualScroll: QVirtualScrollProps['onVirtualScroll'] = async ({
-    from,
-  }) => {
-    if (from !== 0) {
-      return
-    }
-
-    await loadOlderMessages(chatRoomId.value, history.value[0])
-  }
-
   return {
     history,
-    handleVirtualScroll,
+    handleVirtualScroll: () => {
+      // empty method
+    },
   }
 }
