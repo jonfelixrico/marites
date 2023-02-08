@@ -1,12 +1,13 @@
 <template>
-  <!-- TODO use QLayout here? -->
-  <q-page class="row">
-    <div class="col">
-      <!-- TODO i18nize -->
+  <q-layout view="lHh Lpr lFf">
+    <q-drawer>
       <q-btn @click="createChat">Create chat</q-btn>
-    </div>
-    <router-view class="col" />
-  </q-page>
+    </q-drawer>
+
+    <q-page-container>
+      <router-view />
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script lang="ts">

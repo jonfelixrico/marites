@@ -17,17 +17,18 @@ const routes: RouteRecordRaw[] = [
         name: 'login',
         component: () => import('pages/LoginPage.vue'),
       },
+    ],
+  },
+
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('layouts/chat/ChatLayout.vue'),
+    children: [
       {
-        path: 'home',
-        name: 'home',
-        component: () => import('layouts/chat/ChatLayout.vue'),
-        children: [
-          {
-            path: ':chatRoomId',
-            name: 'chat',
-            component: () => import('pages/chat/ChatPage.vue'),
-          },
-        ],
+        path: ':chatRoomId',
+        name: 'chat',
+        component: () => import('pages/chat/ChatPage.vue'),
       },
     ],
   },
