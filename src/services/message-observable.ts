@@ -21,6 +21,8 @@ export function useMessageObservable() {
         console.debug('Received message %s', event.record.id)
         subject.next(event)
       })
+
+    console.log('Started subscribing to message RT.')
   }
 
   async function stop() {
@@ -30,6 +32,7 @@ export function useMessageObservable() {
     }
 
     await pbSubscription()
+    console.log('Stopped subscribing to message RT.')
   }
 
   return {
