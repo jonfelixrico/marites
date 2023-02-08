@@ -1,11 +1,9 @@
 import { orderBy } from 'lodash'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useMessageStore } from 'src/stores/message.store'
+import { useMessageStoreV2 } from 'src/stores/message-v2.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
-import type { QVirtualScrollProps } from 'quasar'
 import { Message } from 'src/models/message.interface'
 import { useMessageObservable } from 'src/services/message-observable.service'
-import { useMessageStoreV2 } from 'src/stores/message-v2.store'
 import { filter, Subscription } from 'rxjs'
 
 function extractCreateDt(message?: Message) {
@@ -86,20 +84,12 @@ function useNewMessagesListener(chatRoomId: Ref<string>) {
 export function useChatHistory(chatRoomId: Ref<string>) {
   useNewMessagesListener(chatRoomId)
 
-  const store = useMessageStore()
+  const store = useMessageStoreV2()
 
   /*
    * A list where the messages are arranged from older to newer
    */
-  const history = computed(() => {
-    const messages = store.chatRooms[chatRoomId.value]
-
-    if (!messages) {
-      return []
-    }
-
-    return orderBy<Message>(Object.values(messages), ['created'], ['asc'])
-  })
+  const history = computed(() => store.chatRooms[chatRoomId.value])
 
   return {
     history,
