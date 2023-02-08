@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { useMessageObservable } from 'src/services/message-observable'
+import { useMessageObservable } from 'src/services/message-observable.service'
 import { defineComponent, onBeforeUnmount } from 'vue'
 import { useCreateChatRoom } from './create-chatroom.composable'
 
