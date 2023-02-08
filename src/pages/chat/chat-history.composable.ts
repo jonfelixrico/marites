@@ -1,8 +1,9 @@
 import { orderBy } from 'lodash'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { Message, useMessageStore } from 'src/stores/message.store'
+import { useMessageStore } from 'src/stores/message.store'
 import { computed, Ref } from 'vue'
 import type { QVirtualScrollProps } from 'quasar'
+import { Message } from 'src/models/message.interface'
 
 function extractCreateDt(message?: Message) {
   return message?.created ?? new Date()

@@ -1,6 +1,6 @@
 import { RecordSubscription, UnsubscribeFunc } from 'pocketbase'
 import { Subject } from 'rxjs'
-import { Message } from 'src/stores/message.store'
+import { Message } from 'src/models/message.interface'
 import { usePocketbase } from './pocketbase.service'
 
 const subject = new Subject<RecordSubscription<Message>>()

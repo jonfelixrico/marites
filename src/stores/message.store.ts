@@ -1,14 +1,5 @@
 import { defineStore } from 'pinia'
-
-// TODO move this out into its own file
-export interface Message {
-  content: string
-  chatRoomId: string
-  senderId: string
-  id: string
-  created: Date
-  updated: Date
-}
+import { Message } from 'src/models/message.interface'
 
 interface MessageStore {
   chatRooms: {

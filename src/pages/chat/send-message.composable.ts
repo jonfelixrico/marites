@@ -1,5 +1,6 @@
+import { Message } from 'src/models/message.interface'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { Message, useMessageStore } from 'src/stores/message.store'
+import { useMessageStore } from 'src/stores/message.store'
 import { ref, Ref } from 'vue'
 
 export function useSendMessage(chatRoomId: Ref<string>) {
