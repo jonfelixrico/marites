@@ -46,7 +46,7 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
      * may make a same-timestamp message not show up if its position in the history is just before the cursor.
      */
     const idx = items.findIndex(({ id }) => message.id === id)
-    return items.slice(idx)
+    return items.slice(idx + 1)
   }
 
   /**
