@@ -23,7 +23,7 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
     const olderMessages = await pb
       .collection('messages')
       .getList<Message>(1, limit, {
-        sort: '-created',
+        sort: '-created,id', // sorting by id to keep sorting consistent for same-timestamp messages
         filter: `created <= "${anchorDt}" && chatRoomId = "${chatRoomId}"`,
       })
 
