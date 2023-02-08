@@ -24,7 +24,7 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
     const { items } = await pb
       .collection('messages')
       .getList<Message>(1, limit, {
-        sort: '-created,id', // sorting by id to keep sorting consistent for same-timestamp messages
+        sort: '-created,-id', // sorting by id to keep sorting consistent for same-timestamp messages
         filter: `created <= "${toFilterDate(
           anchorDt
         )}" && chatRoomId = "${chatRoomId}"`,
@@ -35,15 +35,8 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
     }
 
     /*
-     * This is to remove the message that acted as a cursor from the results
-     *
-     * The reason we're not using a simple Array#filter is to also exclude any messages which are newer than the cursor
-     * which got included in the results.
-     *
-     * A use case where this is possible is if there are other messages in the chatroom with the same timestamp as the cursor.
-     *
-     * Additionally, we didn't go for a filter where we just filter out all same-timestamp message in the results. This is because doing that
-     * may make a same-timestamp message not show up if its position in the history is just before the cursor.
+     * We're not using find because the results will include the cursor (usually as the first item) and potentially
+     * same-timestamp items which are lexicographically earlier than the id of the cursor.
      */
     const idx = items.findIndex(({ id }) => message.id === id)
     return items.slice(idx + 1)
