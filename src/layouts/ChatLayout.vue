@@ -10,17 +10,17 @@
 </template>
 
 <script lang="ts">
+import { useMessageObservable } from 'src/services/message-observable'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useRealTimeMessageListener } from 'src/services/realtime-message-listener.service'
 import { defineComponent, onBeforeUnmount } from 'vue'
 
 export default defineComponent({
   setup() {
-    const listener = useRealTimeMessageListener()
-    listener.start()
+    const messageObservable = useMessageObservable()
+    messageObservable.start()
 
     onBeforeUnmount(() => {
-      listener.stop()
+      messageObservable.stop()
     })
 
     return {
