@@ -4,6 +4,7 @@ import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
 import { Message } from 'src/models/message.interface'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { filter, Subscription } from 'rxjs'
+import { toFilterDate } from 'src/utils/pocketbase.util'
 
 function extractCreateDt(message?: Message) {
   return message?.created ? new Date(message.created) : new Date()
@@ -24,7 +25,9 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
       .collection('messages')
       .getList<Message>(1, limit, {
         sort: '-created,id', // sorting by id to keep sorting consistent for same-timestamp messages
-        filter: `created <= "${anchorDt.toISOString()}" && chatRoomId = "${chatRoomId}"`,
+        filter: `created <= "${toFilterDate(
+          anchorDt
+        )}" && chatRoomId = "${chatRoomId}"`,
       })
 
     if (!message) {
@@ -59,9 +62,7 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
    * @returns `true` if there are no more items left in the history, false if otherwise
    */
   async function load(): Promise<boolean> {
-    const history = store.chatRooms[chatRoomId.value] ?? []
-    const oldest = history[history.length - 1] ?? null
-
+    const oldest = store.chatRooms[chatRoomId.value]?.[0]
     const loaded = await loadOlderMessages(chatRoomId.value, oldest)
 
     if (!loaded.length) {
