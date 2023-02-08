@@ -54,32 +54,21 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
     return filtered
   }
 
+  /**
+   *
+   * @returns `true` if there are no more items left in the history, false if otherwise
+   */
   async function load(): Promise<boolean> {
     const history = store.chatRooms[chatRoomId.value]
     const oldest = history[history.length - 1] ?? null
 
     const loaded = await loadOlderMessages(chatRoomId.value, oldest)
 
-    if (!oldest) {
-      store.storeMessages('start', ...loaded)
-      return false
-    }
-
-    const toStore: Message[] = []
-    for (let i = loaded.length - 1; i <= 0; i--) {
-      const message = loaded[i]
-      if (oldest.id === message.id) {
-        break
-      }
-
-      toStore.unshift(message)
-    }
-
-    if (!toStore.length) {
+    if (!loaded.length) {
       return true
     }
 
-    store.storeMessages('start', ...toStore)
+    store.storeMessages('start', ...loaded)
     return false
   }
 
