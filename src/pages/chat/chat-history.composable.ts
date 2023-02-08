@@ -1,5 +1,5 @@
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useMessageStoreV2 } from 'src/stores/message-v2.store'
+import { useMessageStore } from 'src/stores/message.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
 import { Message } from 'src/models/message.interface'
 import { useMessageObservable } from 'src/services/message-observable.service'
@@ -12,7 +12,7 @@ function extractCreateDt(message?: Message) {
 
 function useHistoryLoader(chatRoomId: Ref<string>) {
   const pb = usePocketbase()
-  const store = useMessageStoreV2()
+  const store = useMessageStore()
 
   async function loadOlderMessages(
     chatRoomId: string,
@@ -65,7 +65,7 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
 
 function useNewMessagesListener(chatRoomId: Ref<string>) {
   const { observable } = useMessageObservable()
-  const store = useMessageStoreV2()
+  const store = useMessageStore()
 
   let subscription: Subscription
   onBeforeMount(() => {
@@ -92,7 +92,7 @@ export function useChatHistory(chatRoomId: Ref<string>) {
   useNewMessagesListener(chatRoomId)
   const { load } = useHistoryLoader(chatRoomId)
 
-  const store = useMessageStoreV2()
+  const store = useMessageStore()
 
   /*
    * A list where the messages are arranged from older to newer

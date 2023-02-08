@@ -9,7 +9,7 @@ interface MessageStore {
 
 type InsertLocation = 'start' | 'end'
 
-export const useMessageStoreV2 = defineStore('message', {
+export const useMessageStore = defineStore('message', {
   state: (): MessageStore => ({
     chatRooms: {},
   }),
