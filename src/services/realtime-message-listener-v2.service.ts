@@ -6,7 +6,7 @@ import { usePocketbase } from './pocketbase.service'
 const subject = new Subject<RecordSubscription<Message>>()
 let pbSubscription: UnsubscribeFunc
 
-export function useRealTimeMessageListener() {
+export function useMessageObservable() {
   const pb = usePocketbase()
 
   async function start() {
@@ -17,8 +17,9 @@ export function useRealTimeMessageListener() {
 
     pbSubscription = await pb
       .collection('messages')
-      .subscribe<Message>('*', (record) => {
-        subject.next(record)
+      .subscribe<Message>('*', (event) => {
+        console.debug('Received message %s', event.record.id)
+        subject.next(event)
       })
   }
 
@@ -32,7 +33,7 @@ export function useRealTimeMessageListener() {
   }
 
   return {
-    events: subject.asObservable(),
+    observable: subject.asObservable(),
     start,
     stop,
   }
