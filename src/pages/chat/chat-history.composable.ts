@@ -6,7 +6,7 @@ import { useMessageObservable } from 'src/services/message-observable.service'
 import { filter, Subscription } from 'rxjs'
 
 function extractCreateDt(message?: Message) {
-  return message?.created ?? new Date()
+  return message?.created ? new Date(message.created) : new Date()
 }
 
 function useHistoryLoader(chatRoomId: Ref<string>) {
