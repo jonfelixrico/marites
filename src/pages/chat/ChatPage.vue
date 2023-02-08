@@ -1,18 +1,12 @@
 <template>
   <div class="column">
-    <div class="col relative-position">
-      <q-virtual-scroll
-        class="absolute fit"
-        :items="history"
-        @virtual-scroll="handleVirtualScroll"
-      >
-        <template #default="{ item }">
-          <div>
-            {{ item.content }}
-          </div>
-        </template>
-      </q-virtual-scroll>
-    </div>
+    <q-scroll-area class="col" ref="scroll">
+      <q-infinite-scroll @load="handleLoad" reverse>
+        <div v-for="message of history" :key="message.id">
+          {{ message.content }}
+        </div>
+      </q-infinite-scroll>
+    </q-scroll-area>
     <q-form
       @submit="sendMessage"
       class="row items-end q-gutter-x-xs"
@@ -46,14 +40,9 @@ export default defineComponent({
     const route = useRoute()
     const chatRoomId = computed(() => route.params.chatRoomId as string)
 
-    const { history, handleVirtualScroll } = useChatHistory(chatRoomId)
-
     return {
       ...useSendMessage(chatRoomId),
-
-      // freezing is recommended as per the QVirtualScroll docs (https://quasar.dev/vue-components/virtual-scroll#usage)
-      history: computed(() => Object.freeze(history.value)),
-      handleVirtualScroll,
+      ...useChatHistory(chatRoomId),
     }
   },
 
@@ -61,6 +50,11 @@ export default defineComponent({
     triggerSubmit() {
       const form = this.$refs.form as QForm
       form.submit()
+    },
+
+    async handleLoad(index: number, doneFn: (stop: boolean) => void) {
+      const isDone = await this.load()
+      doneFn(isDone)
     },
   },
 })
