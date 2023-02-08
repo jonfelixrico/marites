@@ -1,7 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-drawer>
-      <q-btn @click="createChat">Create chat</q-btn>
+    <q-drawer v-model="showDrawer" class="column">
+      <div class="col"></div>
+      <q-btn @click="createChat" no-caps color="primary" unelevated>
+        Create chat
+      </q-btn>
     </q-drawer>
 
     <q-page-container>
@@ -12,7 +15,7 @@
 
 <script lang="ts">
 import { useMessageObservable } from 'src/services/message-observable.service'
-import { defineComponent, onBeforeUnmount } from 'vue'
+import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { useCreateChatRoom } from './create-chatroom.composable'
 
 export default defineComponent({
@@ -25,8 +28,11 @@ export default defineComponent({
       messageObservable.stop()
     })
 
+    const showDrawer = ref(true)
+
     return {
       createChat,
+      showDrawer,
     }
   },
 })
