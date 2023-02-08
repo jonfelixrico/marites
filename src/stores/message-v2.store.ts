@@ -7,13 +7,15 @@ interface MessageStore {
   }
 }
 
+type InsertLocation = 'start' | 'end'
+
 export const useMessageStoreV2 = defineStore('message', {
   state: (): MessageStore => ({
     chatRooms: {},
   }),
 
   actions: {
-    storeMessage(message: Message, direction: 'append' | 'prepend') {
+    storeMessage(message: Message, location: InsertLocation) {
       const { chatRoomId } = message
 
       if (!this.chatRooms[chatRoomId]) {
@@ -21,16 +23,16 @@ export const useMessageStoreV2 = defineStore('message', {
       }
 
       const arr = this.chatRooms[chatRoomId]
-      if (direction === 'append') {
+      if (location === 'end') {
         arr.push(message)
       } else {
         arr.unshift(message)
       }
     },
 
-    storeMessages(direction: 'append' | 'prepend', ...messages: Message[]) {
+    storeMessages(location: InsertLocation, ...messages: Message[]) {
       for (const message of messages) {
-        this.storeMessage(message, direction)
+        this.storeMessage(message, location)
       }
     },
   },
