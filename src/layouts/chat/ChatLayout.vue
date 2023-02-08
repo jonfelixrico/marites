@@ -3,7 +3,7 @@
   <q-page class="row">
     <div class="col">
       <!-- TODO i18nize -->
-      <q-btn @click="openCreateChatDialog">Create chat</q-btn>
+      <q-btn @click="createChat">Create chat</q-btn>
     </div>
     <router-view class="col" />
   </q-page>
@@ -11,58 +11,22 @@
 
 <script lang="ts">
 import { useMessageObservable } from 'src/services/message-observable'
-import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent, onBeforeUnmount } from 'vue'
+import { useCreateChatRoom } from './create-chatroom.composable'
 
 export default defineComponent({
   setup() {
+    const { createChat } = useCreateChatRoom()
+
     const messageObservable = useMessageObservable()
     messageObservable.start()
-
     onBeforeUnmount(() => {
       messageObservable.stop()
     })
 
     return {
-      pb: usePocketbase(),
+      createChat,
     }
-  },
-
-  methods: {
-    openCreateChatDialog() {
-      // TODO use custom component to make this comprehensive
-      this.$q
-        .dialog({
-          title: 'Create chat',
-          prompt: {
-            model: '',
-            type: 'text',
-          },
-          cancel: true,
-        })
-        .onOk(async (data: string) => {
-          try {
-            const chatRoomId = await this.createChat(data)
-            await this.$router.push({
-              name: 'chat',
-              params: {
-                chatRoomId,
-              },
-            })
-          } catch (e) {
-            console.error(e)
-          }
-        })
-    },
-
-    async createChat(name: string) {
-      const { id } = await this.pb.collection('chatrooms').create({
-        name,
-        members: [this.pb.authStore.model?.id],
-      })
-
-      return id
-    },
   },
 })
 </script>
