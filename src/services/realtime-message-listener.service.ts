@@ -10,6 +10,9 @@ export interface RealTimeMessageListener {
 type MessageStore = ReturnType<typeof useMessageStore>
 type Pocketbase = ReturnType<typeof usePocketbase>
 
+/**
+ * @deprecated
+ */
 class RealTimeMessageListenerImpl implements RealTimeMessageListener {
   constructor(private store: MessageStore, private pb: Pocketbase) {}
 
