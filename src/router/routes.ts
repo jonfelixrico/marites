@@ -4,7 +4,38 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [
+      {
+        path: '',
+        name: 'index',
+        redirect: {
+          name: 'login',
+        },
+      },
+      {
+        path: 'login',
+        name: 'login',
+        component: () => import('pages/LoginPage.vue'),
+      },
+    ],
+  },
+
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('layouts/chat/ChatLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'chatIndex',
+        component: () => import('pages/chat/IndexChatPage.vue'),
+      },
+      {
+        path: ':chatRoomId',
+        name: 'chat',
+        component: () => import('pages/chat/ChatPage.vue'),
+      },
+    ],
   },
 
   // Always leave this as last one,
