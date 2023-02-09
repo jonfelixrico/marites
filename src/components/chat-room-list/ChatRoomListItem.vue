@@ -42,7 +42,9 @@ export default defineComponent({
     })
 
     onBeforeUnmount(() => {
-      unsubscriber()
+      if (unsubscriber) {
+        unsubscriber()
+      }
     })
 
     return {
