@@ -46,7 +46,7 @@ export default defineComponent({
     const chatRoomObservable = useChatRoomObservable()
 
     messageObservable.start()
-    messageObservable.start()
+    chatRoomObservable.start()
 
     onBeforeUnmount(() => {
       messageObservable.stop()
