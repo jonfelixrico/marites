@@ -32,6 +32,7 @@
 
 <script lang="ts">
 import ChatRoomList from 'src/components/chat-room-list/ChatRoomList.vue'
+import { useChatRoomObservable } from 'src/services/chat-room-observable.service'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { useCreateChatRoom } from './create-chatroom.composable'
@@ -42,9 +43,14 @@ export default defineComponent({
     const { createChat } = useCreateChatRoom()
 
     const messageObservable = useMessageObservable()
+    const chatRoomObservable = useChatRoomObservable()
+
     messageObservable.start()
+    messageObservable.start()
+
     onBeforeUnmount(() => {
       messageObservable.stop()
+      chatRoomObservable.stop()
     })
 
     const showDrawer = ref(true)
