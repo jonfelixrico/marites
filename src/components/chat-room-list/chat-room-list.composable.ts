@@ -1,10 +1,12 @@
 import { ChatRoom } from 'src/models/chat-room.interface'
+import { useChatRoomObservable } from 'src/services/chat-room-observable.service'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useChatRoomStore } from 'src/stores/chat-room.store'
 
 export function useChatRoomList() {
   const pb = usePocketbase()
   const store = useChatRoomStore()
+  const { observable } = useChatRoomObservable()
 
   async function loadChatRoomList() {
     const items = await pb.collection('chatRooms').getFullList<ChatRoom>(200, {
@@ -16,7 +18,16 @@ export function useChatRoomList() {
     }
   }
 
+  function listenForChatRoomListUpdates(): () => void {
+    const subscription = observable.subscribe(({ record }) => {
+      store.storeChatRoom(record)
+    })
+
+    return () => subscription.unsubscribe()
+  }
+
   return {
     loadChatRoomList,
+    listenForChatRoomListUpdates,
   }
 }
