@@ -18,12 +18,19 @@ export const useChatRoomStore = defineStore('chatRoom', {
   }),
 
   actions: {
+    /**
+     * @deprecated
+     */
     processMessage(message: Message) {
       const inStore = this.messagePreview[message.chatRoomId]
       if (!inStore || message.created > inStore.created) {
         this.messagePreview[message.chatRoomId] = message
         return
       }
+    },
+
+    setPreviewMessage(message: Message) {
+      this.messagePreview[message.chatRoomId] = message
     },
 
     storeChatRoom(chatRoom: ChatRoom) {
