@@ -18,9 +18,6 @@ export function usePreviewMessage(chatRoomId: Ref<string>) {
       filter: `created <= "${toFilterDate(new Date())}" && chatRoomId = "${
         chatRoomId.value
       }"`,
-      // multiple instances can load at a single instance, so we have to set this to false
-      // TODO set to false by default
-      $autoCancel: false,
     })
 
     const item = items[0]
