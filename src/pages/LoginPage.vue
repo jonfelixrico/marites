@@ -13,6 +13,7 @@
 </template>
 
 <script lang="ts">
+import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent, reactive } from 'vue'
 
@@ -35,7 +36,9 @@ export default defineComponent({
     async authenticate() {
       const { username, password } = this.credentials
       try {
-        await this.pb.collection('users').authWithPassword(username, password)
+        await this.pb
+          .collection(PbCollection.USER)
+          .authWithPassword(username, password)
         console.log('Authetnication succeded for %s', username)
         this.$router.push({
           name: 'home',

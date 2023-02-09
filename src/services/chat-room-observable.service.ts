@@ -2,6 +2,7 @@ import { RecordSubscription, UnsubscribeFunc } from 'pocketbase'
 import { Subject } from 'rxjs'
 import { ChatRoom } from 'src/models/chat-room.interface'
 import { usePocketbase } from './pocketbase.service'
+import { PbCollection } from 'src/models/pb-collection.enum'
 
 const subject = new Subject<RecordSubscription<ChatRoom>>()
 let pbSubscription: UnsubscribeFunc
@@ -16,7 +17,7 @@ export function useChatRoomObservable() {
     }
 
     pbSubscription = await pb
-      .collection('chatrooms')
+      .collection(PbCollection.CHATROOM)
       .subscribe<ChatRoom>('*', (event) => {
         console.debug('Received chat room %s', event.record.id)
         subject.next(event)

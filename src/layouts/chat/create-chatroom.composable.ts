@@ -1,4 +1,5 @@
 import { useQuasar } from 'quasar'
+import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useRouter } from 'vue-router'
 
@@ -9,7 +10,7 @@ export function useCreateChatRoom() {
 
   async function processChatCreation(name: string) {
     try {
-      const { id } = await pb.collection('chatrooms').create({
+      const { id } = await pb.collection(PbCollection.CHATROOM).create({
         name,
         members: [pb.authStore.model?.id],
       })
