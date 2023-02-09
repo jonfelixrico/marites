@@ -6,18 +6,21 @@
   >
     <q-item-section>
       <div>{{ chatRoom.name }}</div>
-      <div>{{ message?.content }}</div>
+      <div>{{ previewMessage?.content }}</div>
     </q-item-section>
   </q-item>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, PropType } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onBeforeMount,
+  PropType,
+  onBeforeUnmount,
+} from 'vue'
 import { ChatRoom } from 'src/models/chat-room.interface'
-import { useChatRoomStore } from 'src/stores/chat-room.store'
-import { usePocketbase } from 'src/services/pocketbase.service'
-import { Message } from 'src/models/message.interface'
-import { toFilterDate } from 'src/utils/pocketbase.util'
+import { usePreviewMessage } from './preview-message.composable'
 
 export default defineComponent({
   props: {
@@ -28,30 +31,22 @@ export default defineComponent({
   },
 
   setup(props) {
-    const store = useChatRoomStore()
-    const pb = usePocketbase()
+    const id = computed(() => props.chatRoom.id)
+    const { listenForLatestMessage, fetchLatestMessage, previewMessage } =
+      usePreviewMessage(id)
 
+    let unsubscriber: () => void
     onBeforeMount(async () => {
-      // take the latest message for the chat room
-      const { items } = await pb.collection('messages').getList<Message>(1, 1, {
-        sort: '-created', // sorting by id to keep sorting consistent for same-timestamp messages
-        filter: `created <= "${toFilterDate(new Date())}" && chatRoomId = "${
-          props.chatRoom.id
-        }"`,
-        // multiple instances can load at a single instance, so we have to set this to false
-        // TODO set to false by default
-        $autoCancel: false,
-      })
+      unsubscriber = listenForLatestMessage()
+      fetchLatestMessage()
+    })
 
-      if (!items.length) {
-        return
-      }
-
-      store.processMessage(items[0])
+    onBeforeUnmount(() => {
+      unsubscriber()
     })
 
     return {
-      message: computed(() => store.messagePreview[props.chatRoom.id]),
+      previewMessage,
     }
   },
 })
