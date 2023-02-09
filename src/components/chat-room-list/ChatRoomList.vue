@@ -14,14 +14,12 @@ import { usePocketbase } from 'src/services/pocketbase.service'
 import { computed, defineComponent, onBeforeMount } from 'vue'
 import { useChatRoomStore } from 'src/stores/chat-room.store'
 import ChatRoomListItem from './ChatRoomListItem.vue'
-import { useMessageObservable } from 'src/services/message-observable.service'
 
 export default defineComponent({
   components: { ChatRoomListItem },
   setup() {
     const pb = usePocketbase()
     const store = useChatRoomStore()
-    const { observable } = useMessageObservable()
 
     async function loadChatRooms() {
       const items = await pb
@@ -37,11 +35,6 @@ export default defineComponent({
 
     onBeforeMount(async () => {
       loadChatRooms()
-      // TODO unsubscribe
-      observable.subscribe((message) => {
-        // TODO handle actions other than create
-        store.processMessage(message.record)
-      })
     })
 
     const chatRoomList = computed(() => store.chatRooms)
