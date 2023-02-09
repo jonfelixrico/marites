@@ -1,24 +1,27 @@
 <template>
-  <div class="column">
-    <q-scroll-area class="col">
-      <q-infinite-scroll @load="handleLoad" reverse>
-        <div class="q-px-lg">
-          <q-chat-message
-            v-for="message of history"
-            :key="message.id"
-            :sent="userId === message.senderId"
-          >
-            <template #default>
-              <div style="white-space: pre" v-text="message.content" />
-            </template>
+  <q-page class="column">
+    <div class="col relative-position">
+      <q-scroll-area class="absolute fit">
+        <q-infinite-scroll @load="handleLoad" reverse>
+          <div class="q-px-lg">
+            <q-chat-message
+              v-for="message of history"
+              :key="message.id"
+              :sent="userId === message.senderId"
+            >
+              <template #default>
+                <div style="white-space: pre" v-text="message.content" />
+              </template>
 
-            <template #stamp>
-              {{ message.created }}
-            </template>
-          </q-chat-message>
-        </div>
-      </q-infinite-scroll>
-    </q-scroll-area>
+              <template #stamp>
+                {{ message.created }}
+              </template>
+            </q-chat-message>
+          </div>
+        </q-infinite-scroll>
+      </q-scroll-area>
+    </div>
+
     <q-form
       @submit="sendMessage"
       class="row items-end q-gutter-x-xs"
@@ -37,13 +40,14 @@
       />
       <q-btn type="submit" label="Send" color="primary" />
     </q-form>
-  </div>
+  </q-page>
 </template>
 
 <script lang="ts">
 import type { QForm } from 'quasar'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { computed, defineComponent } from 'vue'
+import { useMessageStore } from 'src/stores/message.store'
+import { computed, defineComponent, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useChatHistory } from './chat-history.composable'
 import { useSendMessage } from './send-message.composable'
@@ -53,6 +57,11 @@ export default defineComponent({
     const route = useRoute()
     const chatRoomId = computed(() => route.params.chatRoomId as string)
     const pb = usePocketbase()
+    const store = useMessageStore()
+
+    onBeforeUnmount(() => {
+      store.clearMessages(chatRoomId.value)
+    })
 
     return {
       ...useSendMessage(chatRoomId),

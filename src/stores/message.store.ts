@@ -35,5 +35,9 @@ export const useMessageStore = defineStore('message', {
         this.storeMessage(message, location)
       }
     },
+
+    clearMessages(chatRoomId: string) {
+      this.chatRooms[chatRoomId] = []
+    },
   },
 })

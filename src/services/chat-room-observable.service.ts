@@ -1,13 +1,13 @@
 import { RecordSubscription, UnsubscribeFunc } from 'pocketbase'
 import { Subject } from 'rxjs'
-import { Message } from 'src/models/message.interface'
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { ChatRoom } from 'src/models/chat-room.interface'
 import { usePocketbase } from './pocketbase.service'
+import { PbCollection } from 'src/models/pb-collection.enum'
 
-const subject = new Subject<RecordSubscription<Message>>()
+const subject = new Subject<RecordSubscription<ChatRoom>>()
 let pbSubscription: UnsubscribeFunc
 
-export function useMessageObservable() {
+export function useChatRoomObservable() {
   const pb = usePocketbase()
 
   async function start() {
@@ -17,13 +17,13 @@ export function useMessageObservable() {
     }
 
     pbSubscription = await pb
-      .collection(PbCollection.MESSAGE)
-      .subscribe<Message>('*', (event) => {
-        console.debug('Received message %s', event.record.id)
+      .collection(PbCollection.CHATROOM)
+      .subscribe<ChatRoom>('*', (event) => {
+        console.debug('Received chat room %s', event.record.id)
         subject.next(event)
       })
 
-    console.log('Started subscribing to message RT.')
+    console.log('Started subscribing to chatroom RT.')
   }
 
   async function stop() {
@@ -33,11 +33,11 @@ export function useMessageObservable() {
     }
 
     await pbSubscription()
-    console.log('Stopped subscribing to message RT.')
+    console.log('Stopped subscribing to chatroom RT.')
   }
 
   return {
-    observable: subject.asObservable(),
+    observable: subject.asObservable(), // to make the subject "read only" outside of this composable
     start,
     stop,
   }

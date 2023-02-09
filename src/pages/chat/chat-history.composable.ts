@@ -3,8 +3,9 @@ import { useMessageStore } from 'src/stores/message.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
 import { Message } from 'src/models/message.interface'
 import { useMessageObservable } from 'src/services/message-observable.service'
-import { filter, Subscription } from 'rxjs'
+import { Subscription } from 'rxjs'
 import { toFilterDate } from 'src/utils/pocketbase.util'
+import { PbCollection } from 'src/models/pb-collection.enum'
 
 function extractCreateDt(message?: Message) {
   return message?.created ? new Date(message.created) : new Date()
@@ -22,7 +23,7 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
     const anchorDt = extractCreateDt(message)
 
     const { items } = await pb
-      .collection('messages')
+      .collection(PbCollection.MESSAGE)
       .getList<Message>(1, limit, {
         sort: '-created,-id', // sorting by id to keep sorting consistent for same-timestamp messages
         filter: `created <= "${toFilterDate(
@@ -69,16 +70,13 @@ function useNewMessagesListener(chatRoomId: Ref<string>) {
 
   let subscription: Subscription
   onBeforeMount(() => {
-    subscription = observable
-      .pipe(
-        filter(
-          ({ action, record }) =>
-            action === 'create' && record.chatRoomId === chatRoomId.value
-        )
-      )
-      .subscribe(({ record }) => {
-        store.storeMessage(record, 'end')
-      })
+    subscription = observable.subscribe(({ record, action }) => {
+      if (action !== 'create' || record.chatRoomId !== chatRoomId.value) {
+        return
+      }
+
+      store.storeMessage(record, 'end')
+    })
   })
 
   onBeforeUnmount(() => {
