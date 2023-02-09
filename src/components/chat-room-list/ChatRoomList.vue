@@ -9,35 +9,43 @@
 </template>
 
 <script lang="ts">
-import { ChatRoom } from 'src/models/chat-room.interface'
-import { usePocketbase } from 'src/services/pocketbase.service'
-import { computed, defineComponent, onBeforeMount } from 'vue'
-import { useChatRoomStore } from 'src/stores/chat-room.store'
+import { computed, defineComponent, onBeforeMount, onBeforeUnmount } from 'vue'
 import ChatRoomListItem from './ChatRoomListItem.vue'
+import { useChatRoomList } from './chat-room-list.composable'
+import { useChatRoomStore } from 'src/stores/chat-room.store'
+import { orderBy } from 'lodash'
+import { ChatRoom } from 'src/models/chat-room.interface'
 
 export default defineComponent({
   components: { ChatRoomListItem },
   setup() {
-    const pb = usePocketbase()
+    const { loadChatRoomList, listenForChatRoomListUpdates } = useChatRoomList()
     const store = useChatRoomStore()
 
-    async function loadChatRooms() {
-      const items = await pb
-        .collection('chatRooms')
-        .getFullList<ChatRoom>(200, {
-          sort: 'created',
-        })
-
-      for (const item of items) {
-        store.storeChatRoom(item)
-      }
-    }
-
+    let unsubscriber: () => void
     onBeforeMount(async () => {
-      loadChatRooms()
+      unsubscriber = listenForChatRoomListUpdates()
+      loadChatRoomList()
     })
 
-    const chatRoomList = computed(() => store.chatRooms)
+    onBeforeUnmount(() => {
+      if (unsubscriber) {
+        unsubscriber()
+      }
+    })
+
+    const chatRoomList = computed(() => {
+      const values = Object.values(store.chatRooms).map<ChatRoom>(
+        (chatRoom) => {
+          return {
+            ...chatRoom,
+            updated:
+              store.previewMessages[chatRoom.id]?.updated ?? chatRoom.updated,
+          }
+        }
+      )
+      return orderBy(values, ['updated'], ['desc'])
+    })
 
     return {
       chatRoomList,
