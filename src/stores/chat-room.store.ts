@@ -29,6 +29,10 @@ export const useChatRoomStore = defineStore('chatRoom', {
       }
     },
 
+    /**
+     * Stores a message as the preview message of the chat room it belongs to.
+     * @param message
+     */
     setPreviewMessage(message: Message) {
       this.messagePreview[message.chatRoomId] = message
     },
