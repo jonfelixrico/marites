@@ -10,7 +10,7 @@ export function usePreviewMessage(chatRoomId: Ref<string>) {
   const store = useChatRoomStore()
   const { observable } = useMessageObservable()
 
-  const previewMessage = computed(() => store.messagePreview[chatRoomId.value])
+  const previewMessage = computed(() => store.previewMessages[chatRoomId.value])
 
   async function fetchLatestMessage() {
     const { items } = await pb.collection('messages').getList<Message>(1, 1, {
@@ -33,7 +33,7 @@ export function usePreviewMessage(chatRoomId: Ref<string>) {
       return
     }
 
-    store.setPreviewMessage(item)
+    store.storePreviewMessage(item)
   }
 
   function listenForLatestMessage(): () => void {
@@ -42,7 +42,7 @@ export function usePreviewMessage(chatRoomId: Ref<string>) {
         return
       }
 
-      store.setPreviewMessage(record)
+      store.storePreviewMessage(record)
     })
 
     return () => subscription.unsubscribe()
