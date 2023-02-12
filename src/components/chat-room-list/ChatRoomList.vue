@@ -14,7 +14,7 @@ import ChatRoomListItem from './ChatRoomListItem.vue'
 import { useChatRoomList } from './chat-room-list.composable'
 import { useChatRoomStore } from 'src/stores/chat-room.store'
 import { orderBy } from 'lodash'
-import { ChatRoom } from 'src/models/chat-room.interface'
+import { Chat } from 'src/models/chat.interface'
 
 export default defineComponent({
   components: { ChatRoomListItem },
@@ -35,15 +35,13 @@ export default defineComponent({
     })
 
     const chatRoomList = computed(() => {
-      const values = Object.values(store.chatRooms).map<ChatRoom>(
-        (chatRoom) => {
-          return {
-            ...chatRoom,
-            updated:
-              store.previewMessages[chatRoom.id]?.updated ?? chatRoom.updated,
-          }
+      const values = Object.values(store.chatRooms).map<Chat>((chatRoom) => {
+        return {
+          ...chatRoom,
+          updated:
+            store.previewMessages[chatRoom.id]?.updated ?? chatRoom.updated,
         }
-      )
+      })
       return orderBy(values, ['updated'], ['desc'])
     })
 

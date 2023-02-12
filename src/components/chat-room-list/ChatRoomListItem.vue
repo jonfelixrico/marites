@@ -19,13 +19,13 @@ import {
   PropType,
   onBeforeUnmount,
 } from 'vue'
-import { ChatRoom } from 'src/models/chat-room.interface'
+import { Chat } from 'src/models/chat.interface'
 import { usePreviewMessage } from './preview-message.composable'
 
 export default defineComponent({
   props: {
     chatRoom: {
-      type: Object as PropType<ChatRoom>,
+      type: Object as PropType<Chat>,
       required: true,
     },
   },
