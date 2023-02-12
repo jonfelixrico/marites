@@ -94,7 +94,7 @@ export default defineComponent({
 
     const members = await pb
       .collection(PbCollection.CHAT_MEMBER)
-      .getFullList<ChatMember>(1, {
+      .getFullList<ChatMember>(200, {
         filter: `chat = "${chatId}"`,
         sort: 'created',
       })
