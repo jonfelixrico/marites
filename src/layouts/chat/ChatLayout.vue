@@ -34,8 +34,8 @@
 </template>
 
 <script lang="ts">
-import ChatList from 'src/components/chat-room-list/ChatList.vue'
-import { useChatObservable } from 'src/services/chat-room-observable.service'
+import ChatList from 'src/components/chat-list/ChatList.vue'
+import { useChatObservable } from 'src/services/chat-observable.service'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { useCreateChat } from './create-chat.composable'

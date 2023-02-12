@@ -1,14 +1,14 @@
 <template>
   <q-list>
-    <ChatListItem v-for="chat of chatList" :chat-room="chat" :key="chat.id" />
+    <ChatListItem v-for="chat of chatList" :chat="chat" :key="chat.id" />
   </q-list>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount } from 'vue'
 import ChatListItem from './ChatListItem.vue'
-import { useChatList } from './chat-room-list.composable'
-import { useChatStore } from 'src/stores/chat-room.store'
+import { useChatList } from './chat-list.composable'
+import { useChatStore } from 'src/stores/chat.store'
 import { orderBy } from 'lodash'
 import { Chat } from 'src/models/chat.interface'
 

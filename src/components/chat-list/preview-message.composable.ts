@@ -1,6 +1,6 @@
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useChatStore } from 'src/stores/chat-room.store'
+import { useChatStore } from 'src/stores/chat.store'
 import { toFilterDate } from 'src/utils/pocketbase.util'
 import { computed, Ref } from 'vue'
 import { PbCollection } from 'src/models/pb-collection.enum'

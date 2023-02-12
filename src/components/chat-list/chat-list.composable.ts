@@ -1,7 +1,7 @@
 import { Chat } from 'src/models/chat.interface'
-import { useChatObservable } from 'src/services/chat-room-observable.service'
+import { useChatObservable } from 'src/services/chat-observable.service'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useChatStore } from 'src/stores/chat-room.store'
+import { useChatStore } from 'src/stores/chat.store'
 import { PbCollection } from 'src/models/pb-collection.enum'
 
 export function useChatList() {
