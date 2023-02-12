@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export interface Message {
   content: string
   chatRoomId: string
