@@ -5,12 +5,15 @@ export function useSessionService() {
   const pb = usePocketbase()
   const router = useRouter()
 
-  function logOut() {
+  async function logOut() {
     pb.authStore.clear()
-    console.log('User has logged out. Redirecting to the login page.')
-    router.push({
+    console.debug('Cleared auth token...')
+
+    await router.push({
       name: 'login',
     })
+
+    console.log('Successfully finished the logout process.')
   }
 
   return {
