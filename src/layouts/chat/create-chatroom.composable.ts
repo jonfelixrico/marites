@@ -3,7 +3,7 @@ import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useRouter } from 'vue-router'
 
-export function useCreateChatRoom() {
+export function useCreateChat() {
   const $q = useQuasar()
   const pb = usePocketbase()
   const router = useRouter()
@@ -49,7 +49,5 @@ export function useCreateChatRoom() {
     })
   }
 
-  return {
-    createChat: openCreateChatDialog,
-  }
+  return openCreateChatDialog
 }

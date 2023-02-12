@@ -38,13 +38,13 @@ import ChatRoomList from 'src/components/chat-room-list/ChatRoomList.vue'
 import { useChatRoomObservable } from 'src/services/chat-room-observable.service'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
-import { useCreateChatRoom } from './create-chatroom.composable'
+import { useCreateChat } from './create-chatroom.composable'
 import { useSessionService } from 'src/services/session.service'
 
 export default defineComponent({
   components: { ChatRoomList },
   setup() {
-    const { createChat } = useCreateChatRoom()
+    const createChat = useCreateChat()
 
     const messageObservable = useMessageObservable()
     const chatRoomObservable = useChatRoomObservable()
