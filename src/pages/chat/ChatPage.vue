@@ -45,7 +45,10 @@
 
 <script lang="ts">
 import type { QForm } from 'quasar'
+import { ChatMember } from 'src/models/chat.interface'
+import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
+import { useChatStore } from 'src/stores/chat.store'
 import { useMessageStore } from 'src/stores/message.store'
 import { computed, defineComponent, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
@@ -80,6 +83,23 @@ export default defineComponent({
       const isDone = await this.load()
       doneFn(isDone)
     },
+  },
+
+  async beforeRouteEnter(to) {
+    // TODO improve this
+    const chatStore = useChatStore()
+    const pb = usePocketbase()
+
+    const chatId = String(to.params.chatId)
+
+    const members = await pb
+      .collection(PbCollection.CHAT_MEMBER)
+      .getFullList<ChatMember>(200, {
+        filter: `chat = "${chatId}"`,
+        sort: 'created',
+      })
+
+    chatStore.storeChatMembers(...members)
   },
 })
 </script>

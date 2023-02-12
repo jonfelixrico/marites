@@ -36,10 +36,12 @@ export default defineComponent({
     async authenticate() {
       const { username, password } = this.credentials
       try {
+        // TODO move this process to the session service
         await this.pb
           .collection(PbCollection.USER)
           .authWithPassword(username, password)
-        console.log('Authetnication succeded for %s', username)
+        console.log('Authentication succeded for %s', username)
+
         this.$router.push({
           name: 'home',
         })
