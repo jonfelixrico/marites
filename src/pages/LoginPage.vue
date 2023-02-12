@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <div class="fullscreen">
     <!--
       basic login impl
       TODO flesh this out
@@ -9,7 +9,7 @@
       <q-input name="password" v-model="credentials.password" type="password" />
       <q-btn label="Log In" type="submit" />
     </q-form>
-  </q-page>
+  </div>
 </template>
 
 <script lang="ts">
