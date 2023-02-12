@@ -1,8 +1,11 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-header>
-      <q-toolbar>
+      <q-toolbar class="row justify-between">
         <q-btn icon="menu" round flat dense @click="showDrawer = !showDrawer" />
+        <q-btn no-caps flat @click="promptLogOut">{{
+          $t('session.logOut')
+        }}</q-btn>
       </q-toolbar>
     </q-header>
     <q-drawer v-model="showDrawer" class="column">
@@ -36,6 +39,7 @@ import { useChatRoomObservable } from 'src/services/chat-room-observable.service
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { useCreateChatRoom } from './create-chatroom.composable'
+import { useSessionService } from 'src/services/session.service'
 
 export default defineComponent({
   components: { ChatRoomList },
@@ -55,9 +59,12 @@ export default defineComponent({
 
     const showDrawer = ref(true)
 
+    const { promptLogOut } = useSessionService()
+
     return {
       createChat,
       showDrawer,
+      promptLogOut,
     }
   },
 })
