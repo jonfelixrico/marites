@@ -25,13 +25,16 @@ export function useSessionService() {
     dialog({
       title: 'Log out',
       message: 'Are you sure you want to log out?',
+      focus: 'cancel',
       ok: {
         label: 'Yes, log me out',
         noCaps: true,
+        unelevated: true,
       },
       cancel: {
         label: 'No, keep me logged in',
         noCaps: true,
+        flat: true,
       },
     }).onOk(logOut)
   }
