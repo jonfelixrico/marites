@@ -14,15 +14,12 @@
           <ChatList />
         </q-scroll-area>
       </div>
-      <div class="q-px-xs row">
-        <q-btn
-          class="col"
-          @click="createChat"
-          no-caps
-          color="primary"
-          unelevated
-        >
+      <div class="q-px-xs column q-gutter-y-xs">
+        <q-btn @click="createChat" no-caps color="primary" unelevated>
           Create chat
+        </q-btn>
+        <q-btn @click="joinChat" no-caps color="primary" unelevated>
+          Join chat
         </q-btn>
       </div>
     </q-drawer>
@@ -40,11 +37,13 @@ import { useMessageObservable } from 'src/services/message-observable.service'
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { useCreateChat } from './create-chat.composable'
 import { useSessionService } from 'src/services/session.service'
+import { useJoinChat } from './join-chat.composable'
 
 export default defineComponent({
   components: { ChatList },
   setup() {
     const createChat = useCreateChat()
+    const joinChat = useJoinChat()
 
     const messageObservable = useMessageObservable()
     const chatObservable = useChatObservable()
@@ -65,6 +64,7 @@ export default defineComponent({
       createChat,
       showDrawer,
       promptLogOut,
+      joinChat,
     }
   },
 })
