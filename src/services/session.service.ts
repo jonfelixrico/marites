@@ -20,7 +20,7 @@ export function useSessionService() {
     console.log('Successfully finished the logout process.')
   }
 
-  async function promptLogout() {
+  async function promptLogOut() {
     // TODO i18nize
     dialog({
       title: 'Log out',
@@ -38,6 +38,6 @@ export function useSessionService() {
 
   return {
     logOut,
-    promptLogout,
+    promptLogOut,
   }
 }
