@@ -11,7 +11,7 @@ function extractCreateDt(message?: ChatMessage) {
   return message?.created ? new Date(message.created) : new Date()
 }
 
-function useHistoryLoader(chatRoomId: Ref<string>) {
+function useHistoryLoader(chatId: Ref<string>) {
   const pb = usePocketbase()
   const store = useMessageStore()
 
@@ -46,8 +46,8 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
    * @returns `true` if there are no more items left in the history, false if otherwise
    */
   async function load(): Promise<boolean> {
-    const oldest = store.chatRooms[chatRoomId.value]?.[0]
-    const loaded = await loadOlderMessages(chatRoomId.value, oldest)
+    const oldest = store.chatRooms[chatId.value]?.[0]
+    const loaded = await loadOlderMessages(chatId.value, oldest)
 
     if (!loaded.length) {
       return true
@@ -62,14 +62,14 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
   }
 }
 
-function useNewMessagesListener(chatRoomId: Ref<string>) {
+function useNewMessagesListener(chatId: Ref<string>) {
   const { observable } = useMessageObservable()
   const store = useMessageStore()
 
   let subscription: Subscription
   onBeforeMount(() => {
     subscription = observable.subscribe(({ record, action }) => {
-      if (action !== 'create' || record.chatRoomId !== chatRoomId.value) {
+      if (action !== 'create' || record.chat !== chatId.value) {
         return
       }
 
@@ -84,16 +84,16 @@ function useNewMessagesListener(chatRoomId: Ref<string>) {
   })
 }
 
-export function useChatHistory(chatRoomId: Ref<string>) {
-  useNewMessagesListener(chatRoomId)
-  const { load } = useHistoryLoader(chatRoomId)
+export function useChatHistory(chatId: Ref<string>) {
+  useNewMessagesListener(chatId)
+  const { load } = useHistoryLoader(chatId)
 
   const store = useMessageStore()
 
   /*
    * A list where the messages are arranged from older to newer
    */
-  const history = computed(() => store.chatRooms[chatRoomId.value] ?? [])
+  const history = computed(() => store.chatRooms[chatId.value] ?? [])
 
   return {
     history,

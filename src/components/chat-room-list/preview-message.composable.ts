@@ -6,12 +6,12 @@ import { computed, Ref } from 'vue'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { ChatMessage } from 'src/models/chat.interface'
 
-export function usePreviewMessage(chatRoomId: Ref<string>) {
+export function usePreviewMessage(chatId: Ref<string>) {
   const pb = usePocketbase()
   const store = useChatRoomStore()
   const { observable } = useMessageObservable()
 
-  const previewMessage = computed(() => store.previewMessages[chatRoomId.value])
+  const previewMessage = computed(() => store.previewMessages[chatId.value])
 
   async function fetchLatestMessage() {
     const { items } = await pb
@@ -19,7 +19,7 @@ export function usePreviewMessage(chatRoomId: Ref<string>) {
       .getList<ChatMessage>(1, 1, {
         sort: '-created', // sorting by id to keep sorting consistent for same-timestamp messages
         filter: `created <= "${toFilterDate(new Date())}" && chat = "${
-          chatRoomId.value
+          chatId.value
         }"`,
       })
 
@@ -38,7 +38,7 @@ export function usePreviewMessage(chatRoomId: Ref<string>) {
 
   function listenForLatestMessage(): () => void {
     const subscription = observable.subscribe(({ action, record }) => {
-      if (action !== 'create' || record.chat !== chatRoomId.value) {
+      if (action !== 'create' || record.chat !== chatId.value) {
         return
       }
 

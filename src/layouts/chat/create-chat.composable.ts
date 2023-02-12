@@ -26,7 +26,7 @@ export function useCreateChat() {
       await router.push({
         name: 'chat',
         params: {
-          chatRoomId: id,
+          chatId: id,
         },
       })
     } catch (e) {

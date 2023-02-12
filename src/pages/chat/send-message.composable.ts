@@ -3,7 +3,7 @@ import { ref, Ref } from 'vue'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { ChatMessage } from 'src/models/chat.interface'
 
-export function useSendMessage(chatRoomId: Ref<string>) {
+export function useSendMessage(chatId: Ref<string>) {
   const pb = usePocketbase()
 
   const contentModel = ref('')
@@ -17,10 +17,10 @@ export function useSendMessage(chatRoomId: Ref<string>) {
       .create<ChatMessage>({
         content: copy,
         senderId: [pb.authStore.model?.id],
-        chatRoomId: chatRoomId.value,
+        chatId: chatId.value,
       })
 
-    console.log(`Sent message ${message.id} to chatroom ${chatRoomId.value}`)
+    console.log(`Sent message ${message.id} to chatroom ${chatId.value}`)
   }
 
   return {

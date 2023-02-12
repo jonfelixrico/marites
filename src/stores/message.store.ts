@@ -3,7 +3,7 @@ import { ChatMessage } from 'src/models/chat.interface'
 
 interface MessageStore {
   chatRooms: {
-    [chatRoomId: string]: ChatMessage[]
+    [chatId: string]: ChatMessage[]
   }
 }
 
@@ -36,8 +36,8 @@ export const useMessageStore = defineStore('message', {
       }
     },
 
-    clearMessages(chatRoomId: string) {
-      this.chatRooms[chatRoomId] = []
+    clearMessages(chatId: string) {
+      this.chatRooms[chatId] = []
     },
   },
 })

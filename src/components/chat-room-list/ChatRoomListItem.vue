@@ -1,8 +1,8 @@
 <template>
   <q-item
     clickable
-    @click="$router.push({ name: 'chat', params: { chatRoomId: chatRoom.id } })"
-    :active="chatRoom.id === $route.params.chatRoomId"
+    @click="$router.push({ name: 'chat', params: { chatId: chatRoom.id } })"
+    :active="chatRoom.id === $route.params.chatId"
   >
     <q-item-section>
       <div>{{ chatRoom.name }}</div>
