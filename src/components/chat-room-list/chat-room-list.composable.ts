@@ -11,7 +11,7 @@ export function useChatRoomList() {
 
   async function loadChatRoomList() {
     const items = await pb
-      .collection(PbCollection.CHATROOM)
+      .collection(PbCollection.CHAT)
       .getFullList<ChatRoom>(200, {
         sort: 'created',
       })

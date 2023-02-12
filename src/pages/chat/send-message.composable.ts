@@ -12,11 +12,13 @@ export function useSendMessage(chatRoomId: Ref<string>) {
     const copy = contentModel.value
     contentModel.value = ''
 
-    const message = await pb.collection(PbCollection.MESSAGE).create<Message>({
-      content: copy,
-      senderId: [pb.authStore.model?.id],
-      chatRoomId: chatRoomId.value,
-    })
+    const message = await pb
+      .collection(PbCollection.CHAT_MESSAGE)
+      .create<Message>({
+        content: copy,
+        senderId: [pb.authStore.model?.id],
+        chatRoomId: chatRoomId.value,
+      })
 
     console.log(`Sent message ${message.id} to chatroom ${chatRoomId.value}`)
   }

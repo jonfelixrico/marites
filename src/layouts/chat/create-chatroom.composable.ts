@@ -10,7 +10,7 @@ export function useCreateChatRoom() {
 
   async function processChatCreation(name: string) {
     try {
-      const { id } = await pb.collection(PbCollection.CHATROOM).create({
+      const { id } = await pb.collection(PbCollection.CHAT).create({
         name,
         members: [pb.authStore.model?.id],
       })

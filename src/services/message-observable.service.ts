@@ -17,7 +17,7 @@ export function useMessageObservable() {
     }
 
     pbSubscription = await pb
-      .collection(PbCollection.MESSAGE)
+      .collection(PbCollection.CHAT_MESSAGE)
       .subscribe<Message>('*', (event) => {
         console.debug('Received message %s', event.record.id)
         subject.next(event)

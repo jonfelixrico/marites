@@ -17,7 +17,7 @@ export function useChatRoomObservable() {
     }
 
     pbSubscription = await pb
-      .collection(PbCollection.CHATROOM)
+      .collection(PbCollection.CHAT)
       .subscribe<ChatRoom>('*', (event) => {
         console.debug('Received chat room %s', event.record.id)
         subject.next(event)

@@ -15,7 +15,7 @@ export function usePreviewMessage(chatRoomId: Ref<string>) {
 
   async function fetchLatestMessage() {
     const { items } = await pb
-      .collection(PbCollection.MESSAGE)
+      .collection(PbCollection.CHAT_MESSAGE)
       .getList<Message>(1, 1, {
         sort: '-created', // sorting by id to keep sorting consistent for same-timestamp messages
         filter: `created <= "${toFilterDate(new Date())}" && chatRoomId = "${

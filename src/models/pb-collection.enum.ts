@@ -1,5 +1,5 @@
 export enum PbCollection {
-  CHATROOM = 'chat',
-  MESSAGE = 'chatMessage',
+  CHAT = 'chat',
+  CHAT_MESSAGE = 'chatMessage',
   USER = 'users',
 }
