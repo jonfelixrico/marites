@@ -1,8 +1,9 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-header>
-      <q-toolbar>
+      <q-toolbar class="row justify-between">
         <q-btn icon="menu" round flat dense @click="showDrawer = !showDrawer" />
+        <q-btn no-caps flat>Logout</q-btn>
       </q-toolbar>
     </q-header>
     <q-drawer v-model="showDrawer" class="column">
