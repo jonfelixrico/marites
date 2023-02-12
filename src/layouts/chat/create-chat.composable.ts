@@ -3,23 +3,30 @@ import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useRouter } from 'vue-router'
 
-export function useCreateChatRoom() {
+export function useCreateChat() {
   const $q = useQuasar()
   const pb = usePocketbase()
   const router = useRouter()
 
   async function processChatCreation(name: string) {
+    const userId = pb.authStore.model?.id
+
     try {
-      const { id } = await pb.collection(PbCollection.CHATROOM).create({
+      const { id } = await pb.collection(PbCollection.CHAT).create({
         name,
-        members: [pb.authStore.model?.id],
+        owner: userId,
       })
       console.log('Created chatroom "%s" with id %s', name, id)
+
+      await pb.collection(PbCollection.CHAT_MEMBER).create({
+        chat: id,
+        user: userId,
+      })
 
       await router.push({
         name: 'chat',
         params: {
-          chatRoomId: id,
+          chatId: id,
         },
       })
     } catch (e) {
@@ -42,7 +49,5 @@ export function useCreateChatRoom() {
     })
   }
 
-  return {
-    createChat: openCreateChatDialog,
-  }
+  return openCreateChatDialog
 }

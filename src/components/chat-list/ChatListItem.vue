@@ -1,11 +1,11 @@
 <template>
   <q-item
     clickable
-    @click="$router.push({ name: 'chat', params: { chatRoomId: chatRoom.id } })"
-    :active="chatRoom.id === $route.params.chatRoomId"
+    @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
+    :active="chat.id === $route.params.chatId"
   >
     <q-item-section>
-      <div>{{ chatRoom.name }}</div>
+      <div>{{ chat.name }}</div>
       <div>{{ previewMessage?.content }}</div>
     </q-item-section>
   </q-item>
@@ -19,19 +19,19 @@ import {
   PropType,
   onBeforeUnmount,
 } from 'vue'
-import { ChatRoom } from 'src/models/chat-room.interface'
+import { Chat } from 'src/models/chat.interface'
 import { usePreviewMessage } from './preview-message.composable'
 
 export default defineComponent({
   props: {
-    chatRoom: {
-      type: Object as PropType<ChatRoom>,
+    chat: {
+      type: Object as PropType<Chat>,
       required: true,
     },
   },
 
   setup(props) {
-    const id = computed(() => props.chatRoom.id)
+    const id = computed(() => props.chat.id)
     const { listenForLatestMessage, fetchLatestMessage, previewMessage } =
       usePreviewMessage(id)
 

@@ -1,34 +1,32 @@
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStore } from 'src/stores/message.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
-import { Message } from 'src/models/message.interface'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { Subscription } from 'rxjs'
 import { toFilterDate } from 'src/utils/pocketbase.util'
 import { PbCollection } from 'src/models/pb-collection.enum'
+import { ChatMessage } from 'src/models/chat.interface'
 
-function extractCreateDt(message?: Message) {
+function extractCreateDt(message?: ChatMessage) {
   return message?.created ? new Date(message.created) : new Date()
 }
 
-function useHistoryLoader(chatRoomId: Ref<string>) {
+function useHistoryLoader(chatId: Ref<string>) {
   const pb = usePocketbase()
   const store = useMessageStore()
 
   async function loadOlderMessages(
-    chatRoomId: string,
-    message?: Message,
+    chatId: string,
+    message?: ChatMessage,
     limit = 30
   ) {
     const anchorDt = extractCreateDt(message)
 
     const { items } = await pb
-      .collection(PbCollection.MESSAGE)
-      .getList<Message>(1, limit, {
+      .collection(PbCollection.CHAT_MESSAGE)
+      .getList<ChatMessage>(1, limit, {
         sort: '-created,-id', // sorting by id to keep sorting consistent for same-timestamp messages
-        filter: `created <= "${toFilterDate(
-          anchorDt
-        )}" && chatRoomId = "${chatRoomId}"`,
+        filter: `created <= "${toFilterDate(anchorDt)}" && chat = "${chatId}"`,
       })
 
     if (!message) {
@@ -48,8 +46,8 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
    * @returns `true` if there are no more items left in the history, false if otherwise
    */
   async function load(): Promise<boolean> {
-    const oldest = store.chatRooms[chatRoomId.value]?.[0]
-    const loaded = await loadOlderMessages(chatRoomId.value, oldest)
+    const oldest = store.chats[chatId.value]?.[0]
+    const loaded = await loadOlderMessages(chatId.value, oldest)
 
     if (!loaded.length) {
       return true
@@ -64,14 +62,14 @@ function useHistoryLoader(chatRoomId: Ref<string>) {
   }
 }
 
-function useNewMessagesListener(chatRoomId: Ref<string>) {
+function useNewMessagesListener(chatId: Ref<string>) {
   const { observable } = useMessageObservable()
   const store = useMessageStore()
 
   let subscription: Subscription
   onBeforeMount(() => {
     subscription = observable.subscribe(({ record, action }) => {
-      if (action !== 'create' || record.chatRoomId !== chatRoomId.value) {
+      if (action !== 'create' || record.chat !== chatId.value) {
         return
       }
 
@@ -86,16 +84,16 @@ function useNewMessagesListener(chatRoomId: Ref<string>) {
   })
 }
 
-export function useChatHistory(chatRoomId: Ref<string>) {
-  useNewMessagesListener(chatRoomId)
-  const { load } = useHistoryLoader(chatRoomId)
+export function useChatHistory(chatId: Ref<string>) {
+  useNewMessagesListener(chatId)
+  const { load } = useHistoryLoader(chatId)
 
   const store = useMessageStore()
 
   /*
    * A list where the messages are arranged from older to newer
    */
-  const history = computed(() => store.chatRooms[chatRoomId.value] ?? [])
+  const history = computed(() => store.chats[chatId.value] ?? [])
 
   return {
     history,

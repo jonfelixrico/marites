@@ -7,7 +7,7 @@
             <q-chat-message
               v-for="message of history"
               :key="message.id"
-              :sent="userId === message.senderId"
+              :sent="userId === message.sender"
             >
               <template #default>
                 <div style="white-space: pre" v-text="message.content" />
@@ -55,17 +55,17 @@ import { useSendMessage } from './send-message.composable'
 export default defineComponent({
   setup() {
     const route = useRoute()
-    const chatRoomId = computed(() => route.params.chatRoomId as string)
+    const chatId = computed(() => route.params.chatId as string)
     const pb = usePocketbase()
     const store = useMessageStore()
 
     onBeforeUnmount(() => {
-      store.clearMessages(chatRoomId.value)
+      store.clearMessages(chatId.value)
     })
 
     return {
-      ...useSendMessage(chatRoomId),
-      ...useChatHistory(chatRoomId),
+      ...useSendMessage(chatId),
+      ...useChatHistory(chatId),
       userId: pb.authStore?.model?.id,
     }
   },
