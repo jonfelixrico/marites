@@ -1,31 +1,27 @@
 <template>
   <q-list>
-    <ChatRoomListItem
-      v-for="chatRoom of chatRoomList"
-      :chat-room="chatRoom"
-      :key="chatRoom.id"
-    />
+    <ChatListItem v-for="chat of chatList" :chat-room="chat" :key="chat.id" />
   </q-list>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount } from 'vue'
-import ChatRoomListItem from './ChatRoomListItem.vue'
-import { useChatRoomList } from './chat-room-list.composable'
-import { useChatRoomStore } from 'src/stores/chat-room.store'
+import ChatListItem from './ChatListItem.vue'
+import { useChatList } from './chat-room-list.composable'
+import { useChatStore } from 'src/stores/chat-room.store'
 import { orderBy } from 'lodash'
 import { Chat } from 'src/models/chat.interface'
 
 export default defineComponent({
-  components: { ChatRoomListItem },
+  components: { ChatListItem },
   setup() {
-    const { loadChatRoomList, listenForChatRoomListUpdates } = useChatRoomList()
-    const store = useChatRoomStore()
+    const { loadChatList, listenForChatListUpdates } = useChatList()
+    const store = useChatStore()
 
     let unsubscriber: () => void
     onBeforeMount(async () => {
-      unsubscriber = listenForChatRoomListUpdates()
-      loadChatRoomList()
+      unsubscriber = listenForChatListUpdates()
+      loadChatList()
     })
 
     onBeforeUnmount(() => {
@@ -34,19 +30,18 @@ export default defineComponent({
       }
     })
 
-    const chatRoomList = computed(() => {
-      const values = Object.values(store.chatRooms).map<Chat>((chatRoom) => {
+    const chatList = computed(() => {
+      const values = Object.values(store.chats).map<Chat>((chat) => {
         return {
-          ...chatRoom,
-          updated:
-            store.previewMessages[chatRoom.id]?.updated ?? chatRoom.updated,
+          ...chat,
+          updated: store.previewMessages[chat.id]?.updated ?? chat.updated,
         }
       })
       return orderBy(values, ['updated'], ['desc'])
     })
 
     return {
-      chatRoomList,
+      chatList,
     }
   },
 })

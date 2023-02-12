@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ChatMessage } from 'src/models/chat.interface'
 
 interface MessageStore {
-  chatRooms: {
+  chats: {
     [chatId: string]: ChatMessage[]
   }
 }
@@ -11,18 +11,18 @@ type InsertLocation = 'start' | 'end'
 
 export const useMessageStore = defineStore('message', {
   state: (): MessageStore => ({
-    chatRooms: {},
+    chats: {},
   }),
 
   actions: {
     storeMessage(message: ChatMessage, location: InsertLocation) {
       const { chat } = message
 
-      if (!this.chatRooms[chat]) {
-        this.chatRooms[chat] = []
+      if (!this.chats[chat]) {
+        this.chats[chat] = []
       }
 
-      const arr = this.chatRooms[chat]
+      const arr = this.chats[chat]
       if (location === 'end') {
         arr.push(message)
       } else {
@@ -37,7 +37,7 @@ export const useMessageStore = defineStore('message', {
     },
 
     clearMessages(chatId: string) {
-      this.chatRooms[chatId] = []
+      this.chats[chatId] = []
     },
   },
 })

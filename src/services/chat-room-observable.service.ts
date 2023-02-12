@@ -7,7 +7,7 @@ import { PbCollection } from 'src/models/pb-collection.enum'
 const subject = new Subject<RecordSubscription<Chat>>()
 let pbSubscription: UnsubscribeFunc
 
-export function useChatRoomObservable() {
+export function useChatObservable() {
   const pb = usePocketbase()
 
   async function start() {

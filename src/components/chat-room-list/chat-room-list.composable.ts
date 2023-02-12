@@ -1,15 +1,15 @@
 import { Chat } from 'src/models/chat.interface'
-import { useChatRoomObservable } from 'src/services/chat-room-observable.service'
+import { useChatObservable } from 'src/services/chat-room-observable.service'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useChatRoomStore } from 'src/stores/chat-room.store'
+import { useChatStore } from 'src/stores/chat-room.store'
 import { PbCollection } from 'src/models/pb-collection.enum'
 
-export function useChatRoomList() {
+export function useChatList() {
   const pb = usePocketbase()
-  const store = useChatRoomStore()
-  const { observable } = useChatRoomObservable()
+  const store = useChatStore()
+  const { observable } = useChatObservable()
 
-  async function loadChatRoomList() {
+  async function loadChatList() {
     const items = await pb
       .collection(PbCollection.CHAT)
       .getFullList<Chat>(200, {
@@ -17,20 +17,20 @@ export function useChatRoomList() {
       })
 
     for (const item of items) {
-      store.storeChatRoom(item)
+      store.storeChat(item)
     }
   }
 
-  function listenForChatRoomListUpdates(): () => void {
+  function listenForChatListUpdates(): () => void {
     const subscription = observable.subscribe(({ record }) => {
-      store.storeChatRoom(record)
+      store.storeChat(record)
     })
 
     return () => subscription.unsubscribe()
   }
 
   return {
-    loadChatRoomList,
-    listenForChatRoomListUpdates,
+    loadChatList,
+    listenForChatListUpdates,
   }
 }

@@ -1,6 +1,6 @@
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useChatRoomStore } from 'src/stores/chat-room.store'
+import { useChatStore } from 'src/stores/chat-room.store'
 import { toFilterDate } from 'src/utils/pocketbase.util'
 import { computed, Ref } from 'vue'
 import { PbCollection } from 'src/models/pb-collection.enum'
@@ -8,7 +8,7 @@ import { ChatMessage } from 'src/models/chat.interface'
 
 export function usePreviewMessage(chatId: Ref<string>) {
   const pb = usePocketbase()
-  const store = useChatRoomStore()
+  const store = useChatStore()
   const { observable } = useMessageObservable()
 
   const previewMessage = computed(() => store.previewMessages[chatId.value])
