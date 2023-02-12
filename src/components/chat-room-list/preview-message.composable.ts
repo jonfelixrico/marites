@@ -1,10 +1,10 @@
-import { Message } from 'src/models/message.interface'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useChatRoomStore } from 'src/stores/chat-room.store'
 import { toFilterDate } from 'src/utils/pocketbase.util'
 import { computed, Ref } from 'vue'
 import { PbCollection } from 'src/models/pb-collection.enum'
+import { ChatMessage } from 'src/models/chat.interface'
 
 export function usePreviewMessage(chatRoomId: Ref<string>) {
   const pb = usePocketbase()
@@ -16,9 +16,9 @@ export function usePreviewMessage(chatRoomId: Ref<string>) {
   async function fetchLatestMessage() {
     const { items } = await pb
       .collection(PbCollection.CHAT_MESSAGE)
-      .getList<Message>(1, 1, {
+      .getList<ChatMessage>(1, 1, {
         sort: '-created', // sorting by id to keep sorting consistent for same-timestamp messages
-        filter: `created <= "${toFilterDate(new Date())}" && chatRoomId = "${
+        filter: `created <= "${toFilterDate(new Date())}" && chat = "${
           chatRoomId.value
         }"`,
       })
@@ -38,7 +38,7 @@ export function usePreviewMessage(chatRoomId: Ref<string>) {
 
   function listenForLatestMessage(): () => void {
     const subscription = observable.subscribe(({ action, record }) => {
-      if (action !== 'create' || record.chatRoomId !== chatRoomId.value) {
+      if (action !== 'create' || record.chat !== chatRoomId.value) {
         return
       }
 
