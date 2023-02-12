@@ -3,23 +3,24 @@ import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useRouter } from 'vue-router'
 
-export function useCreateChatRoom() {
-  const $q = useQuasar()
+export function useJoinChat() {
+  const { dialog } = useQuasar()
   const pb = usePocketbase()
   const router = useRouter()
 
-  async function processChatCreation(name: string) {
+  async function processChatJoin(chatId: string) {
+    const userId = pb.authStore.model?.id
+
     try {
-      const { id } = await pb.collection(PbCollection.CHATROOM).create({
-        name,
-        members: [pb.authStore.model?.id],
+      await pb.collection(PbCollection.CHAT_MEMBER).create({
+        chat: chatId,
+        user: userId,
       })
-      console.log('Created chatroom "%s" with id %s', name, id)
 
       await router.push({
         name: 'chat',
         params: {
-          chatRoomId: id,
+          chatId,
         },
       })
     } catch (e) {
@@ -28,21 +29,19 @@ export function useCreateChatRoom() {
     }
   }
 
-  function openCreateChatDialog() {
+  function openJoinChatDialog() {
     // TODO use custom component to make this comprehensive
-    $q.dialog({
-      title: 'Create chat',
+    dialog({
+      title: 'Join chat',
       prompt: {
         model: '',
         type: 'text',
       },
       cancel: true,
-    }).onOk((name: string) => {
-      processChatCreation(name)
+    }).onOk((chatId: string) => {
+      processChatJoin(chatId)
     })
   }
 
-  return {
-    createChat: openCreateChatDialog,
-  }
+  return openJoinChatDialog
 }

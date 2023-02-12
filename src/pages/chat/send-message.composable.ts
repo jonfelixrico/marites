@@ -1,24 +1,38 @@
-import { Message } from 'src/models/message.interface'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { ref, Ref } from 'vue'
+import { computed, ref, Ref } from 'vue'
 import { PbCollection } from 'src/models/pb-collection.enum'
+import { ChatMessage } from 'src/models/chat.interface'
+import { useChatStore } from 'src/stores/chat.store'
 
-export function useSendMessage(chatRoomId: Ref<string>) {
+export function useSendMessage(chatId: Ref<string>) {
   const pb = usePocketbase()
+  const chatStore = useChatStore()
 
   const contentModel = ref('')
+
+  const chatMember = computed(() => {
+    const userId = pb.authStore.model?.id
+    if (!userId) {
+      return
+    }
+
+    const membersArr = Object.values(chatStore.chatMembers[chatId.value] ?? [])
+    return membersArr.find(({ user }) => user === userId)
+  })
 
   async function sendMessage() {
     const copy = contentModel.value
     contentModel.value = ''
 
-    const message = await pb.collection(PbCollection.MESSAGE).create<Message>({
-      content: copy,
-      senderId: [pb.authStore.model?.id],
-      chatRoomId: chatRoomId.value,
-    })
+    const message = await pb
+      .collection(PbCollection.CHAT_MESSAGE)
+      .create<ChatMessage>({
+        content: copy,
+        sender: chatMember.value?.id,
+        chat: chatId.value,
+      })
 
-    console.log(`Sent message ${message.id} to chatroom ${chatRoomId.value}`)
+    console.log(`Sent message ${message.id} to chatroom ${chatId.value}`)
   }
 
   return {

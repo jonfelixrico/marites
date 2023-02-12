@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/chat/IndexChatPage.vue'),
       },
       {
-        path: ':chatRoomId',
+        path: ':chatId',
         name: 'chat',
         component: () => import('pages/chat/ChatPage.vue'),
       },

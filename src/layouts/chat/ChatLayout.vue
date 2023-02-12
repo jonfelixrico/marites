@@ -11,50 +11,49 @@
     <q-drawer v-model="showDrawer" class="column">
       <div class="col relative-position">
         <q-scroll-area class="absolute fit">
-          <ChatRoomList />
+          <ChatList />
         </q-scroll-area>
       </div>
-      <div class="q-px-xs row">
-        <q-btn
-          class="col"
-          @click="createChat"
-          no-caps
-          color="primary"
-          unelevated
-        >
+      <div class="q-px-xs column q-gutter-y-xs">
+        <q-btn @click="createChat" no-caps color="primary" unelevated>
           Create chat
+        </q-btn>
+        <q-btn @click="joinChat" no-caps color="primary" unelevated>
+          Join chat
         </q-btn>
       </div>
     </q-drawer>
 
     <q-page-container>
-      <router-view :key="String($route.params.chatRoomId)" />
+      <router-view :key="String($route.params.chatId)" />
     </q-page-container>
   </q-layout>
 </template>
 
 <script lang="ts">
-import ChatRoomList from 'src/components/chat-room-list/ChatRoomList.vue'
-import { useChatRoomObservable } from 'src/services/chat-room-observable.service'
+import ChatList from 'src/components/chat-list/ChatList.vue'
+import { useChatObservable } from 'src/services/chat-observable.service'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { defineComponent, onBeforeUnmount, ref } from 'vue'
-import { useCreateChatRoom } from './create-chatroom.composable'
+import { useCreateChat } from './create-chat.composable'
 import { useSessionService } from 'src/services/session.service'
+import { useJoinChat } from './join-chat.composable'
 
 export default defineComponent({
-  components: { ChatRoomList },
+  components: { ChatList },
   setup() {
-    const { createChat } = useCreateChatRoom()
+    const createChat = useCreateChat()
+    const joinChat = useJoinChat()
 
     const messageObservable = useMessageObservable()
-    const chatRoomObservable = useChatRoomObservable()
+    const chatObservable = useChatObservable()
 
     messageObservable.start()
-    chatRoomObservable.start()
+    chatObservable.start()
 
     onBeforeUnmount(() => {
       messageObservable.stop()
-      chatRoomObservable.stop()
+      chatObservable.stop()
     })
 
     const showDrawer = ref(true)
@@ -65,6 +64,7 @@ export default defineComponent({
       createChat,
       showDrawer,
       promptLogOut,
+      joinChat,
     }
   },
 })

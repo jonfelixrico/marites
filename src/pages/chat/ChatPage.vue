@@ -7,7 +7,7 @@
             <q-chat-message
               v-for="message of history"
               :key="message.id"
-              :sent="userId === message.senderId"
+              :sent="userId === message.sender"
             >
               <template #default>
                 <div style="white-space: pre" v-text="message.content" />
@@ -45,7 +45,10 @@
 
 <script lang="ts">
 import type { QForm } from 'quasar'
+import { ChatMember } from 'src/models/chat.interface'
+import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
+import { useChatStore } from 'src/stores/chat.store'
 import { useMessageStore } from 'src/stores/message.store'
 import { computed, defineComponent, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
@@ -55,17 +58,17 @@ import { useSendMessage } from './send-message.composable'
 export default defineComponent({
   setup() {
     const route = useRoute()
-    const chatRoomId = computed(() => route.params.chatRoomId as string)
+    const chatId = computed(() => route.params.chatId as string)
     const pb = usePocketbase()
     const store = useMessageStore()
 
     onBeforeUnmount(() => {
-      store.clearMessages(chatRoomId.value)
+      store.clearMessages(chatId.value)
     })
 
     return {
-      ...useSendMessage(chatRoomId),
-      ...useChatHistory(chatRoomId),
+      ...useSendMessage(chatId),
+      ...useChatHistory(chatId),
       userId: pb.authStore?.model?.id,
     }
   },
@@ -80,6 +83,24 @@ export default defineComponent({
       const isDone = await this.load()
       doneFn(isDone)
     },
+  },
+
+  async beforeRouteEnter(to) {
+    // TODO improve this
+    const chatStore = useChatStore()
+    const pb = usePocketbase()
+
+    const chatId = String(to.params.chatId)
+    await pb.collection(PbCollection.CHAT).getOne(chatId)
+
+    const members = await pb
+      .collection(PbCollection.CHAT_MEMBER)
+      .getFullList<ChatMember>(200, {
+        filter: `chat = "${chatId}"`,
+        sort: 'created',
+      })
+
+    chatStore.storeChatMembers(...members)
   },
 })
 </script>
