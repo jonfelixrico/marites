@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { ChatRoom } from 'src/models/chat-room.interface'
+import { Chat } from 'src/models/chat.interface'
 import { Message } from 'src/models/message.interface'
 
 interface ChatRoomStore {
   chatRooms: {
-    [id: string]: ChatRoom
+    [id: string]: Chat
   }
   previewMessages: {
     [chatRoomId: string]: Message
@@ -26,7 +26,7 @@ export const useChatRoomStore = defineStore('chatRoom', {
       this.previewMessages[message.chatRoomId] = message
     },
 
-    storeChatRoom(chatRoom: ChatRoom) {
+    storeChatRoom(chatRoom: Chat) {
       this.chatRooms[chatRoom.id] = chatRoom
     },
   },

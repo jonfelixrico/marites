@@ -1,4 +1,4 @@
-import { ChatRoom } from 'src/models/chat-room.interface'
+import { Chat } from 'src/models/chat.interface'
 import { useChatRoomObservable } from 'src/services/chat-room-observable.service'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useChatRoomStore } from 'src/stores/chat-room.store'
@@ -12,7 +12,7 @@ export function useChatRoomList() {
   async function loadChatRoomList() {
     const items = await pb
       .collection(PbCollection.CHAT)
-      .getFullList<ChatRoom>(200, {
+      .getFullList<Chat>(200, {
         sort: 'created',
       })
 

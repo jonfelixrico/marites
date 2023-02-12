@@ -1,4 +1,4 @@
-export interface ChatRoom {
+export interface Chat {
   id: string
   name: string
   created: Date
