@@ -91,6 +91,7 @@ export default defineComponent({
     const pb = usePocketbase()
 
     const chatId = String(to.params.chatId)
+    await pb.collection(PbCollection.CHAT).getOne(chatId)
 
     const members = await pb
       .collection(PbCollection.CHAT_MEMBER)

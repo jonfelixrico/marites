@@ -12,7 +12,6 @@ export function useJoinChat() {
     const userId = pb.authStore.model?.id
 
     try {
-      await pb.collection(PbCollection.CHAT).getOne(chatId)
       await pb.collection(PbCollection.CHAT_MEMBER).create({
         chat: chatId,
         user: userId,
