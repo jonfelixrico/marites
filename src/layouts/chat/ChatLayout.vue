@@ -3,7 +3,7 @@
     <q-header>
       <q-toolbar class="row justify-between">
         <q-btn icon="menu" round flat dense @click="showDrawer = !showDrawer" />
-        <q-btn no-caps flat @click="logOut">Logout</q-btn>
+        <q-btn no-caps flat @click="promptLogOut">Logout</q-btn>
       </q-toolbar>
     </q-header>
     <q-drawer v-model="showDrawer" class="column">
@@ -57,12 +57,12 @@ export default defineComponent({
 
     const showDrawer = ref(true)
 
-    const { logOut } = useSessionService()
+    const { promptLogOut } = useSessionService()
 
     return {
       createChat,
       showDrawer,
-      logOut,
+      promptLogOut,
     }
   },
 })
