@@ -1,5 +1,7 @@
+import { mapValues } from 'lodash'
 import { defineStore } from 'pinia'
 import { Chat, ChatMember, ChatMessage } from 'src/models/chat.interface'
+import { useSessionStore } from './session-store'
 
 interface ChatStore {
   chats: {
@@ -23,6 +25,26 @@ export const useChatStore = defineStore('chat', {
     previewMessages: {},
     chatMembers: {},
   }),
+
+  getters: {
+    /**
+     * Gets the member id of the session user on each chat.
+     * @param state
+     * @returns
+     */
+    sessionUserMember(state) {
+      const sessionStore = useSessionStore()
+
+      if (!sessionStore.userId) {
+        return {}
+      }
+
+      return mapValues(state.chatMembers, (members) => {
+        const values = Object.values(members)
+        return values.find(({ user }) => sessionStore.userId === user)
+      })
+    },
+  },
 
   actions: {
     /**
