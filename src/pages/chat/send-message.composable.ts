@@ -16,7 +16,8 @@ export function useSendMessage(chatId: Ref<string>) {
       return
     }
 
-    return chatStore.chatMembers[chatId.value]?.[userId]
+    const membersArr = Object.values(chatStore.chatMembers[chatId.value] ?? [])
+    return membersArr.find(({ user }) => user === userId)
   })
 
   async function sendMessage() {
