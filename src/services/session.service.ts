@@ -11,7 +11,7 @@ export function useSessionService() {
     pb.authStore.clear()
     console.debug('Cleared auth token...')
     // TODO i18nize
-    notify('You have been logged out.')
+    notify('You have been logged out')
 
     await router.push({
       name: 'login',
