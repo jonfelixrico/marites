@@ -15,13 +15,11 @@
 <script lang="ts">
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useSessionStore } from 'src/stores/session-store'
 import { defineComponent, reactive } from 'vue'
 
 export default defineComponent({
   setup() {
     const pb = usePocketbase()
-    const sessionStore = useSessionStore()
 
     const credentials = reactive({
       username: '',
@@ -31,7 +29,6 @@ export default defineComponent({
     return {
       pb,
       credentials,
-      sessionStore,
     }
   },
 
@@ -40,11 +37,10 @@ export default defineComponent({
       const { username, password } = this.credentials
       try {
         // TODO move this process to the session service
-        const { record } = await this.pb
+        await this.pb
           .collection(PbCollection.USER)
           .authWithPassword(username, password)
         console.log('Authentication succeded for %s', username)
-        this.sessionStore.setUserId(record.id)
 
         this.$router.push({
           name: 'home',

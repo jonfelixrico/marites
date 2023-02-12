@@ -18,7 +18,7 @@ export function useSendMessage(chatId: Ref<string>) {
       .collection(PbCollection.CHAT_MESSAGE)
       .create<ChatMessage>({
         content: copy,
-        sender: chatStore.sessionUserMember[chatId.value]?.id,
+        sender: chatId.value,
         chat: chatId.value,
       })
 

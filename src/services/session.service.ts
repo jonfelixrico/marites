@@ -1,5 +1,4 @@
 import { useQuasar } from 'quasar'
-import { useSessionStore } from 'src/stores/session-store'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { usePocketbase } from './pocketbase.service'
@@ -9,12 +8,10 @@ export function useSessionService() {
   const router = useRouter()
   const { dialog, notify } = useQuasar()
   const { t } = useI18n()
-  const sessionStore = useSessionStore()
 
   async function logOut() {
     pb.authStore.clear()
     console.debug('Cleared auth token...')
-    sessionStore.setUserId(null)
     notify(t('session.logOutSuccessNotif'))
 
     await router.push({
