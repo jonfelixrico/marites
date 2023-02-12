@@ -12,7 +12,7 @@ export function useSessionService() {
   async function logOut() {
     pb.authStore.clear()
     console.debug('Cleared auth token...')
-    notify(t('session.logout.successNotif'))
+    notify(t('session.logOutSuccessNotif'))
 
     await router.push({
       name: 'login',
@@ -23,16 +23,16 @@ export function useSessionService() {
 
   async function promptLogOut() {
     dialog({
-      title: t('session.logout.prompt.title'),
-      message: t('session.logout.prompt.message'),
+      title: t('session.logOutPrompt.title'),
+      message: t('session.logOutPrompt.message'),
       focus: 'cancel',
       ok: {
-        label: t('session.logout.prompt.okLabel'),
+        label: t('session.logOutPrompt.okLabel'),
         noCaps: true,
         unelevated: true,
       },
       cancel: {
-        label: t('session.logout.prompt.cancelLabel'),
+        label: t('session.logOutPrompt.cancelLabel'),
         noCaps: true,
         flat: true,
       },
