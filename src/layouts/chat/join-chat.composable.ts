@@ -21,7 +21,7 @@ export function useJoinChat() {
       await router.push({
         name: 'chat',
         params: {
-          chatId: chatId,
+          chatId,
         },
       })
     } catch (e) {
