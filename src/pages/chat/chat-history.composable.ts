@@ -98,12 +98,5 @@ export function useChatHistory(chatId: Ref<string>) {
   return {
     history,
     load,
-
-    /**
-     * @deprecated
-     */
-    handleVirtualScroll: () => {
-      // empty method
-    },
   }
 }
