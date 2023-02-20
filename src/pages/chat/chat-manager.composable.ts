@@ -86,13 +86,11 @@ export function useChatHistory(chatId: Ref<string>) {
 
   const store = useMessageStore()
 
-  /*
-   * A list where the messages are arranged from older to newer
-   */
-  const history = computed(() => store.chats[chatId.value] ?? [])
-
   return {
-    history,
+    /**
+     * A list where the messages are arranged from older to newer
+     */
+    history: computed(() => store.chats[chatId.value] ?? []),
     load,
   }
 }
