@@ -45,7 +45,7 @@ function useHistoryLoader(chatId: Ref<string>) {
    *
    * @returns `true` if there are no more items left in the history, false if otherwise
    */
-  async function load(): Promise<boolean> {
+  return async function (): Promise<boolean> {
     const oldest = store.chats[chatId.value]?.[0]
     const loaded = await loadOlderMessages(chatId.value, oldest)
 
@@ -56,8 +56,6 @@ function useHistoryLoader(chatId: Ref<string>) {
     store.storeMessages('start', ...loaded)
     return false
   }
-
-  return { load }
 }
 
 function useNewMessagesListener(chatId: Ref<string>) {
@@ -84,7 +82,7 @@ function useNewMessagesListener(chatId: Ref<string>) {
 
 export function useChatHistory(chatId: Ref<string>) {
   useNewMessagesListener(chatId)
-  const { load } = useHistoryLoader(chatId)
+  const load = useHistoryLoader(chatId)
 
   const store = useMessageStore()
 
