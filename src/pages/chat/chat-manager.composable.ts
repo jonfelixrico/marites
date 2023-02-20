@@ -85,26 +85,31 @@ function useMessageSender(chatId: Ref<string>) {
   const pb = usePocketbase()
   const chatStore = useChatStore()
 
-  const chatMember = computed(() => {
+  const chatMemberId = computed(() => {
     const userId = pb.authStore.model?.id
     if (!userId) {
       return
     }
 
     const membersArr = Object.values(chatStore.chatMembers[chatId.value] ?? [])
-    return membersArr.find(({ user }) => user === userId)
+    return membersArr.find(({ user }) => user === userId)?.id
   })
 
-  return async function (content: string) {
+  async function sendMessage(content: string) {
     const message = await pb
       .collection(PbCollection.CHAT_MESSAGE)
       .create<ChatMessage>({
         content,
-        sender: chatMember.value?.id,
+        sender: chatMemberId.value,
         chat: chatId.value,
       })
 
     console.log(`Sent message ${message.id} to chatroom ${chatId.value}`)
+  }
+
+  return {
+    sendMessage,
+    chatMemberId,
   }
 }
 
@@ -112,7 +117,6 @@ export function useChatManager(chatId: Ref<string>) {
   useNewMessagesListener(chatId)
   const load = useHistoryLoader(chatId)
   const store = useMessageStore()
-  const sendMessage = useMessageSender(chatId)
 
   return {
     /**
@@ -120,6 +124,6 @@ export function useChatManager(chatId: Ref<string>) {
      */
     history: computed(() => store.chats[chatId.value] ?? []),
     load,
-    sendMessage,
+    ...useMessageSender(chatId),
   }
 }
