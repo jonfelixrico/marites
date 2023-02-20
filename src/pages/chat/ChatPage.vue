@@ -7,7 +7,7 @@
             <q-chat-message
               v-for="message of history"
               :key="message.id"
-              :sent="userId === message.sender"
+              :sent="chatMemberId === message.sender"
             >
               <template #default>
                 <div style="white-space: pre" v-text="message.content" />
