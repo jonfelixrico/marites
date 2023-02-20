@@ -51,7 +51,7 @@ import { usePocketbase } from 'src/services/pocketbase.service'
 import { useChatStore } from 'src/stores/chat.store'
 import { useMessageStore } from 'src/stores/message.store'
 import { defineComponent, onBeforeUnmount, ref, Ref } from 'vue'
-import { useChatHistory } from './chat-manager.composable'
+import { useChatManager } from './chat-manager.composable'
 import { useRouteChatId } from './route-chat-id.composable'
 
 function useMessageClearOnUnmount(chatId: Ref<string>) {
@@ -68,7 +68,7 @@ export default defineComponent({
 
     useMessageClearOnUnmount(chatId)
 
-    const { sendMessage: baseSendMessage, ...others } = useChatHistory(chatId)
+    const { sendMessage: baseSendMessage, ...others } = useChatManager(chatId)
 
     const contentModel = ref('')
     async function sendMessage() {

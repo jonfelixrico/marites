@@ -108,7 +108,7 @@ function useMessageSender(chatId: Ref<string>) {
   }
 }
 
-export function useChatHistory(chatId: Ref<string>) {
+export function useChatManager(chatId: Ref<string>) {
   useNewMessagesListener(chatId)
   const load = useHistoryLoader(chatId)
   const store = useMessageStore()
