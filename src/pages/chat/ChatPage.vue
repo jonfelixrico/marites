@@ -52,7 +52,7 @@ import { useChatStore } from 'src/stores/chat.store'
 import { useMessageStore } from 'src/stores/message.store'
 import { computed, defineComponent, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
-import { useChatHistory } from './chat-history.composable'
+import { useChatHistory } from './chat-manager.composable'
 import { useSendMessage } from './send-message.composable'
 
 export default defineComponent({

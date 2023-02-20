@@ -57,9 +57,7 @@ function useHistoryLoader(chatId: Ref<string>) {
     return false
   }
 
-  return {
-    load,
-  }
+  return { load }
 }
 
 function useNewMessagesListener(chatId: Ref<string>) {
