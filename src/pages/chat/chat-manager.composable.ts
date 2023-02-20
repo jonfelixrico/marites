@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs'
 import { toFilterDate } from 'src/utils/pocketbase.util'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { ChatMessage } from 'src/models/chat.interface'
+import { useChatStore } from 'src/stores/chat.store'
 
 function extractCreateDt(message?: ChatMessage) {
   return message?.created ? new Date(message.created) : new Date()
@@ -80,11 +81,38 @@ function useNewMessagesListener(chatId: Ref<string>) {
   })
 }
 
+function useMessageSender(chatId: Ref<string>) {
+  const pb = usePocketbase()
+  const chatStore = useChatStore()
+
+  const chatMember = computed(() => {
+    const userId = pb.authStore.model?.id
+    if (!userId) {
+      return
+    }
+
+    const membersArr = Object.values(chatStore.chatMembers[chatId.value] ?? [])
+    return membersArr.find(({ user }) => user === userId)
+  })
+
+  return async function (content: string) {
+    const message = await pb
+      .collection(PbCollection.CHAT_MESSAGE)
+      .create<ChatMessage>({
+        content,
+        sender: chatMember.value?.id,
+        chat: chatId.value,
+      })
+
+    console.log(`Sent message ${message.id} to chatroom ${chatId.value}`)
+  }
+}
+
 export function useChatHistory(chatId: Ref<string>) {
   useNewMessagesListener(chatId)
   const load = useHistoryLoader(chatId)
-
   const store = useMessageStore()
+  const sendMessage = useMessageSender(chatId)
 
   return {
     /**
@@ -92,5 +120,6 @@ export function useChatHistory(chatId: Ref<string>) {
      */
     history: computed(() => store.chats[chatId.value] ?? []),
     load,
+    sendMessage,
   }
 }
