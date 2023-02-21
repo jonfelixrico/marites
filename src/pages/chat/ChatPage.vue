@@ -1,13 +1,14 @@
 <template>
   <q-page class="column">
     <div class="col relative-position">
-      <q-scroll-area class="absolute fit">
+      <div class="absolute fit scroll" @scroll="scrollListener">
         <q-infinite-scroll @load="handleLoad" reverse>
           <div class="q-px-lg">
             <q-chat-message
               v-for="message of history"
               :key="message.id"
               :sent="chatMemberId === message.sender"
+              @hook:mounted="compensateScrollForNewMessage(message.id)"
             >
               <template #default>
                 <div style="white-space: pre" v-text="message.content" />
@@ -19,7 +20,7 @@
             </q-chat-message>
           </div>
         </q-infinite-scroll>
-      </q-scroll-area>
+      </div>
     </div>
 
     <q-form
@@ -52,6 +53,7 @@ import { useChatStore } from 'src/stores/chat.store'
 import { useMessageStore } from 'src/stores/message.store'
 import { defineComponent, onBeforeUnmount, ref, Ref } from 'vue'
 import { useChatManager } from './chat-manager.composable'
+import { useChatScroll } from './chat-scroll.composable'
 import { useRouteChatId } from './route-chat-id.composable'
 
 function useMessageClearOnUnmount(chatId: Ref<string>) {
@@ -68,7 +70,22 @@ export default defineComponent({
 
     useMessageClearOnUnmount(chatId)
 
-    const { sendMessage: baseSendMessage, ...others } = useChatManager(chatId)
+    const {
+      sendMessage: baseSendMessage,
+      history,
+      ...others
+    } = useChatManager(chatId)
+
+    const { scrollListener, compensateScroll } = useChatScroll()
+
+    function compensateScrollForNewMessage(messageId: string) {
+      const historyArr = history.value
+      const lastMessageId = historyArr[historyArr.length - 1]?.id
+
+      if (messageId === lastMessageId) {
+        compensateScroll()
+      }
+    }
 
     const contentModel = ref('')
     async function sendMessage() {
@@ -79,9 +96,14 @@ export default defineComponent({
 
     return {
       ...others,
+      history,
+
       userId: pb.authStore?.model?.id,
       contentModel,
       sendMessage,
+      scrollListener,
+
+      compensateScrollForNewMessage,
     }
   },
 
