@@ -5,16 +5,16 @@ export function useChatScroll() {
   const scrollEl = ref<HTMLElement | null>(null)
   const scrollHeight = ref<number>(0)
 
-  const scrollListener = debounce((event: { target: HTMLElement }) => {
+  const scrollListener = debounce((event: UIEvent) => {
     if (!event.target) {
       return
     }
 
     if (!scrollEl.value) {
-      scrollEl.value = event.target
+      scrollEl.value = event.target as HTMLElement
     }
 
-    scrollHeight.value = event.target.scrollHeight
+    scrollHeight.value = scrollEl.value.scrollHeight
   }, 250)
 
   function compensateScroll() {
