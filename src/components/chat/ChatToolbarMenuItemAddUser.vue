@@ -1,7 +1,7 @@
 <template>
   <q-item clickable @click="showDialog">
     <q-item-section>
-      {{ $t('chat.addUser') }}
+      {{ $t('chat.toolbar.addUser') }}
     </q-item-section>
   </q-item>
 </template>
