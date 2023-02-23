@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs'
 import { toFilterDate } from 'src/utils/pocketbase.util'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { ChatMessage } from 'src/models/chat.interface'
+import { useChatStore } from 'src/stores/chat.store'
 
 function extractCreateDt(message?: ChatMessage) {
   return message?.created ? new Date(message.created) : new Date()
@@ -45,7 +46,7 @@ function useHistoryLoader(chatId: Ref<string>) {
    *
    * @returns `true` if there are no more items left in the history, false if otherwise
    */
-  async function load(): Promise<boolean> {
+  return async function (): Promise<boolean> {
     const oldest = store.chats[chatId.value]?.[0]
     const loaded = await loadOlderMessages(chatId.value, oldest)
 
@@ -55,10 +56,6 @@ function useHistoryLoader(chatId: Ref<string>) {
 
     store.storeMessages('start', ...loaded)
     return false
-  }
-
-  return {
-    load,
   }
 }
 
@@ -84,26 +81,49 @@ function useNewMessagesListener(chatId: Ref<string>) {
   })
 }
 
-export function useChatHistory(chatId: Ref<string>) {
-  useNewMessagesListener(chatId)
-  const { load } = useHistoryLoader(chatId)
+function useMessageSender(chatId: Ref<string>) {
+  const pb = usePocketbase()
+  const chatStore = useChatStore()
 
-  const store = useMessageStore()
+  const chatMemberId = computed(() => {
+    const userId = pb.authStore.model?.id
+    if (!userId) {
+      return
+    }
 
-  /*
-   * A list where the messages are arranged from older to newer
-   */
-  const history = computed(() => store.chats[chatId.value] ?? [])
+    const membersArr = Object.values(chatStore.chatMembers[chatId.value] ?? [])
+    return membersArr.find(({ user }) => user === userId)?.id
+  })
+
+  async function sendMessage(content: string) {
+    const message = await pb
+      .collection(PbCollection.CHAT_MESSAGE)
+      .create<ChatMessage>({
+        content,
+        sender: chatMemberId.value,
+        chat: chatId.value,
+      })
+
+    console.log(`Sent message ${message.id} to chatroom ${chatId.value}`)
+  }
 
   return {
-    history,
-    load,
+    sendMessage,
+    chatMemberId,
+  }
+}
 
+export function useChatManager(chatId: Ref<string>) {
+  useNewMessagesListener(chatId)
+  const load = useHistoryLoader(chatId)
+  const store = useMessageStore()
+
+  return {
     /**
-     * @deprecated
+     * A list where the messages are arranged from older to newer
      */
-    handleVirtualScroll: () => {
-      // empty method
-    },
+    history: computed(() => store.chats[chatId.value] ?? []),
+    load,
+    ...useMessageSender(chatId),
   }
 }

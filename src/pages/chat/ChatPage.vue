@@ -1,13 +1,14 @@
 <template>
   <q-page class="column">
     <div class="col relative-position">
-      <q-scroll-area class="absolute fit">
+      <div class="absolute fit scroll" @scroll.passive="scrollListener">
         <q-infinite-scroll @load="handleLoad" reverse>
           <div class="q-px-lg">
             <q-chat-message
               v-for="message of history"
               :key="message.id"
-              :sent="userId === message.sender"
+              :sent="chatMemberId === message.sender"
+              @vnode-mounted="compensateScrollForNewMessage(message.id)"
             >
               <template #default>
                 <div style="white-space: pre" v-text="message.content" />
@@ -19,7 +20,7 @@
             </q-chat-message>
           </div>
         </q-infinite-scroll>
-      </q-scroll-area>
+      </div>
     </div>
 
     <q-form
@@ -50,26 +51,59 @@ import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useChatStore } from 'src/stores/chat.store'
 import { useMessageStore } from 'src/stores/message.store'
-import { computed, defineComponent, onBeforeUnmount } from 'vue'
-import { useRoute } from 'vue-router'
-import { useChatHistory } from './chat-history.composable'
-import { useSendMessage } from './send-message.composable'
+import { defineComponent, onBeforeUnmount, ref, Ref } from 'vue'
+import { useChatManager } from './chat-manager.composable'
+import { useChatScroll } from './chat-scroll.composable'
+import { useRouteChatId } from './route-chat-id.composable'
+
+function useMessageClearOnUnmount(chatId: Ref<string>) {
+  const store = useMessageStore()
+  onBeforeUnmount(() => {
+    store.clearMessages(chatId.value)
+  })
+}
 
 export default defineComponent({
   setup() {
-    const route = useRoute()
-    const chatId = computed(() => route.params.chatId as string)
+    const chatId = useRouteChatId()
     const pb = usePocketbase()
-    const store = useMessageStore()
 
-    onBeforeUnmount(() => {
-      store.clearMessages(chatId.value)
-    })
+    useMessageClearOnUnmount(chatId)
+
+    const {
+      sendMessage: baseSendMessage,
+      history,
+      ...others
+    } = useChatManager(chatId)
+
+    const { scrollListener, keepScrollAtBottom } = useChatScroll()
+    function onMessageMount(messageId: string) {
+      const arr = history.value
+      const lastMessageId = arr[arr.length - 1]?.id
+
+      if (messageId === lastMessageId) {
+        console.debug('New last message mounted: %s', messageId)
+        keepScrollAtBottom()
+      }
+    }
+
+    const contentModel = ref('')
+    async function sendMessage() {
+      const copy = contentModel.value
+      contentModel.value = ''
+      await baseSendMessage(copy)
+    }
 
     return {
-      ...useSendMessage(chatId),
-      ...useChatHistory(chatId),
+      ...others,
+      history,
+
       userId: pb.authStore?.model?.id,
+      contentModel,
+      sendMessage,
+      scrollListener,
+
+      compensateScrollForNewMessage: onMessageMount,
     }
   },
 
