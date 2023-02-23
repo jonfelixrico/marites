@@ -4,6 +4,8 @@
     <div>
       {{ chat?.name }}
     </div>
+
+    <ChatToolbarMenuButton />
   </q-toolbar>
 </template>
 
@@ -11,8 +13,11 @@
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { useChatStore } from 'src/stores/chat.store'
 import { computed, defineComponent } from 'vue'
+import ChatToolbarMenuButton from './ChatToolbarMenuButton.vue'
 
 export default defineComponent({
+  components: { ChatToolbarMenuButton },
+
   setup() {
     const chatId = useChatIdFromRoute()
     const store = useChatStore()
@@ -25,5 +30,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style></style>

@@ -2,7 +2,7 @@
   <q-btn icon="menu">
     <q-menu>
       <q-list>
-        <q-item></q-item>
+        <ChatToolbarMenuItemAddUser />
       </q-list>
     </q-menu>
   </q-btn>
@@ -10,6 +10,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import ChatToolbarMenuItemAddUser from './ChatToolbarMenuItemAddUser.vue'
 
-export default defineComponent({})
+export default defineComponent({
+  components: { ChatToolbarMenuItemAddUser },
+})
 </script>
