@@ -1,5 +1,6 @@
 <template>
   <q-page class="column">
+    <ChatToolbar />
     <div class="col relative-position">
       <div class="absolute fit scroll" @scroll.passive="scrollListener">
         <q-infinite-scroll @load="handleLoad" reverse>
@@ -46,6 +47,7 @@
 
 <script lang="ts">
 import type { QForm } from 'quasar'
+import ChatToolbar from 'src/components/chat/ChatToolbar.vue'
 import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { PbCollection } from 'src/models/pb-collection.enum'
@@ -77,6 +79,8 @@ function useLoadChatMembersOnMount() {
 }
 
 export default defineComponent({
+  components: { ChatToolbar },
+
   setup() {
     const chatId = useChatIdFromRoute()
     const pb = usePocketbase()
