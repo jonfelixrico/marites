@@ -126,8 +126,13 @@ export default defineComponent({
             color: 'primary',
           },
         })
-        .onOk((username) => {
-          this.processUserAdd(username)
+        .onOk(async (username) => {
+          try {
+            this.$q.loading.show()
+            await this.processUserAdd(username)
+          } finally {
+            this.$q.loading.hide()
+          }
         })
     },
   },
