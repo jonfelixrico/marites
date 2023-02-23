@@ -47,13 +47,13 @@
 <script lang="ts">
 import type { QForm } from 'quasar'
 import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
+import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStore } from 'src/stores/message.store'
 import { defineComponent, onBeforeMount, onBeforeUnmount, ref, Ref } from 'vue'
 import { useChatManager } from './chat-manager.composable'
 import { useChatScroll } from './chat-scroll.composable'
-import { useRouteChatId } from './route-chat-id.composable'
 
 function useMessageClearOnUnmount(chatId: Ref<string>) {
   const store = useMessageStore()
@@ -64,7 +64,7 @@ function useMessageClearOnUnmount(chatId: Ref<string>) {
 
 function useLoadChatMembersOnMount() {
   const { fetchAndStoreMembers } = useChatMemberHelper()
-  const chatId = useRouteChatId()
+  const chatId = useChatIdFromRoute()
 
   onBeforeMount(async () => {
     try {
@@ -78,7 +78,7 @@ function useLoadChatMembersOnMount() {
 
 export default defineComponent({
   setup() {
-    const chatId = useRouteChatId()
+    const chatId = useChatIdFromRoute()
     const pb = usePocketbase()
 
     useMessageClearOnUnmount(chatId)
