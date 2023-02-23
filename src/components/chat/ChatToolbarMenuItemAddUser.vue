@@ -64,6 +64,7 @@ export default defineComponent({
     async processUserAdd(username: string) {
       const { chatId } = this
 
+      // convert username to user id
       let userId: string
       try {
         userId = await this.getUserId(username)
@@ -84,12 +85,14 @@ export default defineComponent({
         return
       }
 
+      // check if already a member
       if (await this.checkIfMember(userId, chatId)) {
         this.showErrorDialog('alreadyAdded')
         console.warn('User %s is already a member of chat %s', userId, chatId)
         return
       }
 
+      // add user to the chat
       try {
         await this.pb.collection(PbCollection.CHAT_MEMBER).create<ChatMember>({
           user: userId,
