@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO use appropriate dango icon -->
   <q-btn icon="menu" round flat dense>
     <q-menu>
       <q-list>
