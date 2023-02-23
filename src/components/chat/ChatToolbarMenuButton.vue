@@ -1,5 +1,5 @@
 <template>
-  <q-btn icon="menu">
+  <q-btn icon="menu" round flat dense>
     <q-menu>
       <q-list>
         <ChatToolbarMenuItemAddUser />

@@ -1,6 +1,6 @@
 <template>
   <!-- TODO make color more suitable -->
-  <q-toolbar class="row items-center bg-grey-1">
+  <q-toolbar class="row items-center justify-between">
     <div>
       {{ chat?.name }}
     </div>
