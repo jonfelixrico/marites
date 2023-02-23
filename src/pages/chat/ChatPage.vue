@@ -77,7 +77,6 @@ export default defineComponent({
     } = useChatManager(chatId)
 
     const { scrollListener, keepScrollAtBottom } = useChatScroll()
-
     function onMessageMount(messageId: string) {
       const arr = history.value
       const lastMessageId = arr[arr.length - 1]?.id
