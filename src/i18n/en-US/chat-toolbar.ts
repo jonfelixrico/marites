@@ -1,6 +1,6 @@
 export default {
   addUser: 'Add user to chat',
-  dialogs: {
+  dialog: {
     addUser: {
       title: 'Add user to chat',
       message: 'Enter the username of the user to add to the chat',
@@ -17,7 +17,7 @@ export default {
     },
   },
 
-  notifs: {
+  notif: {
     addUserSucess: 'Successfully added user {username} into the chat',
   },
 }
