@@ -10,7 +10,7 @@ function isScrolledToEnd(el: HTMLElement): boolean {
 
 export function useChatScroll() {
   const scrollEl = ref<HTMLElement | null>(null)
-  const isLocked = ref<boolean>(true)
+  const isScrollAtBottom = ref<boolean>(true)
 
   const scrollListener = debounce((event: UIEvent) => {
     if (!event.target) {
@@ -26,16 +26,16 @@ export function useChatScroll() {
     const isAtEnd = isScrolledToEnd(el)
 
     console.log('Is scrolled to end? %s', isAtEnd)
-    isLocked.value = isAtEnd
+    isScrollAtBottom.value = isAtEnd
   }, 250)
 
-  function compensateScroll() {
+  function keepScrollAtBottom() {
     const el = scrollEl.value
     if (!el) {
       return
     }
 
-    if (isLocked.value) {
+    if (isScrollAtBottom.value) {
       const target = scroll.getScrollTarget(el)
       const height = scroll.getScrollHeight(el)
       scroll.setVerticalScrollPosition(target, height)
@@ -45,6 +45,6 @@ export function useChatScroll() {
 
   return {
     scrollListener,
-    compensateScroll,
+    keepScrollAtBottom,
   }
 }

@@ -76,15 +76,15 @@ export default defineComponent({
       ...others
     } = useChatManager(chatId)
 
-    const { scrollListener, compensateScroll } = useChatScroll()
+    const { scrollListener, keepScrollAtBottom } = useChatScroll()
 
-    function compensateScrollForNewMessage(messageId: string) {
-      const historyArr = history.value
-      const lastMessageId = historyArr[historyArr.length - 1]?.id
+    function onMessageMount(messageId: string) {
+      const arr = history.value
+      const lastMessageId = arr[arr.length - 1]?.id
 
       if (messageId === lastMessageId) {
         console.debug('New last message mounted: %s', messageId)
-        compensateScroll()
+        keepScrollAtBottom()
       }
     }
 
@@ -104,7 +104,7 @@ export default defineComponent({
       sendMessage,
       scrollListener,
 
-      compensateScrollForNewMessage,
+      compensateScrollForNewMessage: onMessageMount,
     }
   },
 
