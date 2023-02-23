@@ -49,11 +49,12 @@ export default defineComponent({
       }
     },
 
-    showErrorDialog(i18nSubpath: string) {
+    showErrorDialog(i18nSubpath: string, username: string) {
       this.$q.dialog({
         title: this.$t('chat.toolbar.dialog.addUserError.title'),
         message: this.$t(
-          `chat.toolbar.dialog.addUserError.message.${i18nSubpath}`
+          `chat.toolbar.dialog.addUserError.message.${i18nSubpath}`,
+          { username }
         ),
         ok: {
           unelevated: true,
@@ -71,10 +72,10 @@ export default defineComponent({
         console.debug('Username %s is id %s', username, userId)
       } catch (e) {
         if (e instanceof ClientResponseError && e.status === 404) {
-          this.showErrorDialog('notFound')
+          this.showErrorDialog('notFound', username)
           console.error('User %s was not found.', username)
         } else {
-          this.showErrorDialog('generic')
+          this.showErrorDialog('generic', username)
           console.error(
             'Error encountered while looking for user %s',
             username,
@@ -87,7 +88,7 @@ export default defineComponent({
 
       // check if already a member
       if (await this.checkIfMember(userId, chatId)) {
-        this.showErrorDialog('alreadyAdded')
+        this.showErrorDialog('alreadyAdded', username)
         console.warn('User %s is already a member of chat %s', userId, chatId)
         return
       }
@@ -104,9 +105,11 @@ export default defineComponent({
           chatId
         )
 
-        this.$q.notify(this.$t('chat.toolbar.notif.addUserSuccess'))
+        this.$q.notify(
+          this.$t('chat.toolbar.notif.addUserSuccess', { username })
+        )
       } catch (e) {
-        this.showErrorDialog('generic')
+        this.showErrorDialog('generic', username)
         console.error('Error encountered while adding user %s', username, e)
       }
     },
