@@ -46,12 +46,11 @@
 
 <script lang="ts">
 import type { QForm } from 'quasar'
-import { ChatMember } from 'src/models/chat.interface'
+import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useChatStore } from 'src/stores/chat.store'
 import { useMessageStore } from 'src/stores/message.store'
-import { defineComponent, onBeforeUnmount, ref, Ref } from 'vue'
+import { defineComponent, onBeforeMount, onBeforeUnmount, ref, Ref } from 'vue'
 import { useChatManager } from './chat-manager.composable'
 import { useChatScroll } from './chat-scroll.composable'
 import { useRouteChatId } from './route-chat-id.composable'
@@ -63,12 +62,27 @@ function useMessageClearOnUnmount(chatId: Ref<string>) {
   })
 }
 
+function useLoadChatMembersOnMount() {
+  const { fetchAndStoreMembers } = useChatMemberHelper()
+  const chatId = useRouteChatId()
+
+  onBeforeMount(async () => {
+    try {
+      await fetchAndStoreMembers(chatId.value)
+      console.log('Successfully loaded members for chat %s', chatId.value)
+    } catch (e) {
+      console.error('Failed to load members for chat %s', chatId.value, e)
+    }
+  })
+}
+
 export default defineComponent({
   setup() {
     const chatId = useRouteChatId()
     const pb = usePocketbase()
 
     useMessageClearOnUnmount(chatId)
+    useLoadChatMembersOnMount()
 
     const {
       sendMessage: baseSendMessage,
@@ -120,21 +134,9 @@ export default defineComponent({
   },
 
   async beforeRouteEnter(to) {
-    // TODO improve this
-    const chatStore = useChatStore()
     const pb = usePocketbase()
-
-    const chatId = String(to.params.chatId)
-    await pb.collection(PbCollection.CHAT).getOne(chatId)
-
-    const members = await pb
-      .collection(PbCollection.CHAT_MEMBER)
-      .getFullList<ChatMember>(200, {
-        filter: `chat = "${chatId}"`,
-        sort: 'created',
-      })
-
-    chatStore.storeChatMembers(...members)
+    // to validate that the user has access to the specified chat
+    await pb.collection(PbCollection.CHAT).getOne(String(to.params.chatId))
   },
 })
 </script>
