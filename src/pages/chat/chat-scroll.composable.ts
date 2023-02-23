@@ -1,26 +1,44 @@
 import { debounce, scroll } from 'quasar'
 import { ref } from 'vue'
 
+function isScrolledToEnd(el: HTMLElement): boolean {
+  const scrollHeight = scroll.getScrollHeight(el)
+  const rect = el.getBoundingClientRect()
+
+  return scrollHeight - rect.height === el.scrollTop
+}
+
 export function useChatScroll() {
   const scrollEl = ref<HTMLElement | null>(null)
-  const scrollHeight = ref<number>(0)
+  const isLocked = ref<boolean>(true)
 
   const scrollListener = debounce((event: UIEvent) => {
     if (!event.target) {
       return
     }
 
+    const el = event.target as HTMLElement
+
     if (!scrollEl.value) {
-      scrollEl.value = event.target as HTMLElement
+      scrollEl.value = el
     }
 
-    scrollHeight.value = scrollEl.value.scrollHeight
+    const isAtEnd = isScrolledToEnd(el)
+
+    console.log('Is scrolled to end? %s', isAtEnd)
+    isLocked.value = isAtEnd
   }, 250)
 
   function compensateScroll() {
-    if (scrollEl.value && scrollHeight.value === 0) {
-      const scrollTarget = scroll.getScrollTarget(scrollEl.value)
-      scroll.setVerticalScrollPosition(scrollTarget, 0)
+    const el = scrollEl.value
+    if (!el) {
+      return
+    }
+
+    if (isLocked.value) {
+      const target = scroll.getScrollTarget(el)
+      const height = scroll.getScrollHeight(el)
+      scroll.setVerticalScrollPosition(target, height)
       console.debug('Scroll compensated.')
     }
   }

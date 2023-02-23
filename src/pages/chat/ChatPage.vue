@@ -1,14 +1,14 @@
 <template>
   <q-page class="column">
     <div class="col relative-position">
-      <div class="absolute fit scroll" @scroll="scrollListener">
+      <div class="absolute fit scroll" @scroll.passive="scrollListener">
         <q-infinite-scroll @load="handleLoad" reverse>
           <div class="q-px-lg">
             <q-chat-message
               v-for="message of history"
               :key="message.id"
               :sent="chatMemberId === message.sender"
-              @hook:mounted="compensateScrollForNewMessage(message.id)"
+              @vnode-mounted="compensateScrollForNewMessage(message.id)"
             >
               <template #default>
                 <div style="white-space: pre" v-text="message.content" />
@@ -83,6 +83,7 @@ export default defineComponent({
       const lastMessageId = historyArr[historyArr.length - 1]?.id
 
       if (messageId === lastMessageId) {
+        console.debug('New last message mounted: %s', messageId)
         compensateScroll()
       }
     }
