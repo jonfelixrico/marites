@@ -16,4 +16,8 @@ export default {
       },
     },
   },
+
+  notifs: {
+    addUserSucess: 'Successfully added user {username} into the chat',
+  },
 }
