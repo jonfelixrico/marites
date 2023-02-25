@@ -141,7 +141,10 @@ export function useChatApi() {
             }
           }
 
-          return await getChat(record.id)
+          return {
+            ...(await getChat(record.id)),
+            deleted: false,
+          }
         })
       ),
       chatUserMembership$.pipe(
@@ -156,7 +159,10 @@ export function useChatApi() {
             }
           }
 
-          return await getChat(record.id)
+          return {
+            ...(await getChat(record.id)),
+            deleted: false,
+          }
         })
       )
     )
