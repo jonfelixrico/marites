@@ -132,6 +132,7 @@ export default defineComponent({
             label: this.$t('chat.toolbar.dialog.addUser.ok'),
             unelevated: true,
             color: 'primary',
+            noCaps: true,
           },
         })
         .onOk(async (username) => {
