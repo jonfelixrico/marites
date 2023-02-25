@@ -48,14 +48,13 @@
 <script lang="ts">
 import type { QForm } from 'quasar'
 import ChatToolbar from 'src/components/chat-toolbar/ChatToolbar.vue'
-import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
 import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { useSessionApi } from 'src/composables/session-api.composable'
 import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStore } from 'src/stores/message.store'
-import { defineComponent, onBeforeMount, onBeforeUnmount, ref, Ref } from 'vue'
+import { defineComponent, onBeforeUnmount, ref, Ref } from 'vue'
 import { useChatManager } from './chat-manager.composable'
 import { useChatScroll } from './chat-scroll.composable'
 
@@ -63,20 +62,6 @@ function useMessageClearOnUnmount(chatId: Ref<string>) {
   const store = useMessageStore()
   onBeforeUnmount(() => {
     store.clearMessages(chatId.value)
-  })
-}
-
-function useLoadChatMembersOnMount() {
-  const { fetchAndStoreMembers } = useChatMemberHelper()
-  const chatId = useChatIdFromRoute()
-
-  onBeforeMount(async () => {
-    try {
-      await fetchAndStoreMembers(chatId.value)
-      console.log('Successfully loaded members for chat %s', chatId.value)
-    } catch (e) {
-      console.error('Failed to load members for chat %s', chatId.value, e)
-    }
   })
 }
 
@@ -88,7 +73,6 @@ export default defineComponent({
     const { getSessionUser } = useSessionApi()
 
     useMessageClearOnUnmount(chatId)
-    useLoadChatMembersOnMount()
 
     const { history, ...others } = useChatManager(chatId)
     const { createMessage } = useChatMessageApi()
