@@ -1,12 +1,11 @@
-import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStore } from 'src/stores/message.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { Subscription } from 'rxjs'
-import { PbCollection } from 'src/models/pb-collection.enum'
 import { ChatMessage } from 'src/models/chat.interface'
 import { useChatStore } from 'src/stores/chat.store'
 import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
+import { useSessionApi } from 'src/composables/session-api.composable'
 
 function extractCreateDt(message?: ChatMessage) {
   return message?.created ? new Date(message.created) : new Date()
@@ -83,27 +82,22 @@ function useNewMessagesListener(chatId: Ref<string>) {
 }
 
 function useMessageSender(chatId: Ref<string>) {
-  const pb = usePocketbase()
   const chatStore = useChatStore()
+  const { createMessage } = useChatMessageApi()
+  const { getSessionUser } = useSessionApi()
 
   const chatMemberId = computed(() => {
-    const userId = pb.authStore.model?.id
-    if (!userId) {
-      return
-    }
+    const userId = getSessionUser()?.id
 
     const membersArr = Object.values(chatStore.chatMembers[chatId.value] ?? [])
     return membersArr.find(({ user }) => user === userId)?.id
   })
 
   async function sendMessage(content: string) {
-    const message = await pb
-      .collection(PbCollection.CHAT_MESSAGE)
-      .create<ChatMessage>({
-        content,
-        sender: chatMemberId.value,
-        chat: chatId.value,
-      })
+    const message = await createMessage({
+      content,
+      chatId: chatId.value,
+    })
 
     console.log(`Sent message ${message.id} to chatroom ${chatId.value}`)
   }
