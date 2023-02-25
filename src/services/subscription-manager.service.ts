@@ -48,7 +48,7 @@ export function useSubscriptionManager() {
     }
   }
 
-  function getSubscription<T>(
+  function getSubscription<T = unknown>(
     collection: PbCollection
   ): Observable<RecordSubscription<T>> {
     if (!unsubscribers[collection]) {
