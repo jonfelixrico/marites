@@ -1,5 +1,6 @@
 <template>
   <q-page class="column">
+    <ChatToolbar />
     <div class="col relative-position">
       <div class="absolute fit scroll" @scroll.passive="scrollListener">
         <q-infinite-scroll @load="handleLoad" reverse>
@@ -46,15 +47,15 @@
 
 <script lang="ts">
 import type { QForm } from 'quasar'
-import { ChatMember } from 'src/models/chat.interface'
+import ChatToolbar from 'src/components/chat-toolbar/ChatToolbar.vue'
+import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
+import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
-import { useChatStore } from 'src/stores/chat.store'
 import { useMessageStore } from 'src/stores/message.store'
-import { defineComponent, onBeforeUnmount, ref, Ref } from 'vue'
+import { defineComponent, onBeforeMount, onBeforeUnmount, ref, Ref } from 'vue'
 import { useChatManager } from './chat-manager.composable'
 import { useChatScroll } from './chat-scroll.composable'
-import { useRouteChatId } from './route-chat-id.composable'
 
 function useMessageClearOnUnmount(chatId: Ref<string>) {
   const store = useMessageStore()
@@ -63,12 +64,29 @@ function useMessageClearOnUnmount(chatId: Ref<string>) {
   })
 }
 
+function useLoadChatMembersOnMount() {
+  const { fetchAndStoreMembers } = useChatMemberHelper()
+  const chatId = useChatIdFromRoute()
+
+  onBeforeMount(async () => {
+    try {
+      await fetchAndStoreMembers(chatId.value)
+      console.log('Successfully loaded members for chat %s', chatId.value)
+    } catch (e) {
+      console.error('Failed to load members for chat %s', chatId.value, e)
+    }
+  })
+}
+
 export default defineComponent({
+  components: { ChatToolbar },
+
   setup() {
-    const chatId = useRouteChatId()
+    const chatId = useChatIdFromRoute()
     const pb = usePocketbase()
 
     useMessageClearOnUnmount(chatId)
+    useLoadChatMembersOnMount()
 
     const {
       sendMessage: baseSendMessage,
@@ -120,21 +138,9 @@ export default defineComponent({
   },
 
   async beforeRouteEnter(to) {
-    // TODO improve this
-    const chatStore = useChatStore()
     const pb = usePocketbase()
-
-    const chatId = String(to.params.chatId)
-    await pb.collection(PbCollection.CHAT).getOne(chatId)
-
-    const members = await pb
-      .collection(PbCollection.CHAT_MEMBER)
-      .getFullList<ChatMember>(200, {
-        filter: `chat = "${chatId}"`,
-        sort: 'created',
-      })
-
-    chatStore.storeChatMembers(...members)
+    // to validate that the user has access to the specified chat
+    await pb.collection(PbCollection.CHAT).getOne(String(to.params.chatId))
   },
 })
 </script>
