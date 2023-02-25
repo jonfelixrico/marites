@@ -3,7 +3,7 @@
   <q-btn icon="menu" round flat dense>
     <q-menu>
       <q-list>
-        <ChatToolbarMenuItemAddUser />
+        <ChatToolbarMenuItemAddUser v-close-popup />
       </q-list>
     </q-menu>
   </q-btn>
