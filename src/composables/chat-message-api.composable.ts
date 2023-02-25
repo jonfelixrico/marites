@@ -30,7 +30,7 @@ export function useChatMessageApi() {
       .collection(PBCollection.CHAT_MESSAGE)
       .create<PBChatMessage>({
         content,
-        sender: sessionApi.getSessionUser(),
+        sender: sessionApi.getSessionUser().id,
         chat: chatId,
       })
   }
