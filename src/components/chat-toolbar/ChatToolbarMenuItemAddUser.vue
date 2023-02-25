@@ -34,21 +34,6 @@ export default defineComponent({
       return id
     },
 
-    async checkIfMember(userId: string, chatId: string): Promise<boolean> {
-      try {
-        await this.pb
-          .collection(PBCollection.CHAT_USER_MEMBERSHIP)
-          .getFirstListItem(`user = "${userId}" && chat = "${chatId}"`)
-        return true
-      } catch (e) {
-        if (e instanceof ClientResponseError && e.status === 404) {
-          return false
-        }
-
-        throw e
-      }
-    },
-
     showErrorDialog(i18nSubpath: string, username: string) {
       this.$q.dialog({
         title: this.$t('chat.toolbar.dialog.addUserError.title'),
@@ -86,13 +71,6 @@ export default defineComponent({
         return
       }
 
-      // check if already a member
-      if (await this.checkIfMember(userId, chatId)) {
-        this.showErrorDialog('alreadyAdded', username)
-        console.warn('User %s is already a member of chat %s', userId, chatId)
-        return
-      }
-
       // add user to the chat
       try {
         await this.pb
@@ -118,6 +96,12 @@ export default defineComponent({
           },
         })
       } catch (e) {
+        if (e instanceof ClientResponseError && e.status === 400) {
+          this.showErrorDialog('alreadyAdded', username)
+          console.warn('User %s is already a member of chat %s', userId, chatId)
+          return
+        }
+
         this.showErrorDialog('generic', username)
         console.error('Error encountered while adding user %s', username, e)
       }
