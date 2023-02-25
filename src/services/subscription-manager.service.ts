@@ -35,6 +35,7 @@ export function useSubscriptionManager() {
         })
       })
 
+    console.debug('Created subscription to collection %s', collection)
     unsubscribers[collection] = unsubscriber
   }
 
