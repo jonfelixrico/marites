@@ -17,7 +17,7 @@ interface ChatStore {
   }
 }
 
-export const useChatStore = defineStore('chat', {
+export const useChatStore = defineStore('chat-v2', {
   state: (): ChatStore => ({
     chats: {},
     previewMessages: {},
