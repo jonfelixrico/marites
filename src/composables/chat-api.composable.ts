@@ -81,7 +81,7 @@ export function useChatApi() {
     })
   }
 
-  async function listChatMembers(chatId: string): Promise<APIChatMember[]> {
+  async function hydrateChatMembers(chatId: string): Promise<APIChatMember[]> {
     const members = await pb
       .collection(PbCollection.CHAT_USER_MEMBERSHIP)
       .getFullList<RawAPIChatMember>(200, {
@@ -92,14 +92,15 @@ export function useChatApi() {
     return members.map(processRawAPIChatMember)
   }
 
-  async function getChat(chatId: string): Promise<APIChat> {
-    const { id, owner, expand, name, created, updated } = await pb
-      .collection(PbCollection.CHAT)
-      .getOne<RawAPIChat>(chatId, {
-        expand: 'owner.username',
-      })
-
-    const apiMembers = await listChatMembers(chatId)
+  async function hydrateChat({
+    id,
+    owner,
+    expand,
+    name,
+    created,
+    updated,
+  }: RawAPIChat): Promise<APIChat> {
+    const apiMembers = await hydrateChatMembers(id)
     const members: APIChat['members'] = [
       {
         id: owner,
@@ -123,8 +124,29 @@ export function useChatApi() {
     }
   }
 
+  async function getChat(chatId: string) {
+    const rawChat = await pb
+      .collection(PbCollection.CHAT)
+      .getOne<RawAPIChat>(chatId, {
+        expand: 'owner.username',
+      })
+
+    return await hydrateChat(rawChat)
+  }
+
+  async function listChat() {
+    const rawChats = await pb
+      .collection(PbCollection.CHAT)
+      .getFullList<RawAPIChat>(200, {
+        expand: 'owner.username',
+      })
+
+    return await Promise.all(rawChats.map(hydrateChat))
+  }
+
   return {
     createChat,
     getChat,
+    listChat,
   }
 }
