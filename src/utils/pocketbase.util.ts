@@ -12,3 +12,7 @@ export function toFilterDate(toConvert: Date | string) {
    */
   return asDate.toISOString().replace('T', ' ')
 }
+
+export function wrapString(toWrap: string): string {
+  return `"${toWrap}"`
+}
