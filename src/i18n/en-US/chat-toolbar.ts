@@ -16,9 +16,10 @@ export default {
           'Something went wrong while trying to add user {username} into the chat',
       },
     },
-  },
 
-  notif: {
-    addUserSuccess: 'Successfully added user {username} into the chat',
+    addUserSuccess: {
+      title: 'User added',
+      message: 'You have added user {username} to the chat',
+    },
   },
 }

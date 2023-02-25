@@ -105,9 +105,12 @@ export default defineComponent({
           chatId
         )
 
-        this.$q.notify(
-          this.$t('chat.toolbar.notif.addUserSuccess', { username })
-        )
+        this.$q.dialog({
+          title: this.$t('chat.toolbar.dialog.addUserSuccess.title'),
+          message: this.$t('chat.toolbar.dialog.addUserSuccess.message', {
+            username,
+          }),
+        })
       } catch (e) {
         this.showErrorDialog('generic', username)
         console.error('Error encountered while adding user %s', username, e)
