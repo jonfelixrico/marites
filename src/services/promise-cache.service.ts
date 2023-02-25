@@ -1,18 +1,26 @@
-const wrappedFns: Record<string, Promise<unknown>> = {}
+const wrappedFns: {
+  [jobId: string]: Promise<unknown>
+} = {}
 
 export function usePromiseCache() {
-  function wrap<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (!!wrappedFns[key]) {
-      console.debug("There's already an ongoing job for key %s", key)
-      return wrappedFns[key] as Promise<T>
+  function wrap<T>(id: string, fn: () => Promise<T>): Promise<T> {
+    if (!!wrappedFns[id]) {
+      console.debug("There's already an ongoing job with id %s", id)
+      return wrappedFns[id] as Promise<T>
     }
 
-    console.debug('Creating new job for key %s', key)
-    const wrapped = (wrappedFns[key] = fn())
-    wrapped.finally(() => {
-      delete wrappedFns[key]
-      console.debug('Job for key %s has finished', key)
-    })
+    console.debug('Creating new job %s', id)
+    const wrapped = (wrappedFns[id] = fn())
+    wrapped
+      .then(() => {
+        console.debug('Job %s has finished successfully', id)
+      })
+      .catch((e) => {
+        console.error('Job %s has finished with errors', id, e)
+      })
+      .finally(() => {
+        delete wrappedFns[id]
+      })
 
     return wrapped
   }
