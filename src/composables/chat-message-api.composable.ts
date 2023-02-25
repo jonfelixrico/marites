@@ -3,17 +3,17 @@ import { usePocketbase } from 'src/services/pocketbase.service'
 import { toFilterDate } from 'src/utils/pocketbase.util'
 import { useSessionApi } from './session-api.composable'
 
-interface SendMessageBody {
+interface APICreateMessageBody {
   chatId: string
   content: string
 }
 
-interface GetAPIListMessagesBeforeCursorDateQuery {
+interface APIListMessagesBeforeCursorDateQuery {
   chatId: string
   cursorDt: Date
 }
 
-interface GetAPIListMessagesBeforeCursorDateOptions {
+interface APIListMessagesBeforeCursorDateOptions {
   limit: number
 }
 
@@ -33,7 +33,7 @@ export function useChatMessageApi() {
   async function createMessage({
     content,
     chatId,
-  }: SendMessageBody): Promise<APIChatMessage> {
+  }: APICreateMessageBody): Promise<APIChatMessage> {
     return await pb
       .collection(PbCollection.CHAT_MESSAGE)
       .create<APIChatMessage>({
@@ -60,8 +60,8 @@ export function useChatMessageApi() {
   }
 
   async function listMessagesBeforeCursorDate(
-    { chatId, cursorDt }: GetAPIListMessagesBeforeCursorDateQuery,
-    { limit = 30 }: GetAPIListMessagesBeforeCursorDateOptions
+    { chatId, cursorDt }: APIListMessagesBeforeCursorDateQuery,
+    { limit = 30 }: APIListMessagesBeforeCursorDateOptions
   ): Promise<APIChatMessage[]> {
     const { items } = await pb
       .collection(PbCollection.CHAT_MESSAGE)
