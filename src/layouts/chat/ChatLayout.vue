@@ -32,9 +32,7 @@
 
 <script lang="ts">
 import ChatList from 'src/components/chat-list/ChatList.vue'
-import { useChatObservable } from 'src/services/chat-observable.service'
-import { useMessageObservable } from 'src/services/message-observable.service'
-import { defineComponent, onBeforeUnmount, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useCreateChat } from './create-chat.composable'
 import { useSessionService } from 'src/services/session.service'
 import { useJoinChat } from './join-chat.composable'
@@ -44,17 +42,6 @@ export default defineComponent({
   setup() {
     const createChat = useCreateChat()
     const joinChat = useJoinChat()
-
-    const messageObservable = useMessageObservable()
-    const chatObservable = useChatObservable()
-
-    messageObservable.start()
-    chatObservable.start()
-
-    onBeforeUnmount(() => {
-      messageObservable.stop()
-      chatObservable.stop()
-    })
 
     const showDrawer = ref(true)
 
