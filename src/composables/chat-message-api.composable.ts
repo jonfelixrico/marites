@@ -25,11 +25,13 @@ export function useChatMessageApi() {
     content,
     chatId,
   }: SendMessageBody): Promise<APIChatMessage> {
-    pb.collection(PbCollection.CHAT_MESSAGE).create<APIChatMessage>({
-      content,
-      sender: sessionApi.getSessionUser(),
-      chat: chatId,
-    })
+    return await pb
+      .collection(PbCollection.CHAT_MESSAGE)
+      .create<APIChatMessage>({
+        content,
+        sender: sessionApi.getSessionUser(),
+        chat: chatId,
+      })
   }
 
   async function getLastMessage(
