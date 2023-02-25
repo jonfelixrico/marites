@@ -7,6 +7,10 @@ import { PBChat } from 'src/models/pb-chat.interface'
 const subject = new Subject<RecordSubscription<PBChat>>()
 let pbSubscription: UnsubscribeFunc
 
+/**
+ * @deprecated
+ * @returns
+ */
 export function useChatObservable() {
   const pb = usePocketbase()
 

@@ -7,6 +7,10 @@ import { usePocketbase } from './pocketbase.service'
 const subject = new Subject<RecordSubscription<PBChatMessage>>()
 let pbSubscription: UnsubscribeFunc
 
+/**
+ * @deprecated
+ * @returns
+ */
 export function useMessageObservable() {
   const pb = usePocketbase()
 
