@@ -26,24 +26,35 @@ export function useSubscriptionManager() {
   }
 
   async function createSubscription(collection: PbCollection) {
-    const unsubscriber = await pb
-      .collection(collection)
-      .subscribe('*', (event) => {
-        subject.next({
-          ...event,
-          collection,
+    try {
+      const unsubscriber = await pb
+        .collection(collection)
+        .subscribe('*', (event) => {
+          subject.next({
+            ...event,
+            collection,
+          })
         })
-      })
 
-    console.debug('Created subscription to collection %s', collection)
-    unsubscribers[collection] = unsubscriber
+      console.debug('Created subscription to collection %s', collection)
+      unsubscribers[collection] = unsubscriber
+    } catch (e) {
+      console.error(
+        'Error encountered while trying to subscribe to collection %s',
+        collection
+      )
+    }
   }
 
-  async function getSubscription<T>(
+  function getSubscription<T>(
     collection: PbCollection
-  ): Promise<Observable<RecordSubscription<T>>> {
+  ): Observable<RecordSubscription<T>> {
     if (!unsubscribers[collection]) {
-      await createSubscription(collection)
+      /*
+       * Intended to be ran asynchronously since there's no point in trying to await
+       * the subscription anyway because of its realtime nature.
+       */
+      createSubscription(collection)
     }
 
     return subject.pipe(
