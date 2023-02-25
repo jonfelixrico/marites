@@ -8,6 +8,15 @@ interface SendMessageBody {
   content: string
 }
 
+interface GetAPIListMessagesBeforeCursorDateQuery {
+  chatId: string
+  cursorDt: Date
+}
+
+interface GetAPIListMessagesBeforeCursorDateOptions {
+  limit: number
+}
+
 interface APIChatMessage {
   content: string
   chat: string
@@ -50,8 +59,23 @@ export function useChatMessageApi() {
     return items[0] ?? null
   }
 
+  async function listMessagesBeforeCursorDate(
+    { chatId, cursorDt }: GetAPIListMessagesBeforeCursorDateQuery,
+    { limit = 30 }: GetAPIListMessagesBeforeCursorDateOptions
+  ): Promise<APIChatMessage[]> {
+    const { items } = await pb
+      .collection(PbCollection.CHAT_MESSAGE)
+      .getList<APIChatMessage>(1, limit, {
+        sort: '-created,-id', // sorting by id to keep sorting consistent for same-timestamp messages
+        filter: `created <= "${toFilterDate(cursorDt)}" && chat = "${chatId}"`,
+      })
+
+    return items
+  }
+
   return {
     createMessage,
     getLastMessage,
+    listMessagesBeforeCursorDate,
   }
 }
