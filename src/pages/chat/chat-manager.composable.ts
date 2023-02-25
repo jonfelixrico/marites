@@ -3,32 +3,33 @@ import { useMessageStore } from 'src/stores/message.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
 import { useMessageObservable } from 'src/services/message-observable.service'
 import { Subscription } from 'rxjs'
-import { toFilterDate } from 'src/utils/pocketbase.util'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { ChatMessage } from 'src/models/chat.interface'
 import { useChatStore } from 'src/stores/chat.store'
+import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
 
 function extractCreateDt(message?: ChatMessage) {
   return message?.created ? new Date(message.created) : new Date()
 }
 
 function useHistoryLoader(chatId: Ref<string>) {
-  const pb = usePocketbase()
   const store = useMessageStore()
+  const { listMessagesBeforeCursorDate } = useChatMessageApi()
 
   async function loadOlderMessages(
     chatId: string,
     message?: ChatMessage,
-    limit = 30
+    limit?: number
   ) {
-    const anchorDt = extractCreateDt(message)
-
-    const { items } = await pb
-      .collection(PbCollection.CHAT_MESSAGE)
-      .getList<ChatMessage>(1, limit, {
-        sort: '-created,-id', // sorting by id to keep sorting consistent for same-timestamp messages
-        filter: `created <= "${toFilterDate(anchorDt)}" && chat = "${chatId}"`,
-      })
+    const items = await listMessagesBeforeCursorDate(
+      {
+        chatId,
+        cursorDt: extractCreateDt(message),
+      },
+      {
+        limit,
+      }
+    )
 
     if (!message) {
       return items

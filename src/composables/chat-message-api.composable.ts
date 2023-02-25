@@ -14,7 +14,7 @@ interface APIListMessagesBeforeCursorDateQuery {
 }
 
 interface APIListMessagesBeforeCursorDateOptions {
-  limit: number
+  limit?: number
 }
 
 interface APIChatMessage {
@@ -61,11 +61,11 @@ export function useChatMessageApi() {
 
   async function listMessagesBeforeCursorDate(
     { chatId, cursorDt }: APIListMessagesBeforeCursorDateQuery,
-    { limit = 30 }: APIListMessagesBeforeCursorDateOptions
+    options?: APIListMessagesBeforeCursorDateOptions
   ): Promise<APIChatMessage[]> {
     const { items } = await pb
       .collection(PbCollection.CHAT_MESSAGE)
-      .getList<APIChatMessage>(1, limit, {
+      .getList<APIChatMessage>(1, options?.limit ?? 30, {
         sort: '-created,-id', // sorting by id to keep sorting consistent for same-timestamp messages
         filter: `created <= "${toFilterDate(cursorDt)}" && chat = "${chatId}"`,
       })
