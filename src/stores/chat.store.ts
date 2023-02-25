@@ -17,6 +17,9 @@ interface ChatStore {
   }
 }
 
+/**
+ * @deprecated
+ */
 export const useChatStore = defineStore('chat', {
   state: (): ChatStore => ({
     chats: {},
