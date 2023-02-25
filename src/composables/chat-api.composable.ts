@@ -1,9 +1,13 @@
 import { sortBy } from 'lodash'
+import { merge, mergeMap } from 'rxjs'
 import { APIChat, APIChatMember } from 'src/models/api-chat.interface'
+import { PBChatUserMembership } from 'src/models/pb-chat-user-membership.interface'
 import { PBChat } from 'src/models/pb-chat.interface'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { BasePBRecord } from 'src/models/pb-record.interface'
+import { PBSubscriptionAction } from 'src/models/pb-subscription-action.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
+import { useSubscriptionManager } from 'src/services/subscription-manager.service'
 import { wrapString } from 'src/utils/pocketbase.util'
 import { useSessionApi } from './session-api.composable'
 
@@ -45,6 +49,7 @@ interface PBChatExpanded extends PBChat {
 export function useChatApi() {
   const pb = usePocketbase()
   const { getSessionUser } = useSessionApi()
+  const { getObservable } = useSubscriptionManager()
 
   async function createChat({ name }: APICreateChatBody) {
     const userId = getSessionUser().id
@@ -118,9 +123,49 @@ export function useChatApi() {
     return await Promise.all(rawChats.map(hydrateChat))
   }
 
+  function getChatListObservable() {
+    const chat$ = getObservable<PBChat>(PbCollection.CHAT)
+    const chatUserMembership$ = getObservable<PBChatUserMembership>(
+      PbCollection.CHAT_USER_MEMBERSHIP
+    )
+
+    const userId = getSessionUser().id
+
+    return merge(
+      chat$.pipe(
+        mergeMap(async ({ action, record }) => {
+          if (action === PBSubscriptionAction.delete) {
+            return {
+              id: record.id,
+              deleted: true,
+            }
+          }
+
+          return await getChat(record.id)
+        })
+      ),
+      chatUserMembership$.pipe(
+        mergeMap(async ({ action, record }) => {
+          if (
+            action === PBSubscriptionAction.delete &&
+            record.user === userId
+          ) {
+            return {
+              id: record.id,
+              deleted: true,
+            }
+          }
+
+          return await getChat(record.id)
+        })
+      )
+    )
+  }
+
   return {
     createChat,
     getChat,
     listChats,
+    getChatListObservable,
   }
 }
