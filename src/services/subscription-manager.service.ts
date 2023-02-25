@@ -53,6 +53,8 @@ export function useSubscriptionManager() {
       /*
        * Intended to be ran asynchronously since there's no point in trying to await
        * the subscription anyway because of its realtime nature.
+       *
+       * WARNING: this might create a race condition if getSubscription for the same collection was called twice
        */
       createSubscription(collection)
     }
