@@ -55,20 +55,23 @@ export function useChatApi() {
   const { getSessionUser } = useSessionApi()
   const { getObservable } = useSubscriptionManager()
 
-  async function createChat({ name }: APICreateChatBody) {
+  async function createChat({ name }: APICreateChatBody): Promise<APIChat> {
     const userId = getSessionUser().id
 
-    await pb.collection(PBCollection.CHAT).create<APIChat>({
+    const { id } = await pb.collection(PBCollection.CHAT).create<APIChat>({
       name,
       owner: userId,
     })
+
+    return await getChat(id)
   }
 
-  async function joinChat({ chatId }: APIChatJoinBody) {
+  async function joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
     await pb.collection(PBCollection.CHAT_USER_MEMBERSHIP).create({
       chat: chatId,
       user: getSessionUser().id,
     })
+    return await getChat(chatId)
   }
 
   async function hydrateChatMembers(chatId: string): Promise<APIChatMember[]> {
