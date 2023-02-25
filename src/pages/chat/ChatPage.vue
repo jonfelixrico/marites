@@ -50,6 +50,7 @@ import type { QForm } from 'quasar'
 import ChatToolbar from 'src/components/chat-toolbar/ChatToolbar.vue'
 import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
+import { useSessionApi } from 'src/composables/session-api.composable'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStore } from 'src/stores/message.store'
@@ -83,7 +84,7 @@ export default defineComponent({
 
   setup() {
     const chatId = useChatIdFromRoute()
-    const pb = usePocketbase()
+    const { getSessionUser } = useSessionApi()
 
     useMessageClearOnUnmount(chatId)
     useLoadChatMembersOnMount()
@@ -116,7 +117,7 @@ export default defineComponent({
       ...others,
       history,
 
-      userId: pb.authStore?.model?.id,
+      userId: getSessionUser().id,
       contentModel,
       sendMessage,
       scrollListener,
