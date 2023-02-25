@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { APIChat } from 'src/models/api-chat.interface'
-import { ChatMessage } from 'src/models/chat.interface'
 import { PBChatMessage } from 'src/models/pb-chat-message.interface'
 
 interface ChatStore {
@@ -28,7 +27,7 @@ export const useChatStore = defineStore('chat-v2', {
      * Stores a message as the preview message of the chat room it belongs to.
      * @param message
      */
-    storePreviewMessage(message: ChatMessage) {
+    storePreviewMessage(message: PBChatMessage) {
       this.previewMessages[message.chat] = message
     },
 
