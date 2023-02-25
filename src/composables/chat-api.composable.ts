@@ -15,6 +15,10 @@ interface APICreateChatBody {
   name: string
 }
 
+interface APIChatJoinBody {
+  chatId: string
+}
+
 interface RawAPIChatMember extends BasePBRecord {
   user: string
   chat: string
@@ -57,6 +61,13 @@ export function useChatApi() {
     await pb.collection(PBCollection.CHAT).create<APIChat>({
       name,
       owner: userId,
+    })
+  }
+
+  async function joinChat({ chatId }: APIChatJoinBody) {
+    await pb.collection(PBCollection.CHAT_USER_MEMBERSHIP).create({
+      chat: chatId,
+      user: getSessionUser().id,
     })
   }
 
@@ -177,5 +188,6 @@ export function useChatApi() {
     getChat,
     listChats,
     getChatListObservable,
+    joinChat,
   }
 }
