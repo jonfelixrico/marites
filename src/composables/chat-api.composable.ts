@@ -79,7 +79,7 @@ export function useChatApi() {
       .collection(PBCollection.CHAT_USER_MEMBERSHIP)
       .getFullList<RawAPIChatMember>(200, {
         filter: `chat.id = ${wrapString(chatId)}`,
-        expand: 'user.username',
+        expand: 'user',
       })
 
     return members.map(processRawAPIChatMember)
@@ -121,7 +121,7 @@ export function useChatApi() {
     const rawChat = await pb
       .collection(PBCollection.CHAT)
       .getOne<PBChatExpanded>(chatId, {
-        expand: 'owner.username',
+        expand: 'owner',
       })
 
     return await hydrateChat(rawChat)
@@ -131,7 +131,7 @@ export function useChatApi() {
     const rawChats = await pb
       .collection(PBCollection.CHAT)
       .getFullList<PBChatExpanded>(200, {
-        expand: 'owner.username',
+        expand: 'owner',
       })
 
     return await Promise.all(rawChats.map(hydrateChat))
