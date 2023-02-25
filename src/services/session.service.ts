@@ -2,12 +2,14 @@ import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { usePocketbase } from './pocketbase.service'
+import { useSubscriptionManager } from './subscription-manager.service'
 
 export function useSessionService() {
   const pb = usePocketbase()
   const router = useRouter()
   const { dialog, notify } = useQuasar()
   const { t } = useI18n()
+  const { unsubscribe } = useSubscriptionManager()
 
   async function logOut() {
     pb.authStore.clear()
@@ -18,6 +20,7 @@ export function useSessionService() {
       name: 'login',
     })
 
+    unsubscribe()
     console.log('Successfully finished the logout process.')
   }
 
