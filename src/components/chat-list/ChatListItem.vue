@@ -6,49 +6,29 @@
   >
     <q-item-section>
       <div>{{ chat.name }}</div>
-      <div>{{ previewMessage?.content }}</div>
+      <div v-if="previewMessage">{{ previewMessage.content }}</div>
     </q-item-section>
   </q-item>
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onBeforeMount,
-  PropType,
-  onBeforeUnmount,
-} from 'vue'
-import { Chat } from 'src/models/chat.interface'
-import { usePreviewMessage } from './preview-message.composable'
+import { computed, defineComponent, PropType } from 'vue'
+import { useChatStore } from 'src/stores/chat-v2.store'
+import { APIChat } from 'src/models/api-chat.interface'
 
 export default defineComponent({
   props: {
     chat: {
-      type: Object as PropType<Chat>,
+      type: Object as PropType<APIChat>,
       required: true,
     },
   },
 
   setup(props) {
-    const id = computed(() => props.chat.id)
-    const { listenForLatestMessage, fetchLatestMessage, previewMessage } =
-      usePreviewMessage(id)
-
-    let unsubscriber: () => void
-    onBeforeMount(async () => {
-      unsubscriber = listenForLatestMessage()
-      fetchLatestMessage()
-    })
-
-    onBeforeUnmount(() => {
-      if (unsubscriber) {
-        unsubscriber()
-      }
-    })
+    const store = useChatStore()
 
     return {
-      previewMessage,
+      previewMessage: computed(() => store.previewMessages[props.chat.id]),
     }
   },
 })
