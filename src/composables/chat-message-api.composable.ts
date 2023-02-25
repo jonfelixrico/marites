@@ -1,5 +1,5 @@
 import { PBChatMessage } from 'src/models/pb-chat-message.interface'
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { toFilterDate } from 'src/utils/pocketbase.util'
 import { useSessionApi } from './session-api.composable'
@@ -27,7 +27,7 @@ export function useChatMessageApi() {
     chatId,
   }: APICreateMessageBody): Promise<PBChatMessage> {
     return await pb
-      .collection(PbCollection.CHAT_MESSAGE)
+      .collection(PBCollection.CHAT_MESSAGE)
       .create<PBChatMessage>({
         content,
         sender: sessionApi.getSessionUser(),
@@ -37,7 +37,7 @@ export function useChatMessageApi() {
 
   async function getLastMessage(chatId: string): Promise<PBChatMessage | null> {
     const { items } = await pb
-      .collection(PbCollection.CHAT_MESSAGE)
+      .collection(PBCollection.CHAT_MESSAGE)
       // can't use getFirstListItem here since it doesn't allow us to specify the ordering
       .getList<PBChatMessage>(1, 1, {
         sort: '-created', // sorting by id to keep sorting consistent for same-timestamp messages
@@ -54,7 +54,7 @@ export function useChatMessageApi() {
     options?: APIListMessagesBeforeCursorDateOptions
   ): Promise<PBChatMessage[]> {
     const { items } = await pb
-      .collection(PbCollection.CHAT_MESSAGE)
+      .collection(PBCollection.CHAT_MESSAGE)
       .getList<PBChatMessage>(1, options?.limit ?? 30, {
         sort: '-created,-id', // sorting by id to keep sorting consistent for same-timestamp messages
         filter: `created <= "${toFilterDate(cursorDt)}" && chat = "${chatId}"`,

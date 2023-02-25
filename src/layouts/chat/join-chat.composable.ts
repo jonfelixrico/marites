@@ -1,6 +1,6 @@
 import { useQuasar } from 'quasar'
 import { useSessionApi } from 'src/composables/session-api.composable'
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useRouter } from 'vue-router'
 
@@ -14,7 +14,7 @@ export function useJoinChat() {
     const userId = getSessionUser().id
 
     try {
-      await pb.collection(PbCollection.CHAT_MEMBER).create({
+      await pb.collection(PBCollection.CHAT_MEMBER).create({
         chat: chatId,
         user: userId,
       })

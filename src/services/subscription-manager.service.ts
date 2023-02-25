@@ -1,6 +1,6 @@
 import { RecordSubscription, UnsubscribeFunc } from 'pocketbase'
 import { filter, map, Observable, Subject } from 'rxjs'
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from './pocketbase.service'
 import { usePromiseCache } from './promise-cache.service'
 
@@ -27,7 +27,7 @@ export function useSubscriptionManager() {
     console.log('Killed all subscriptions.')
   }
 
-  async function createSubscription(collection: PbCollection) {
+  async function createSubscription(collection: PBCollection) {
     try {
       const unsubscriber = await pb
         .collection(collection)
@@ -49,7 +49,7 @@ export function useSubscriptionManager() {
   }
 
   function getObservable<T = unknown>(
-    collection: PbCollection
+    collection: PBCollection
   ): Observable<RecordSubscription<T>> {
     if (!unsubscribers[collection]) {
       /*

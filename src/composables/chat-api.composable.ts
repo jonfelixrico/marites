@@ -3,7 +3,7 @@ import { merge, mergeMap } from 'rxjs'
 import { APIChat, APIChatMember } from 'src/models/api-chat.interface'
 import { PBChatUserMembership } from 'src/models/pb-chat-user-membership.interface'
 import { PBChat } from 'src/models/pb-chat.interface'
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { PBCollection } from 'src/models/pb-collection.enum'
 import { BasePBRecord } from 'src/models/pb-record.interface'
 import { PBSubscriptionAction } from 'src/models/pb-subscription-action.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
@@ -54,7 +54,7 @@ export function useChatApi() {
   async function createChat({ name }: APICreateChatBody) {
     const userId = getSessionUser().id
 
-    await pb.collection(PbCollection.CHAT).create<APIChat>({
+    await pb.collection(PBCollection.CHAT).create<APIChat>({
       name,
       owner: userId,
     })
@@ -62,7 +62,7 @@ export function useChatApi() {
 
   async function hydrateChatMembers(chatId: string): Promise<APIChatMember[]> {
     const members = await pb
-      .collection(PbCollection.CHAT_USER_MEMBERSHIP)
+      .collection(PBCollection.CHAT_USER_MEMBERSHIP)
       .getFullList<RawAPIChatMember>(200, {
         filter: `chat.id = ${wrapString(chatId)}`,
         expand: 'user.username',
@@ -105,7 +105,7 @@ export function useChatApi() {
 
   async function getChat(chatId: string) {
     const rawChat = await pb
-      .collection(PbCollection.CHAT)
+      .collection(PBCollection.CHAT)
       .getOne<PBChatExpanded>(chatId, {
         expand: 'owner.username',
       })
@@ -115,7 +115,7 @@ export function useChatApi() {
 
   async function listChats() {
     const rawChats = await pb
-      .collection(PbCollection.CHAT)
+      .collection(PBCollection.CHAT)
       .getFullList<PBChatExpanded>(200, {
         expand: 'owner.username',
       })
@@ -124,9 +124,9 @@ export function useChatApi() {
   }
 
   function getChatListObservable() {
-    const chat$ = getObservable<PBChat>(PbCollection.CHAT)
+    const chat$ = getObservable<PBChat>(PBCollection.CHAT)
     const chatUserMembership$ = getObservable<PBChatUserMembership>(
-      PbCollection.CHAT_USER_MEMBERSHIP
+      PBCollection.CHAT_USER_MEMBERSHIP
     )
 
     const userId = getSessionUser().id

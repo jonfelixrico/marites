@@ -2,7 +2,7 @@ import { Chat } from 'src/models/chat.interface'
 import { useChatObservable } from 'src/services/chat-observable.service'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useChatStore } from 'src/stores/chat.store'
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { PBCollection } from 'src/models/pb-collection.enum'
 
 export function useChatList() {
   const pb = usePocketbase()
@@ -11,7 +11,7 @@ export function useChatList() {
 
   async function loadChatList() {
     const items = await pb
-      .collection(PbCollection.CHAT)
+      .collection(PBCollection.CHAT)
       .getFullList<Chat>(200, {
         sort: 'created',
       })

@@ -1,7 +1,7 @@
 import { RecordSubscription, UnsubscribeFunc } from 'pocketbase'
 import { Subject } from 'rxjs'
 import { usePocketbase } from './pocketbase.service'
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { PBCollection } from 'src/models/pb-collection.enum'
 import { PBChat } from 'src/models/pb-chat.interface'
 
 const subject = new Subject<RecordSubscription<PBChat>>()
@@ -21,7 +21,7 @@ export function useChatObservable() {
     }
 
     pbSubscription = await pb
-      .collection(PbCollection.CHAT)
+      .collection(PBCollection.CHAT)
       .subscribe<PBChat>('*', (event) => {
         console.debug('Received chat room %s', event.record.id)
         subject.next(event)

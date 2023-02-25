@@ -1,4 +1,4 @@
-export enum PbCollection {
+export enum PBCollection {
   CHAT = 'chat',
   CHAT_MESSAGE = 'chatMessage',
   /**
