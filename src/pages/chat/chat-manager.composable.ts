@@ -1,11 +1,10 @@
 import { useMessageStore } from 'src/stores/message.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
-import { useMessageObservable } from 'src/services/message-observable.service'
 import { Subscription } from 'rxjs'
 import { ChatMessage } from 'src/models/chat.interface'
-import { useChatStore } from 'src/stores/chat.store'
 import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
-import { useSessionApi } from 'src/composables/session-api.composable'
+import { useSubscriptionManager } from 'src/services/subscription-manager.service'
+import { PBCollection } from 'src/models/pb-collection.enum'
 
 function extractCreateDt(message?: ChatMessage) {
   return message?.created ? new Date(message.created) : new Date()
@@ -60,12 +59,14 @@ function useHistoryLoader(chatId: Ref<string>) {
 }
 
 function useNewMessagesListener(chatId: Ref<string>) {
-  const { observable } = useMessageObservable()
+  const { getObservable } = useSubscriptionManager()
   const store = useMessageStore()
 
   let subscription: Subscription
   onBeforeMount(() => {
-    subscription = observable.subscribe(({ record, action }) => {
+    subscription = getObservable<ChatMessage>(
+      PBCollection.CHAT_MESSAGE
+    ).subscribe(({ record, action }) => {
       if (action !== 'create' || record.chat !== chatId.value) {
         return
       }
@@ -81,33 +82,6 @@ function useNewMessagesListener(chatId: Ref<string>) {
   })
 }
 
-function useMessageSender(chatId: Ref<string>) {
-  const chatStore = useChatStore()
-  const { createMessage } = useChatMessageApi()
-  const { getSessionUser } = useSessionApi()
-
-  const chatMemberId = computed(() => {
-    const userId = getSessionUser()?.id
-
-    const membersArr = Object.values(chatStore.chatMembers[chatId.value] ?? [])
-    return membersArr.find(({ user }) => user === userId)?.id
-  })
-
-  async function sendMessage(content: string) {
-    const message = await createMessage({
-      content,
-      chatId: chatId.value,
-    })
-
-    console.log(`Sent message ${message.id} to chatroom ${chatId.value}`)
-  }
-
-  return {
-    sendMessage,
-    chatMemberId,
-  }
-}
-
 export function useChatManager(chatId: Ref<string>) {
   useNewMessagesListener(chatId)
   const load = useHistoryLoader(chatId)
@@ -119,6 +93,5 @@ export function useChatManager(chatId: Ref<string>) {
      */
     history: computed(() => store.chats[chatId.value] ?? []),
     load,
-    ...useMessageSender(chatId),
   }
 }

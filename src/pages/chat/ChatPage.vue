@@ -8,7 +8,7 @@
             <q-chat-message
               v-for="message of history"
               :key="message.id"
-              :sent="chatMemberId === message.sender"
+              :sent="userId === message.sender"
               @vnode-mounted="compensateScrollForNewMessage(message.id)"
             >
               <template #default>
@@ -49,6 +49,7 @@
 import type { QForm } from 'quasar'
 import ChatToolbar from 'src/components/chat-toolbar/ChatToolbar.vue'
 import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
+import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { useSessionApi } from 'src/composables/session-api.composable'
 import { PBCollection } from 'src/models/pb-collection.enum'
@@ -89,11 +90,8 @@ export default defineComponent({
     useMessageClearOnUnmount(chatId)
     useLoadChatMembersOnMount()
 
-    const {
-      sendMessage: baseSendMessage,
-      history,
-      ...others
-    } = useChatManager(chatId)
+    const { history, ...others } = useChatManager(chatId)
+    const { createMessage } = useChatMessageApi()
 
     const { scrollListener, keepScrollAtBottom } = useChatScroll()
     function onMessageMount(messageId: string) {
@@ -108,9 +106,12 @@ export default defineComponent({
 
     const contentModel = ref('')
     async function sendMessage() {
-      const copy = contentModel.value
+      const content = contentModel.value
       contentModel.value = ''
-      await baseSendMessage(copy)
+      await createMessage({
+        content,
+        chatId: chatId.value,
+      })
     }
 
     return {
