@@ -51,7 +51,7 @@ import ChatToolbar from 'src/components/chat-toolbar/ChatToolbar.vue'
 import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { useSessionApi } from 'src/composables/session-api.composable'
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStore } from 'src/stores/message.store'
 import { defineComponent, onBeforeMount, onBeforeUnmount, ref, Ref } from 'vue'
@@ -141,7 +141,7 @@ export default defineComponent({
   async beforeRouteEnter(to) {
     const pb = usePocketbase()
     // to validate that the user has access to the specified chat
-    await pb.collection(PbCollection.CHAT).getOne(String(to.params.chatId))
+    await pb.collection(PBCollection.CHAT).getOne(String(to.params.chatId))
   },
 })
 </script>
