@@ -1,4 +1,5 @@
 import { sortBy } from 'lodash'
+import { APIChat, APIChatMember } from 'src/models/api-chat.interface'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { BasePbRecord } from 'src/models/pb-record.interface'
 import { usePocketbase } from 'src/services/pocketbase.service'
@@ -18,15 +19,6 @@ interface RawAPIChatMember extends BasePbRecord {
       username: string
     }
   }
-}
-
-interface APIChatMember {
-  /**
-   * Id of the user.
-   */
-  id: string
-  username: string
-  joined: Date
 }
 
 function processRawAPIChatMember({
@@ -52,16 +44,6 @@ interface RawAPIChat {
   }
   created: Date
   updated: Date
-}
-
-interface APIChat extends BasePbRecord {
-  name: string
-  members: {
-    id: string
-    username: string
-    isOwner?: true
-    joined: Date
-  }[]
 }
 
 export function useChatApi() {
