@@ -11,6 +11,7 @@ export function usePromiseCache() {
     const wrapped = (wrappedFns[key] = fn())
     wrapped.finally(() => {
       delete wrappedFns[key]
+      console.debug('Job for key %s has finished', key)
     })
 
     return wrapped
