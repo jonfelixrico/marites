@@ -3,6 +3,9 @@ import { useChatStore } from 'src/stores/chat.store'
 import { computed, Ref } from 'vue'
 import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
 
+/**
+ * @deprecated
+ */
 export function usePreviewMessage(chatId: Ref<string>) {
   const store = useChatStore()
   const { getLastMessage } = useChatMessageApi()
