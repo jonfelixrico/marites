@@ -1,6 +1,6 @@
-import { BasePbRecord } from './pb-record.interface'
+import { BasePBRecord } from './pb-record.interface'
 
-export interface PBChatMessage extends BasePbRecord {
+export interface PBChatMessage extends BasePBRecord {
   content: string
   /**
    * Id of the chat the message belongs to.

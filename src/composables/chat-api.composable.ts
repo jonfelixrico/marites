@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash'
 import { APIChat, APIChatMember } from 'src/models/api-chat.interface'
 import { PbCollection } from 'src/models/pb-collection.enum'
-import { BasePbRecord } from 'src/models/pb-record.interface'
+import { BasePBRecord } from 'src/models/pb-record.interface'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { wrapString } from 'src/utils/pocketbase.util'
 import { useSessionApi } from './session-api.composable'
@@ -10,7 +10,7 @@ interface APICreateChatBody {
   name: string
 }
 
-interface RawAPIChatMember extends BasePbRecord {
+interface RawAPIChatMember extends BasePBRecord {
   user: string
   chat: string
   expand: {

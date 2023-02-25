@@ -1,5 +1,5 @@
 import { PbCollection } from 'src/models/pb-collection.enum'
-import { BasePbRecord } from 'src/models/pb-record.interface'
+import { BasePBRecord } from 'src/models/pb-record.interface'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { toFilterDate } from 'src/utils/pocketbase.util'
 import { useSessionApi } from './session-api.composable'
@@ -18,7 +18,7 @@ interface APIListMessagesBeforeCursorDateOptions {
   limit?: number
 }
 
-interface APIChatMessage extends BasePbRecord {
+interface APIChatMessage extends BasePBRecord {
   content: string
   chat: string
   sender: string

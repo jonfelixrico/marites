@@ -1,4 +1,4 @@
-import { BasePbRecord } from './pb-record.interface'
+import { BasePBRecord } from './pb-record.interface'
 
 export interface APIChatMember {
   id: string
@@ -7,7 +7,7 @@ export interface APIChatMember {
   joined: Date
 }
 
-export interface APIChat extends BasePbRecord {
+export interface APIChat extends BasePBRecord {
   name: string
   members: APIChatMember[]
 }
