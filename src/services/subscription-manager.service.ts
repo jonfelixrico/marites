@@ -48,7 +48,7 @@ export function useSubscriptionManager() {
     }
   }
 
-  function subscribe<T = unknown>(
+  function getObservable<T = unknown>(
     collection: PbCollection
   ): Observable<RecordSubscription<T>> {
     if (!unsubscribers[collection]) {
@@ -78,6 +78,6 @@ export function useSubscriptionManager() {
 
   return {
     unsubscribe,
-    getSubscription: subscribe,
+    getObservable,
   }
 }
