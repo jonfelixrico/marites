@@ -9,7 +9,7 @@
 <script lang="ts">
 import { ClientResponseError } from 'pocketbase'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
-import { ChatMember } from 'src/models/chat.interface'
+import { PBChatUserMembership } from 'src/models/pb-chat-user-membership.interface'
 import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent } from 'vue'
@@ -37,7 +37,7 @@ export default defineComponent({
     async checkIfMember(userId: string, chatId: string): Promise<boolean> {
       try {
         await this.pb
-          .collection(PBCollection.CHAT_MEMBER)
+          .collection(PBCollection.CHAT_USER_MEMBERSHIP)
           .getFirstListItem(`user = "${userId}" && chat = "${chatId}"`)
         return true
       } catch (e) {
@@ -95,10 +95,12 @@ export default defineComponent({
 
       // add user to the chat
       try {
-        await this.pb.collection(PBCollection.CHAT_MEMBER).create<ChatMember>({
-          user: userId,
-          chat: chatId,
-        })
+        await this.pb
+          .collection(PBCollection.CHAT_USER_MEMBERSHIP)
+          .create<PBChatUserMembership>({
+            user: userId,
+            chat: chatId,
+          })
         console.log(
           'Successfully added user %s as member of chat %s',
           userId,
