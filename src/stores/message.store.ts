@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { ChatMessage } from 'src/models/chat.interface'
+import { PBChatMessage } from 'src/models/pb-chat-message.interface'
 
 interface MessageStore {
   chats: {
-    [chatId: string]: ChatMessage[]
+    [chatId: string]: PBChatMessage[]
   }
 }
 
@@ -15,7 +15,7 @@ export const useMessageStore = defineStore('message', {
   }),
 
   actions: {
-    storeMessage(message: ChatMessage, location: InsertLocation) {
+    storeMessage(message: PBChatMessage, location: InsertLocation) {
       const { chat } = message
 
       if (!this.chats[chat]) {
@@ -30,7 +30,7 @@ export const useMessageStore = defineStore('message', {
       }
     },
 
-    storeMessages(location: InsertLocation, ...messages: ChatMessage[]) {
+    storeMessages(location: InsertLocation, ...messages: PBChatMessage[]) {
       for (const message of messages) {
         this.storeMessage(message, location)
       }

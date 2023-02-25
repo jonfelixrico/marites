@@ -1,12 +1,12 @@
 import { useMessageStore } from 'src/stores/message.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
 import { Subscription } from 'rxjs'
-import { ChatMessage } from 'src/models/chat.interface'
 import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
 import { useSubscriptionManager } from 'src/services/subscription-manager.service'
 import { PBCollection } from 'src/models/pb-collection.enum'
+import { PBChatMessage } from 'src/models/pb-chat-message.interface'
 
-function extractCreateDt(message?: ChatMessage) {
+function extractCreateDt(message?: PBChatMessage) {
   return message?.created ? new Date(message.created) : new Date()
 }
 
@@ -16,7 +16,7 @@ function useHistoryLoader(chatId: Ref<string>) {
 
   async function loadOlderMessages(
     chatId: string,
-    message?: ChatMessage,
+    message?: PBChatMessage,
     limit?: number
   ) {
     const items = await listMessagesBeforeCursorDate(
@@ -64,7 +64,7 @@ function useNewMessagesListener(chatId: Ref<string>) {
 
   let subscription: Subscription
   onBeforeMount(() => {
-    subscription = getObservable<ChatMessage>(
+    subscription = getObservable<PBChatMessage>(
       PBCollection.CHAT_MESSAGE
     ).subscribe(({ record, action }) => {
       if (action !== 'create' || record.chat !== chatId.value) {
