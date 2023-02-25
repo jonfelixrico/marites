@@ -11,7 +11,7 @@ interface SendMessageBody {
 interface APIChatMessage {
   content: string
   chat: string
-  user: string
+  sender: string
   created: Date
   updated: Date
   id: string
