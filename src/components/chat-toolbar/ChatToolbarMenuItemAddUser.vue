@@ -110,6 +110,10 @@ export default defineComponent({
           message: this.$t('chat.toolbar.dialog.addUserSuccess.message', {
             username,
           }),
+          ok: {
+            noCaps: true,
+            unelevated: true,
+          },
         })
       } catch (e) {
         this.showErrorDialog('generic', username)
