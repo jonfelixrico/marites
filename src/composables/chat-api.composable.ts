@@ -8,13 +8,6 @@ interface APICreateChatBody {
   name: string
 }
 
-interface APIChat {
-  id: string
-  name: string
-  created: Date
-  updated: Date
-}
-
 interface RawAPIChatMember {
   id: string
   user: string
@@ -62,7 +55,6 @@ interface APIChat {
   id: string
   name: string
   created: Date
-  updated: Date
   members: {
     id: string
     username: string
@@ -95,7 +87,7 @@ export function useChatApi() {
   }
 
   async function getChat(chatId: string): Promise<APIChat> {
-    const { id, owner, expand, name, created, updated } = await pb
+    const { id, owner, expand, name, created } = await pb
       .collection(PbCollection.CHAT)
       .getOne<RawAPIChat>(chatId, {
         expand: 'owner.username',
@@ -115,7 +107,6 @@ export function useChatApi() {
       id,
       name,
       created,
-      updated,
       members: sortBy(members, (member) => member.username),
     }
   }
