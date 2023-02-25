@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import type { QForm } from 'quasar'
-import ChatToolbar from 'src/components/chat/ChatToolbar.vue'
+import ChatToolbar from 'src/components/chat/toolbar/ChatToolbar.vue'
 import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { PbCollection } from 'src/models/pb-collection.enum'
