@@ -136,14 +136,16 @@ export function useChatApi() {
         mergeMap(async ({ action, record }) => {
           if (action === PBSubscriptionAction.DELETE) {
             return {
-              id: record.id,
-              deleted: true,
+              record: {
+                id: record.id,
+              },
+              action,
             }
           }
 
           return {
-            ...(await getChat(record.id)),
-            deleted: false,
+            record: await getChat(record.id),
+            action,
           }
         })
       ),
@@ -154,14 +156,16 @@ export function useChatApi() {
             record.user === userId
           ) {
             return {
-              id: record.id,
-              deleted: true,
+              record: {
+                id: record.chat,
+              },
+              action,
             }
           }
 
           return {
-            ...(await getChat(record.id)),
-            deleted: false,
+            action: PBSubscriptionAction.UPDATE,
+            record: await getChat(record.id),
           }
         })
       )
