@@ -34,7 +34,7 @@ function processRawAPIChatMember({
   }
 }
 
-interface RawAPIChat extends PBChat {
+interface PBChatExpanded extends PBChat {
   expand: {
     owner: {
       username: string
@@ -73,7 +73,7 @@ export function useChatApi() {
     name,
     created,
     updated,
-  }: RawAPIChat): Promise<APIChat> {
+  }: PBChatExpanded): Promise<APIChat> {
     const apiMembers = await hydrateChatMembers(id)
     const members: APIChat['members'] = [
       {
@@ -101,7 +101,7 @@ export function useChatApi() {
   async function getChat(chatId: string) {
     const rawChat = await pb
       .collection(PbCollection.CHAT)
-      .getOne<RawAPIChat>(chatId, {
+      .getOne<PBChatExpanded>(chatId, {
         expand: 'owner.username',
       })
 
@@ -111,7 +111,7 @@ export function useChatApi() {
   async function listChats() {
     const rawChats = await pb
       .collection(PbCollection.CHAT)
-      .getFullList<RawAPIChat>(200, {
+      .getFullList<PBChatExpanded>(200, {
         expand: 'owner.username',
       })
 
