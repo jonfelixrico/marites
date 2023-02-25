@@ -134,7 +134,7 @@ export function useChatApi() {
     return await hydrateChat(rawChat)
   }
 
-  async function listChat() {
+  async function listChats() {
     const rawChats = await pb
       .collection(PbCollection.CHAT)
       .getFullList<RawAPIChat>(200, {
@@ -147,6 +147,6 @@ export function useChatApi() {
   return {
     createChat,
     getChat,
-    listChat,
+    listChats,
   }
 }
