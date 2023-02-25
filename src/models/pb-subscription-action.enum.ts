@@ -1,5 +1,5 @@
 export enum PBSubscriptionAction {
-  create = 'create',
-  delete = 'delete',
-  update = 'update',
+  CREATE = 'create',
+  DELETE = 'delete',
+  UPDATE = 'update',
 }

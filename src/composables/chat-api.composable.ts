@@ -134,7 +134,7 @@ export function useChatApi() {
     return merge(
       chat$.pipe(
         mergeMap(async ({ action, record }) => {
-          if (action === PBSubscriptionAction.delete) {
+          if (action === PBSubscriptionAction.DELETE) {
             return {
               id: record.id,
               deleted: true,
@@ -147,7 +147,7 @@ export function useChatApi() {
       chatUserMembership$.pipe(
         mergeMap(async ({ action, record }) => {
           if (
-            action === PBSubscriptionAction.delete &&
+            action === PBSubscriptionAction.DELETE &&
             record.user === userId
           ) {
             return {
