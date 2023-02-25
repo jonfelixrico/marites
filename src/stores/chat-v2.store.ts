@@ -35,5 +35,9 @@ export const useChatStore = defineStore('chat-v2', {
     storeChat(chat: APIChat) {
       this.chats[chat.id] = chat
     },
+
+    removeChat(chatId: string) {
+      delete this.chats[chatId]
+    },
   },
 })
