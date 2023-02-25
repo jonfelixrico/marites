@@ -2,6 +2,7 @@ import { RecordSubscription, UnsubscribeFunc } from 'pocketbase'
 import { filter, map, Observable, Subject } from 'rxjs'
 import { PbCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from './pocketbase.service'
+import { usePromiseCache } from './promise-cache.service'
 
 interface GenericRecordSubscription extends RecordSubscription<unknown> {
   collection: string
@@ -12,6 +13,7 @@ const unsubscribers: Record<string, UnsubscribeFunc> = {}
 
 export function useSubscriptionManager() {
   const pb = usePocketbase()
+  const promiseCache = usePromiseCache()
 
   function unsubscribe() {
     console.debug('Starting the unsubscription process...')
@@ -54,9 +56,13 @@ export function useSubscriptionManager() {
        * Intended to be ran asynchronously since there's no point in trying to await
        * the subscription anyway because of its realtime nature.
        *
-       * WARNING: this might create a race condition if getSubscription for the same collection was called twice
+       * We're wrapping this to ensure that only one subscription to PB is being attempted at any given time.
+       * A race condition can happen if the getSubscription method for a single collection was called twice in a single
+       * moment.
        */
-      createSubscription(collection)
+      promiseCache.wrap(`subscribe-${collection}`, () =>
+        createSubscription(collection)
+      )
     }
 
     return subject.pipe(
