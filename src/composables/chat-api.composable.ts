@@ -18,6 +18,7 @@ interface RawAPIChatMember {
       username: string
     }
   }
+  created: Date
 }
 
 interface APIChatMember {
@@ -26,15 +27,18 @@ interface APIChatMember {
    */
   id: string
   username: string
+  joined: Date
 }
 
 function processRawAPIChatMember({
   expand,
   user,
+  created,
 }: RawAPIChatMember): APIChatMember {
   return {
     id: user,
     username: expand.user.username,
+    joined: created,
   }
 }
 
@@ -55,10 +59,12 @@ interface APIChat {
   id: string
   name: string
   created: Date
+  updated: Date
   members: {
     id: string
     username: string
     isOwner?: true
+    joined: Date
   }[]
 }
 
@@ -87,7 +93,7 @@ export function useChatApi() {
   }
 
   async function getChat(chatId: string): Promise<APIChat> {
-    const { id, owner, expand, name, created } = await pb
+    const { id, owner, expand, name, created, updated } = await pb
       .collection(PbCollection.CHAT)
       .getOne<RawAPIChat>(chatId, {
         expand: 'owner.username',
@@ -99,6 +105,11 @@ export function useChatApi() {
         id: owner,
         username: expand.owner.username,
         isOwner: true,
+        /*
+         * Data-wise, the owner does not have its own join date. We're using the chat's creation date here because
+         * the owner data gets bound during chat creation.
+         */
+        joined: created,
       },
       ...apiMembers,
     ]
@@ -107,6 +118,7 @@ export function useChatApi() {
       id,
       name,
       created,
+      updated,
       members: sortBy(members, (member) => member.username),
     }
   }
