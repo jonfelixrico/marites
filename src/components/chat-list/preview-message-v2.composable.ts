@@ -1,4 +1,3 @@
-import { onBeforeMount, onBeforeUnmount } from 'vue'
 import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
 import { useChatStore } from 'src/stores/chat-v2.store'
 import { useSubscriptionManager } from 'src/services/subscription-manager.service'
@@ -17,17 +16,6 @@ export function usePreviewMessage() {
       store.storePreviewMessage(message)
     }
   }
-
-  let unsubscriber: () => void
-  onBeforeUnmount(() => {
-    if (unsubscriber) {
-      unsubscriber()
-    }
-  })
-
-  onBeforeMount(() => {
-    unsubscriber = listenForLatestMessage()
-  })
 
   function listenForLatestMessage(): () => void {
     const subscription = getObservable<PBChatMessage>(
