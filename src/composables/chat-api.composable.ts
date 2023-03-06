@@ -1,4 +1,5 @@
 import { sortBy } from 'lodash'
+import { ClientResponseError } from 'pocketbase'
 import { merge, mergeMap } from 'rxjs'
 import { APIChat, APIChatMember } from 'src/models/api-chat.interface'
 import { PBChatUserMembership } from 'src/models/pb-chat-user-membership.interface'
@@ -66,7 +67,30 @@ export function useChatApi() {
     return await getChat(id)
   }
 
+  async function hasUserAlreadyJoined(
+    chatId: string,
+    userId: string
+  ): Promise<boolean> {
+    try {
+      await pb
+        .collection(PBCollection.CHAT_USER_MEMBERSHIP)
+        .getFirstListItem(`chat.id =  ${chatId} && user.id = ${userId}`)
+      return true
+    } catch (e) {
+      if (e instanceof ClientResponseError && e.status === 404) {
+        return false
+      }
+
+      throw e
+    }
+  }
+
   async function joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
+    if (!hasUserAlreadyJoined) {
+      // TODO make custom error
+      throw new Error('User already joined.')
+    }
+
     await pb.collection(PBCollection.CHAT_USER_MEMBERSHIP).create({
       chat: chatId,
       user: getSessionUser().id,
