@@ -74,7 +74,7 @@ export function useChatApi() {
     try {
       await pb
         .collection(PBCollection.CHAT_USER_MEMBERSHIP)
-        .getFirstListItem(`chat.id =  ${chatId} && user.id = ${userId}`)
+        .getFirstListItem(`chat.id = ${chatId} && user.id = ${userId}`)
       return true
     } catch (e) {
       if (e instanceof ClientResponseError && e.status === 404) {
