@@ -7,33 +7,27 @@
 </template>
 
 <script lang="ts">
-import { ClientResponseError } from 'pocketbase'
+import { useChatApi } from 'src/composables/chat-api.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
-import { PBChatUserMembership } from 'src/models/pb-chat-user-membership.interface'
-import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent } from 'vue'
+import { ProjectError } from 'src/models/project-error.class'
+import { ProjectErrorCode } from 'src/models/project-error-code.enum'
 
 export default defineComponent({
   setup() {
     const pb = usePocketbase()
     const chatId = useChatIdFromRoute()
+    const { addUserToChat } = useChatApi()
 
     return {
       pb,
       chatId,
+      addUserToChat,
     }
   },
 
   methods: {
-    async getUserId(username: string) {
-      const { id } = await this.pb
-        .collection(PBCollection.USER)
-        .getFirstListItem(`username = "${username}"`)
-
-      return id
-    },
-
     showErrorDialog(i18nSubpath: string, username: string) {
       this.$q.dialog({
         title: this.$t('chat.toolbar.dialog.addUserError.title'),
@@ -50,41 +44,8 @@ export default defineComponent({
     async processUserAdd(username: string) {
       const { chatId } = this
 
-      // convert username to user id
-      let userId: string
       try {
-        userId = await this.getUserId(username)
-        console.debug('Username %s is id %s', username, userId)
-      } catch (e) {
-        if (e instanceof ClientResponseError && e.status === 404) {
-          this.showErrorDialog('notFound', username)
-          console.error('User %s was not found.', username)
-        } else {
-          this.showErrorDialog('generic', username)
-          console.error(
-            'Error encountered while looking for user %s',
-            username,
-            e
-          )
-        }
-
-        return
-      }
-
-      // add user to the chat
-      try {
-        await this.pb
-          .collection(PBCollection.CHAT_USER_MEMBERSHIP)
-          .create<PBChatUserMembership>({
-            user: userId,
-            chat: chatId,
-          })
-        console.log(
-          'Successfully added user %s as member of chat %s',
-          userId,
-          chatId
-        )
-
+        await this.addUserToChat({ chatId, username })
         this.$q.dialog({
           title: this.$t('chat.toolbar.dialog.addUserSuccess.title'),
           message: this.$t('chat.toolbar.dialog.addUserSuccess.message', {
@@ -96,14 +57,24 @@ export default defineComponent({
           },
         })
       } catch (e) {
-        if (e instanceof ClientResponseError && e.status === 400) {
-          this.showErrorDialog('alreadyAdded', username)
-          console.warn('User %s is already a member of chat %s', userId, chatId)
-          return
+        if (e instanceof ProjectError) {
+          if (e.code === ProjectErrorCode.USER_USERNAME_NOT_FOUND) {
+            console.error('User %s was not found.', username)
+            this.showErrorDialog('notFound', username)
+            return
+          } else if (e.code === ProjectErrorCode.CHAT_MEMBER_ALREADY_JOINED) {
+            console.warn(
+              'User %s is already a member of chat %s',
+              username,
+              chatId
+            )
+            this.showErrorDialog('alreadyAdded', username)
+            return
+          }
         }
 
         this.showErrorDialog('generic', username)
-        console.error('Error encountered while adding user %s', username, e)
+        console.error('Error encountered', e)
       }
     },
 
