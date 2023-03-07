@@ -20,6 +20,11 @@ interface APIChatJoinBody {
   chatId: string
 }
 
+interface APIAddUserToChatBody {
+  chatId: string
+  username: string
+}
+
 interface RawAPIChatMember extends BasePBRecord {
   user: string
   chat: string
@@ -149,7 +154,7 @@ function useAddMemberMethods() {
     }
   }
 
-  async function addUserToChat(chatId: string, userId: string) {
+  async function addToChatHelper(chatId: string, userId: string) {
     if (!(await hasUserAlreadyJoined)) {
       // TODO make custom error
       throw new Error('User already joined.')
@@ -161,13 +166,23 @@ function useAddMemberMethods() {
     })
   }
 
+  async function addUserToChat({ chatId, username }: APIAddUserToChatBody) {
+    const { id: userId } = await pb
+      .collection(PBCollection.USER)
+      .getFirstListItem(`username = "${username}"`)
+
+    await addToChatHelper(chatId, userId)
+    return await getChat(chatId)
+  }
+
   async function joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
-    await addUserToChat(chatId, getSessionUser().id)
+    await addToChatHelper(chatId, getSessionUser().id)
     return await getChat(chatId)
   }
 
   return {
     joinChat,
+    addUserToChat,
   }
 }
 
