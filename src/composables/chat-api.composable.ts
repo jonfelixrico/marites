@@ -31,6 +31,11 @@ interface RawAPIChatMember extends BasePBRecord {
   }
 }
 
+/**
+ * @private
+ * @param param0
+ * @returns
+ */
 function processRawAPIChatMember({
   expand,
   user,
@@ -51,53 +56,12 @@ interface PBChatExpanded extends PBChat {
   }
 }
 
-export function useChatApi() {
+/**
+ * @private
+ * @returns
+ */
+function useFetchMethods() {
   const pb = usePocketbase()
-  const { getSessionUser } = useSessionApi()
-  const { getObservable } = useSubscriptionManager()
-
-  async function createChat({ name }: APICreateChatBody): Promise<APIChat> {
-    const userId = getSessionUser().id
-
-    const { id } = await pb.collection(PBCollection.CHAT).create<APIChat>({
-      name,
-      owner: userId,
-    })
-
-    return await getChat(id)
-  }
-
-  async function hasUserAlreadyJoined(
-    chatId: string,
-    userId: string
-  ): Promise<boolean> {
-    try {
-      await pb
-        .collection(PBCollection.CHAT_USER_MEMBERSHIP)
-        .getFirstListItem(`chat.id = ${chatId} && user.id = ${userId}`)
-      return true
-    } catch (e) {
-      if (e instanceof ClientResponseError && e.status === 404) {
-        return false
-      }
-
-      throw e
-    }
-  }
-
-  async function joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
-    if (!hasUserAlreadyJoined) {
-      // TODO make custom error
-      throw new Error('User already joined.')
-    }
-
-    await pb.collection(PBCollection.CHAT_USER_MEMBERSHIP).create({
-      chat: chatId,
-      user: getSessionUser().id,
-    })
-    return await getChat(chatId)
-  }
-
   async function hydrateChatMembers(chatId: string): Promise<APIChatMember[]> {
     const members = await pb
       .collection(PBCollection.CHAT_USER_MEMBERSHIP)
@@ -149,6 +113,74 @@ export function useChatApi() {
       })
 
     return await hydrateChat(rawChat)
+  }
+
+  return {
+    getChat,
+    hydrateChat,
+  }
+}
+
+/**
+ * Contains methods related to joining people into chats.
+ * @private
+ */
+function useAddMemberMethods() {
+  const pb = usePocketbase()
+  const { getSessionUser } = useSessionApi()
+  const { getChat } = useFetchMethods()
+
+  async function hasUserAlreadyJoined(
+    chatId: string,
+    userId: string
+  ): Promise<boolean> {
+    try {
+      await pb
+        .collection(PBCollection.CHAT_USER_MEMBERSHIP)
+        .getFirstListItem(`chat.id = ${chatId} && user.id = ${userId}`)
+      return true
+    } catch (e) {
+      if (e instanceof ClientResponseError && e.status === 404) {
+        return false
+      }
+
+      throw e
+    }
+  }
+
+  async function joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
+    if (!hasUserAlreadyJoined) {
+      // TODO make custom error
+      throw new Error('User already joined.')
+    }
+
+    await pb.collection(PBCollection.CHAT_USER_MEMBERSHIP).create({
+      chat: chatId,
+      user: getSessionUser().id,
+    })
+    return await getChat(chatId)
+  }
+
+  return {
+    joinChat,
+  }
+}
+
+export function useChatApi() {
+  const pb = usePocketbase()
+  const { getSessionUser } = useSessionApi()
+  const { getObservable } = useSubscriptionManager()
+  const { getChat, hydrateChat } = useFetchMethods()
+
+  async function createChat({ name }: APICreateChatBody): Promise<APIChat> {
+    const userId = getSessionUser().id
+
+    const { id } = await pb.collection(PBCollection.CHAT).create<APIChat>({
+      name,
+      owner: userId,
+    })
+
+    return await getChat(id)
   }
 
   async function listChats() {
@@ -215,6 +247,6 @@ export function useChatApi() {
     getChat,
     listChats,
     getChatListObservable,
-    joinChat,
+    ...useAddMemberMethods(),
   }
 }
