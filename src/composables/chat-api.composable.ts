@@ -145,7 +145,9 @@ function useAddMemberMethods() {
     try {
       await pb
         .collection(PBCollection.CHAT_USER_MEMBERSHIP)
-        .getFirstListItem(`chat.id = ${chatId} && user.id = ${userId}`)
+        .getFirstListItem(
+          `chat.id = ${wrapString(chatId)} && user.id = ${wrapString(userId)}`
+        )
       return true
     } catch (e) {
       if (e instanceof ClientResponseError && e.status === 404) {
