@@ -57,6 +57,7 @@ interface PBChatExpanded extends PBChat {
 }
 
 /**
+ * Contains methods related to fetching chat data.
  * @private
  * @returns
  */
