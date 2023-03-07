@@ -173,28 +173,31 @@ function useAddMemberMethods() {
     return id
   }
 
-  return {
-    /**
-     * Makes the session user add another user to the chat.
-     *
-     * WARNING: does not do verification if the adder has the necessary rights.
-     * @param param0
-     * @returns
-     */
-    async addUserToChat({ chatId, username }: APIAddUserToChatBody) {
-      await addToChatHelper(chatId, await getIdFromUsername(username))
-      return await getChat(chatId)
-    },
+  /**
+   * Makes the session user add another user to the chat.
+   *
+   * WARNING: does not do verification if the adder has the necessary rights.
+   * @param param0
+   * @returns
+   */
+  async function addUserToChat({ chatId, username }: APIAddUserToChatBody) {
+    await addToChatHelper(chatId, await getIdFromUsername(username))
+    return await getChat(chatId)
+  }
 
-    /**
-     * Makes the session user join a chat.
-     * @param param0
-     * @returns
-     */
-    async joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
-      await addToChatHelper(chatId, getSessionUser().id)
-      return await getChat(chatId)
-    },
+  /**
+   * Makes the session user join a chat.
+   * @param param0
+   * @returns
+   */
+  async function joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
+    await addToChatHelper(chatId, getSessionUser().id)
+    return await getChat(chatId)
+  }
+
+  return {
+    joinChat,
+    addUserToChat,
   }
 }
 
