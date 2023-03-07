@@ -150,7 +150,7 @@ function useAddMemberMethods() {
   }
 
   async function addUserToChat(chatId: string, userId: string) {
-    if (!hasUserAlreadyJoined) {
+    if (!(await hasUserAlreadyJoined)) {
       // TODO make custom error
       throw new Error('User already joined.')
     }
