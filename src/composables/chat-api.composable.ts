@@ -7,6 +7,8 @@ import { PBChat } from 'src/models/pb-chat.interface'
 import { PBCollection } from 'src/models/pb-collection.enum'
 import { BasePBRecord } from 'src/models/pb-record.interface'
 import { PBSubscriptionAction } from 'src/models/pb-subscription-action.enum'
+import { ProjectErrorCode } from 'src/models/project-error-code.enum'
+import { ProjectError } from 'src/models/project-error.class'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useSubscriptionManager } from 'src/services/subscription-manager.service'
 import { wrapString } from 'src/utils/pocketbase.util'
@@ -155,9 +157,8 @@ function useAddMemberMethods() {
   }
 
   async function addToChatHelper(chatId: string, userId: string) {
-    if (!(await hasUserAlreadyJoined)) {
-      // TODO make custom error
-      throw new Error('User already joined.')
+    if (await hasUserAlreadyJoined) {
+      throw new ProjectError(ProjectErrorCode.CHAT_MEMBER_ALREADY_JOINED)
     }
 
     await pb.collection(PBCollection.CHAT_USER_MEMBERSHIP).create({
@@ -167,10 +168,18 @@ function useAddMemberMethods() {
   }
 
   async function getIdFromUsername(username: string): Promise<string> {
-    const { id } = await pb
-      .collection(PBCollection.USER)
-      .getFirstListItem(`username = "${username}"`)
-    return id
+    try {
+      const { id } = await pb
+        .collection(PBCollection.USER)
+        .getFirstListItem(`username = "${username}"`)
+      return id
+    } catch (e) {
+      if (e instanceof ClientResponseError && e.status === 404) {
+        throw new ProjectError(ProjectErrorCode.USER_USERNAME_NOT_FOUND)
+      }
+
+      throw e
+    }
   }
 
   /**
