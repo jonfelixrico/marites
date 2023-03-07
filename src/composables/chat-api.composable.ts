@@ -149,7 +149,7 @@ function useAddMemberMethods() {
     }
   }
 
-  async function joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
+  async function addUserToChat(chatId: string, userId: string) {
     if (!hasUserAlreadyJoined) {
       // TODO make custom error
       throw new Error('User already joined.')
@@ -157,8 +157,12 @@ function useAddMemberMethods() {
 
     await pb.collection(PBCollection.CHAT_USER_MEMBERSHIP).create({
       chat: chatId,
-      user: getSessionUser().id,
+      user: userId,
     })
+  }
+
+  async function joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
+    await addUserToChat(chatId, getSessionUser().id)
     return await getChat(chatId)
   }
 
