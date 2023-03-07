@@ -157,7 +157,7 @@ function useAddMemberMethods() {
   }
 
   async function addToChatHelper(chatId: string, userId: string) {
-    if (await hasUserAlreadyJoined) {
+    if (await hasUserAlreadyJoined(chatId, userId)) {
       throw new ProjectError(ProjectErrorCode.CHAT_MEMBER_ALREADY_JOINED)
     }
 
