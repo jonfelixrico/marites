@@ -14,6 +14,8 @@ export default {
     username: 'Username',
     password: 'Password',
     button: 'Log In',
+    usernameRequired: 'Please fill in your username',
+    passwordRequired: 'Please fill in your password',
   },
 
   dialogs: {

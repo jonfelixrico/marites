@@ -2,7 +2,7 @@
   <div class="fullscreen bg-grey-3 row justify-center items-center">
     <q-card flat class="login-form">
       <q-card-section>
-        <q-form @submit="authenticate" class="q-gutter-y-md">
+        <q-form @submit="authenticate" class="q-gutter-y-sm">
           <div>
             <div class="text-weight-bold">
               {{ $t('session.logInForm.username') }}
@@ -12,6 +12,10 @@
               outlined
               v-model="credentials.username"
               autocomplete="username"
+              :rules="[
+                (val) => !!val || $t('session.logInForm.usernameRequired'),
+              ]"
+              dense
             />
           </div>
 
@@ -25,6 +29,10 @@
               v-model="credentials.password"
               type="password"
               autocomplete="current-password"
+              :rules="[
+                (val) => !!val || $t('session.logInForm.passwordRequired'),
+              ]"
+              dense
             />
           </div>
 
