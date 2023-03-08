@@ -15,4 +15,14 @@ export default {
     password: 'Password',
     button: 'Log In',
   },
+
+  dialogs: {
+    logInError: {
+      title: 'Log in failed',
+      message: {
+        wrongCredentials: 'Wrong credentials provided',
+        generic: 'Something went wrong while trying to log you in',
+      },
+    },
+  },
 }

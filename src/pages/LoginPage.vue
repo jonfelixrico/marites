@@ -49,6 +49,7 @@ import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent, reactive } from 'vue'
 import { hasPBErrorStatus } from 'src/utils/pocketbase.util'
+import { useDialogHelper } from 'src/composables/dialog-helper.composable'
 
 export default defineComponent({
   setup() {
@@ -62,6 +63,7 @@ export default defineComponent({
     return {
       pb,
       credentials,
+      ...useDialogHelper(),
     }
   },
 
@@ -82,7 +84,19 @@ export default defineComponent({
       } catch (e) {
         this.credentials.password = ''
         if (hasPBErrorStatus(e, 400)) {
+          this.showBasicDialog({
+            title: this.$t('session.dialogs.logInError.title'),
+            message: this.$t(
+              'session.dialogs.logInError.message.wrongCredentials'
+            ),
+          })
+          return
         }
+
+        this.showBasicDialog({
+          title: this.$t('session.dialogs.logInError.title'),
+          message: this.$t('session.dialogs.logInError.message.generic'),
+        })
       } finally {
         this.$q.loading.hide()
       }
