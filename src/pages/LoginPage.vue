@@ -7,7 +7,12 @@
             <div class="text-weight-bold">
               {{ $t('session.logInForm.username') }}
             </div>
-            <q-input name="username" outlined v-model="credentials.username" />
+            <q-input
+              name="username"
+              outlined
+              v-model="credentials.username"
+              autocomplete="username"
+            />
           </div>
 
           <div>
@@ -19,6 +24,7 @@
               outlined
               v-model="credentials.password"
               type="password"
+              autocomplete="current-password"
             />
           </div>
 
