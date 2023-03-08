@@ -57,6 +57,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .active-chat {
+  /*
+   * Since we want the "hover" effect, we have to utilize q-focus-helper.
+   * TODO find a better way for this. This is kind of hacky.
+   */
   :deep(.q-focus-helper) {
     opacity: 0.1;
     background: $primary;
