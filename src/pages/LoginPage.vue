@@ -78,6 +78,7 @@ export default defineComponent({
           name: 'home',
         })
       } catch (e) {
+        this.credentials.password = ''
         console.error(e)
       }
     },
