@@ -1,5 +1,5 @@
 <template>
-  <div class="fullscreen bg-grey-3 row justify-center items-center">
+  <div class="fullscreen bg-grey-2 row justify-center items-center">
     <q-card flat class="login-form">
       <q-card-section>
         <q-form @submit="authenticate" class="q-gutter-y-sm">

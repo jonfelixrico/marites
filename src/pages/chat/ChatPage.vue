@@ -1,6 +1,6 @@
 <template>
-  <q-page class="column">
-    <ChatToolbar />
+  <div class="column">
+    <ChatToolbar class="border-bottom" />
     <div class="col relative-position">
       <div class="absolute fit scroll" @scroll.passive="scrollListener">
         <q-infinite-scroll @load="handleLoad" reverse>
@@ -24,29 +24,22 @@
       </div>
     </div>
 
-    <q-form
-      @submit="sendMessage"
-      class="row items-end q-gutter-x-xs"
-      autofocus
-      ref="form"
-    >
+    <div class="q-pa-xs q-pt-none bg-white border-top">
       <q-input
         type="textarea"
-        class="col"
         name="content"
         v-model="contentModel"
         outlined
-        @keypress.enter.exact.prevent="triggerSubmit"
+        @keypress.enter.exact.prevent="sendMessage"
         autogrow
         dense
+        :placeholder="$t('chat.textboxPlaceholder')"
       />
-      <q-btn type="submit" label="Send" color="primary" />
-    </q-form>
-  </q-page>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import type { QForm } from 'quasar'
 import ChatToolbar from 'src/components/chat-toolbar/ChatToolbar.vue'
 import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
@@ -112,11 +105,6 @@ export default defineComponent({
   },
 
   methods: {
-    triggerSubmit() {
-      const form = this.$refs.form as QForm
-      form.submit()
-    },
-
     async handleLoad(index: number, doneFn: (stop: boolean) => void) {
       const isDone = await this.load()
       doneFn(isDone)

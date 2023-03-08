@@ -15,18 +15,24 @@ const routes: RouteRecordRaw[] = [
 
   {
     path: '/home',
-    name: 'home',
-    component: () => import('layouts/chat/ChatLayout.vue'),
+    component: () => import('src/layouts/MainLayout.vue'),
     children: [
       {
         path: '',
-        name: 'chatIndex',
-        component: () => import('pages/chat/IndexChatPage.vue'),
-      },
-      {
-        path: ':chatId',
-        name: 'chat',
-        component: () => import('pages/chat/ChatPage.vue'),
+        name: 'home',
+        component: () => import('src/layouts/ChatLayout.vue'),
+        children: [
+          {
+            path: '',
+            name: 'chatIndex',
+            component: () => import('pages/chat/IndexChatPage.vue'),
+          },
+          {
+            path: ':chatId',
+            name: 'chat',
+            component: () => import('pages/chat/ChatPage.vue'),
+          },
+        ],
       },
     ],
   },

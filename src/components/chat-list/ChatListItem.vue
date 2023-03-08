@@ -3,10 +3,18 @@
     clickable
     @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
     :active="chat.id === $route.params.chatId"
+    active-class="active-chat"
   >
     <q-item-section>
-      <div>{{ chat.name }}</div>
-      <div v-if="previewMessage">{{ previewMessage.content }}</div>
+      <div class="text-body1 text-weight-bold">
+        {{ chat.name }}
+      </div>
+      <div v-if="previewMessage">
+        <span class="text-weight-bold text-primary">
+          {{ previewMessage.username }}:
+        </span>
+        {{ previewMessage.content }}
+      </div>
     </q-item-section>
   </q-item>
 </template>
@@ -28,8 +36,36 @@ export default defineComponent({
     const store = useChatStore()
 
     return {
-      previewMessage: computed(() => store.previewMessages[props.chat.id]),
+      previewMessage: computed(() => {
+        const message = store.previewMessages[props.chat.id]
+
+        if (!message) {
+          return null
+        }
+
+        return {
+          ...message,
+          username: props.chat.members.find(
+            (member) => member.id === message.sender
+          )?.username,
+        }
+      }),
     }
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.active-chat {
+  /*
+   * Since we want the "hover" effect, we have to utilize q-focus-helper.
+   * TODO find a better way for this. This is kind of hacky.
+   */
+  :deep(.q-focus-helper) {
+    opacity: 0.1;
+    background: $primary;
+  }
+
+  color: black;
+}
+</style>

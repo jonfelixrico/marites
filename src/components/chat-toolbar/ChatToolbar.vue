@@ -1,8 +1,11 @@
 <template>
   <!-- TODO make color more suitable -->
-  <q-toolbar class="row items-center justify-between">
-    <div>
-      {{ chat?.name }}
+  <q-toolbar class="row items-center justify-between bg-white">
+    <div class="row items-center q-gutter-x-sm">
+      <q-btn icon="close" flat round dense size="sm" @click="closeChat" />
+      <div>
+        {{ chat?.name }}
+      </div>
     </div>
 
     <ChatToolbarMenuButton />
@@ -27,6 +30,14 @@ export default defineComponent({
     return {
       chat,
     }
+  },
+
+  methods: {
+    closeChat() {
+      this.$router.push({
+        name: 'chatIndex',
+      })
+    },
   },
 })
 </script>
