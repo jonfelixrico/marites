@@ -28,7 +28,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, computed } from 'vue'
+import { useMainLayoutStore } from 'stores/main-layout.store'
 import { useCreateChat } from './create-chat.composable'
 import { useSessionService } from 'src/services/session.service'
 import { useJoinChat } from './join-chat.composable'
@@ -38,15 +39,25 @@ export default defineComponent({
     const createChat = useCreateChat()
     const joinChat = useJoinChat()
 
-    const showDrawer = ref(true)
+    const store = useMainLayoutStore()
+
+    const showDrawer = computed({
+      get() {
+        return store.showDrawer
+      },
+
+      set(value: boolean) {
+        store.setShowDrawer(value)
+      },
+    })
 
     const { promptLogOut } = useSessionService()
 
     return {
       createChat,
-      showDrawer,
       promptLogOut,
       joinChat,
+      showDrawer,
     }
   },
 })
