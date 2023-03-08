@@ -4,18 +4,34 @@
       <q-card flat>
         <q-card-section>
           <div class="q-gutter-y-md">
-            <q-input name="username" outlined v-model="credentials.username" />
-            <q-input
-              name="password"
-              outlined
-              v-model="credentials.password"
-              type="password"
-            />
+            <div>
+              <div class="text-weight-bold">
+                {{ $t('session.logInForm.username') }}
+              </div>
+              <q-input
+                name="username"
+                outlined
+                v-model="credentials.username"
+              />
+            </div>
+
+            <div>
+              <div class="text-weight-bold">
+                {{ $t('session.logInForm.password') }}
+              </div>
+              <q-input
+                name="password"
+                outlined
+                v-model="credentials.password"
+                type="password"
+              />
+            </div>
+
             <div class="row">
               <q-btn
                 unelevated
                 color="primary"
-                :label="$t('session.logIn')"
+                :label="$t('session.logInForm.button')"
                 no-caps
                 type="submit"
                 class="col-12"

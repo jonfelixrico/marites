@@ -10,5 +10,9 @@ export default {
 
   logOutSuccessNotif: 'You have been logged out',
 
-  logIn: 'Log In',
+  logInForm: {
+    username: 'Username',
+    password: 'Password',
+    button: 'Log In',
+  },
 }
