@@ -33,9 +33,9 @@
 <script lang="ts">
 import ChatList from 'src/components/chat-list/ChatList.vue'
 import { defineComponent, ref } from 'vue'
-import { useCreateChat } from './create-chat.composable'
+import { useCreateChat } from '../create-chat.composable'
 import { useSessionService } from 'src/services/session.service'
-import { useJoinChat } from './join-chat.composable'
+import { useJoinChat } from '../join-chat.composable'
 
 export default defineComponent({
   components: { ChatList },
