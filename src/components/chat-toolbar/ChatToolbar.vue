@@ -1,6 +1,6 @@
 <template>
   <!-- TODO make color more suitable -->
-  <q-toolbar class="row items-center justify-between toolbar bg-white">
+  <q-toolbar class="row items-center justify-between bg-white">
     <div class="row items-center q-gutter-x-sm">
       <q-btn icon="close" flat round dense size="sm" @click="closeChat" />
       <div>
@@ -41,9 +41,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped lang="scss">
-.toolbar {
-  border-bottom: 1px $separator-color solid;
-}
-</style>
