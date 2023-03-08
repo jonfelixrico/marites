@@ -3,13 +3,16 @@
     clickable
     @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
     :active="chat.id === $route.params.chatId"
+    active-class="active-chat"
   >
     <q-item-section>
       <div class="text-body1 text-weight-bold">
         {{ chat.name }}
       </div>
       <div v-if="previewMessage">
-        <span class="text-weight-bold"> {{ previewMessage.username }}: </span>
+        <span class="text-weight-bold text-primary">
+          {{ previewMessage.username }}:
+        </span>
         {{ previewMessage.content }}
       </div>
     </q-item-section>
@@ -51,3 +54,14 @@ export default defineComponent({
   },
 })
 </script>
+
+<style lang="scss" scoped>
+.active-chat {
+  :deep(.q-focus-helper) {
+    opacity: 0.1;
+    background: $primary;
+  }
+
+  color: black;
+}
+</style>
