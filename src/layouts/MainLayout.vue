@@ -1,16 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lFf">
     <q-drawer v-model="showDrawer" class="column" behavior="mobile">
-      <div class="col-auto q-pa-xs row justify-end">
-        <q-btn
-          icon="close"
-          size="sm"
-          round
-          flat
-          dense
-          @click="showDrawer = false"
-        />
-      </div>
       <div class="col">
         <q-list>
           <q-item clickable @click="createChat">
