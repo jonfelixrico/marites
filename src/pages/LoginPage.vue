@@ -68,18 +68,21 @@ export default defineComponent({
     async authenticate() {
       const { username, password } = this.credentials
       try {
+        this.$q.loading.show()
         // TODO move this process to the session service
         await this.pb
           .collection(PBCollection.USER)
           .authWithPassword(username, password)
         console.log('Authentication succeded for %s', username)
 
-        this.$router.push({
+        await this.$router.push({
           name: 'home',
         })
       } catch (e) {
         this.credentials.password = ''
         console.error(e)
+      } finally {
+        this.$q.loading.hide()
       }
     },
   },
