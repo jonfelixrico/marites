@@ -7,14 +7,14 @@
       <q-toolbar>
         <q-btn @click="setShowDrawer(true)" icon="menu" flat round dense />
       </q-toolbar>
-      <q-scroll-area class="col">
+      <q-scroll-area class="col bg-grey-2">
         <ChatList />
       </q-scroll-area>
     </div>
 
     <router-view
       v-show="$route.params.chatId?.length || $q.screen.gt.sm"
-      class="col bg-grey-3"
+      class="col bg-grey-2"
       :key="String($route.params.chatId)"
     />
   </q-page>
