@@ -1,6 +1,6 @@
 <template>
   <div class="column">
-    <ChatToolbar />
+    <ChatToolbar class="border-bottom" />
     <div class="col relative-position">
       <div class="absolute fit scroll" @scroll.passive="scrollListener">
         <q-infinite-scroll @load="handleLoad" reverse>
@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <div class="q-pa-xs q-pt-none bg-white">
+    <div class="q-pa-xs q-pt-none bg-white border-top">
       <q-input
         type="textarea"
         name="content"

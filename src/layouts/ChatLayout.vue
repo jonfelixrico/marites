@@ -4,7 +4,7 @@
       v-show="$q.screen.gt.sm || !$route.params.chatId?.length"
       class="col-lg-2 col-md-3 col-12 column drawer"
     >
-      <q-toolbar>
+      <q-toolbar class="border-bottom">
         <q-btn @click="setShowDrawer(true)" icon="menu" flat round dense />
       </q-toolbar>
       <q-scroll-area class="col bg-grey-2">
