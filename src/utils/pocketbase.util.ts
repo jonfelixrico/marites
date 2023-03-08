@@ -19,6 +19,6 @@ export function wrapString(toWrap: string): string {
   return `"${toWrap}"`
 }
 
-export function hasPBErrorStatus(error: Error, has: number): boolean {
+export function hasPBErrorStatus(error: unknown, has: number): boolean {
   return error instanceof ClientResponseError && error.status === has
 }

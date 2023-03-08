@@ -48,6 +48,7 @@
 import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent, reactive } from 'vue'
+import { hasPBErrorStatus } from 'src/utils/pocketbase.util'
 
 export default defineComponent({
   setup() {
@@ -80,7 +81,8 @@ export default defineComponent({
         })
       } catch (e) {
         this.credentials.password = ''
-        console.error(e)
+        if (hasPBErrorStatus(e, 400)) {
+        }
       } finally {
         this.$q.loading.hide()
       }
