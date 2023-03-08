@@ -1,46 +1,40 @@
 <template>
   <div class="fullscreen bg-grey-3 column justify-center items-center">
-    <q-form @submit="authenticate">
-      <q-card flat>
-        <q-card-section>
-          <div class="q-gutter-y-md">
-            <div>
-              <div class="text-weight-bold">
-                {{ $t('session.logInForm.username') }}
-              </div>
-              <q-input
-                name="username"
-                outlined
-                v-model="credentials.username"
-              />
+    <q-card flat>
+      <q-card-section>
+        <q-form @submit="authenticate" class="q-gutter-y-md">
+          <div>
+            <div class="text-weight-bold">
+              {{ $t('session.logInForm.username') }}
             </div>
-
-            <div>
-              <div class="text-weight-bold">
-                {{ $t('session.logInForm.password') }}
-              </div>
-              <q-input
-                name="password"
-                outlined
-                v-model="credentials.password"
-                type="password"
-              />
-            </div>
-
-            <div class="row">
-              <q-btn
-                unelevated
-                color="primary"
-                :label="$t('session.logInForm.button')"
-                no-caps
-                type="submit"
-                class="col-12"
-              />
-            </div>
+            <q-input name="username" outlined v-model="credentials.username" />
           </div>
-        </q-card-section>
-      </q-card>
-    </q-form>
+
+          <div>
+            <div class="text-weight-bold">
+              {{ $t('session.logInForm.password') }}
+            </div>
+            <q-input
+              name="password"
+              outlined
+              v-model="credentials.password"
+              type="password"
+            />
+          </div>
+
+          <div class="row">
+            <q-btn
+              unelevated
+              color="primary"
+              :label="$t('session.logInForm.button')"
+              no-caps
+              type="submit"
+              class="col-12"
+            />
+          </div>
+        </q-form>
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 
