@@ -9,4 +9,6 @@ export default {
   },
 
   logOutSuccessNotif: 'You have been logged out',
+
+  logIn: 'Log In',
 }

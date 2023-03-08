@@ -15,7 +15,8 @@
               <q-btn
                 unelevated
                 color="primary"
-                label="Log In"
+                :label="$t('session.logIn')"
+                no-caps
                 type="submit"
                 class="col-12"
               />
