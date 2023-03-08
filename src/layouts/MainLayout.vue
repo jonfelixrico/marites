@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, onUnmounted } from 'vue'
 import { useMainLayoutStore } from 'stores/main-layout.store'
 import { useCreateChat } from './create-chat.composable'
 import { useSessionService } from 'src/services/session.service'
@@ -50,6 +50,10 @@ export default defineComponent({
       set(value: boolean) {
         store.setShowDrawer(value)
       },
+    })
+
+    onUnmounted(() => {
+      showDrawer.value = false
     })
 
     const { promptLogOut } = useSessionService()
