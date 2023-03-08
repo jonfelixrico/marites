@@ -1,3 +1,5 @@
+import { ClientResponseError } from 'pocketbase'
+
 /**
  * Formats a date to be compatible with PB filtering.
  * @param toConvert
@@ -15,4 +17,8 @@ export function toFilterDate(toConvert: Date | string) {
 
 export function wrapString(toWrap: string): string {
   return `"${toWrap}"`
+}
+
+export function hasPBErrorStatus(error: Error, has: number): boolean {
+  return error instanceof ClientResponseError && error.status === has
 }
