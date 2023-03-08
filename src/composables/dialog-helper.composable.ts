@@ -26,11 +26,16 @@ export function useDialogHelper() {
 
       title: input.title,
       message: input.message,
-      ok: {
-        unelevated: true,
-        noCaps: true,
-        label: input.okLabel ?? undefined,
-      },
+      ok: input.okLabel
+        ? {
+            unelevated: true,
+            noCaps: true,
+            label: input.okLabel,
+          }
+        : {
+            unelevated: true,
+            noCaps: true,
+          },
 
       cancel: input.cancelLabel
         ? {
