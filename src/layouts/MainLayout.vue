@@ -1,8 +1,15 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-drawer v-model="showDrawer" class="column">
-      <div class="col-auto">
-        <q-btn icon="menu" round flat dense @click="showDrawer = !showDrawer" />
+    <q-drawer v-model="showDrawer" class="column" behavior="mobile">
+      <div class="col-auto q-pa-xs row justify-end">
+        <q-btn
+          icon="close"
+          size="sm"
+          round
+          flat
+          dense
+          @click="showDrawer = false"
+        />
       </div>
       <div class="col">
         <q-list>
@@ -12,7 +19,11 @@
           <q-item clickable @click="joinChat">
             <q-item-section> Join chat </q-item-section>
           </q-item>
-          <q-item clickable @click="promptLogOut">
+          <q-item
+            clickable
+            @click="promptLogOut"
+            class="text-red text-weight-bold"
+          >
             <q-item-section>
               {{ $t('session.logOut') }}
             </q-item-section>
