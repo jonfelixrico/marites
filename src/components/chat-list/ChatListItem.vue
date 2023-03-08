@@ -5,8 +5,13 @@
     :active="chat.id === $route.params.chatId"
   >
     <q-item-section>
-      <div>{{ chat.name }}</div>
-      <div v-if="previewMessage">{{ previewMessage.content }}</div>
+      <div class="text-body1 text-weight-bold">
+        {{ chat.name }}
+      </div>
+      <div v-if="previewMessage">
+        <span class="text-weight-bold"> {{ previewMessage.username }}: </span>
+        {{ previewMessage.content }}
+      </div>
     </q-item-section>
   </q-item>
 </template>
@@ -28,7 +33,20 @@ export default defineComponent({
     const store = useChatStore()
 
     return {
-      previewMessage: computed(() => store.previewMessages[props.chat.id]),
+      previewMessage: computed(() => {
+        const message = store.previewMessages[props.chat.id]
+
+        if (!message) {
+          return null
+        }
+
+        return {
+          ...message,
+          username: props.chat.members.find(
+            (member) => member.id === message.sender
+          )?.username,
+        }
+      }),
     }
   },
 })
