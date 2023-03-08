@@ -1,6 +1,6 @@
 <template>
   <!-- TODO use appropriate dango icon -->
-  <q-btn icon="menu" round flat dense>
+  <q-btn icon="more_vert" round flat dense>
     <q-menu>
       <q-list>
         <ChatToolbarMenuItemAddUser v-close-popup />
