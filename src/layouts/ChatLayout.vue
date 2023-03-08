@@ -1,6 +1,9 @@
 <template>
   <q-page class="row">
-    <div class="col-2 column drawer">
+    <div
+      v-show="$q.screen.gt.sm || !$route.params.chatId?.length"
+      class="col-lg-2 col-md-3 col-12 column drawer"
+    >
       <q-toolbar>
         <q-btn @click="setShowDrawer(true)" icon="menu" flat round dense />
       </q-toolbar>
@@ -9,7 +12,11 @@
       </q-scroll-area>
     </div>
 
-    <router-view class="col bg-grey-3" :key="String($route.params.chatId)" />
+    <router-view
+      v-show="$route.params.chatId?.length || $q.screen.gt.sm"
+      class="col bg-grey-3"
+      :key="String($route.params.chatId)"
+    />
   </q-page>
 </template>
 
