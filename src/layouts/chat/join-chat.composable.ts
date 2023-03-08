@@ -1,22 +1,15 @@
 import { useQuasar } from 'quasar'
-import { PbCollection } from 'src/models/pb-collection.enum'
-import { usePocketbase } from 'src/services/pocketbase.service'
+import { useChatApi } from 'src/composables/chat-api.composable'
 import { useRouter } from 'vue-router'
 
 export function useJoinChat() {
   const { dialog } = useQuasar()
-  const pb = usePocketbase()
   const router = useRouter()
+  const { joinChat } = useChatApi()
 
   async function processChatJoin(chatId: string) {
-    const userId = pb.authStore.model?.id
-
     try {
-      await pb.collection(PbCollection.CHAT_MEMBER).create({
-        chat: chatId,
-        user: userId,
-      })
-
+      await joinChat({ chatId })
       await router.push({
         name: 'chat',
         params: {

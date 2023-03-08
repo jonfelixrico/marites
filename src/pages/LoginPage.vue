@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent, reactive } from 'vue'
 
@@ -38,7 +38,7 @@ export default defineComponent({
       try {
         // TODO move this process to the session service
         await this.pb
-          .collection(PbCollection.USER)
+          .collection(PBCollection.USER)
           .authWithPassword(username, password)
         console.log('Authentication succeded for %s', username)
 

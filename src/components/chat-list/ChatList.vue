@@ -8,19 +8,19 @@
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount } from 'vue'
 import ChatListItem from './ChatListItem.vue'
 import { useChatList } from './chat-list.composable'
-import { useChatStore } from 'src/stores/chat.store'
+import { useChatStore } from 'src/stores/chat-v2.store'
 import { orderBy } from 'lodash'
-import { Chat } from 'src/models/chat.interface'
+import { APIChat } from 'src/models/api-chat.interface'
 
 export default defineComponent({
   components: { ChatListItem },
   setup() {
-    const { loadChatList, listenForChatListUpdates } = useChatList()
+    const { loadChatList, subscribeToChatActivities } = useChatList()
     const store = useChatStore()
 
     let unsubscriber: () => void
     onBeforeMount(async () => {
-      unsubscriber = listenForChatListUpdates()
+      unsubscriber = subscribeToChatActivities()
       loadChatList()
     })
 
@@ -31,7 +31,7 @@ export default defineComponent({
     })
 
     const chatList = computed(() => {
-      const values = Object.values(store.chats).map<Chat>((chat) => {
+      const values = Object.values(store.chats).map<APIChat>((chat) => {
         return {
           ...chat,
           updated: store.previewMessages[chat.id]?.updated ?? chat.updated,

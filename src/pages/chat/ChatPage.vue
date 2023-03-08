@@ -8,7 +8,7 @@
             <q-chat-message
               v-for="message of history"
               :key="message.id"
-              :sent="chatMemberId === message.sender"
+              :sent="userId === message.sender"
               @vnode-mounted="compensateScrollForNewMessage(message.id)"
             >
               <template #default>
@@ -48,12 +48,13 @@
 <script lang="ts">
 import type { QForm } from 'quasar'
 import ChatToolbar from 'src/components/chat-toolbar/ChatToolbar.vue'
-import { useChatMemberHelper } from 'src/composables/chat-member-helper.composable'
+import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
-import { PbCollection } from 'src/models/pb-collection.enum'
+import { useSessionApi } from 'src/composables/session-api.composable'
+import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStore } from 'src/stores/message.store'
-import { defineComponent, onBeforeMount, onBeforeUnmount, ref, Ref } from 'vue'
+import { defineComponent, onBeforeUnmount, ref, Ref } from 'vue'
 import { useChatManager } from './chat-manager.composable'
 import { useChatScroll } from './chat-scroll.composable'
 
@@ -64,35 +65,17 @@ function useMessageClearOnUnmount(chatId: Ref<string>) {
   })
 }
 
-function useLoadChatMembersOnMount() {
-  const { fetchAndStoreMembers } = useChatMemberHelper()
-  const chatId = useChatIdFromRoute()
-
-  onBeforeMount(async () => {
-    try {
-      await fetchAndStoreMembers(chatId.value)
-      console.log('Successfully loaded members for chat %s', chatId.value)
-    } catch (e) {
-      console.error('Failed to load members for chat %s', chatId.value, e)
-    }
-  })
-}
-
 export default defineComponent({
   components: { ChatToolbar },
 
   setup() {
     const chatId = useChatIdFromRoute()
-    const pb = usePocketbase()
+    const { getSessionUser } = useSessionApi()
 
     useMessageClearOnUnmount(chatId)
-    useLoadChatMembersOnMount()
 
-    const {
-      sendMessage: baseSendMessage,
-      history,
-      ...others
-    } = useChatManager(chatId)
+    const { history, ...others } = useChatManager(chatId)
+    const { createMessage } = useChatMessageApi()
 
     const { scrollListener, keepScrollAtBottom } = useChatScroll()
     function onMessageMount(messageId: string) {
@@ -107,16 +90,19 @@ export default defineComponent({
 
     const contentModel = ref('')
     async function sendMessage() {
-      const copy = contentModel.value
+      const content = contentModel.value
       contentModel.value = ''
-      await baseSendMessage(copy)
+      await createMessage({
+        content,
+        chatId: chatId.value,
+      })
     }
 
     return {
       ...others,
       history,
 
-      userId: pb.authStore?.model?.id,
+      userId: getSessionUser().id,
       contentModel,
       sendMessage,
       scrollListener,
@@ -140,7 +126,7 @@ export default defineComponent({
   async beforeRouteEnter(to) {
     const pb = usePocketbase()
     // to validate that the user has access to the specified chat
-    await pb.collection(PbCollection.CHAT).getOne(String(to.params.chatId))
+    await pb.collection(PBCollection.CHAT).getOne(String(to.params.chatId))
   },
 })
 </script>

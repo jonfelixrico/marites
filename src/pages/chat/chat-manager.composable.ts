@@ -1,34 +1,33 @@
-import { usePocketbase } from 'src/services/pocketbase.service'
 import { useMessageStore } from 'src/stores/message.store'
 import { computed, onBeforeMount, onBeforeUnmount, Ref } from 'vue'
-import { useMessageObservable } from 'src/services/message-observable.service'
 import { Subscription } from 'rxjs'
-import { toFilterDate } from 'src/utils/pocketbase.util'
-import { PbCollection } from 'src/models/pb-collection.enum'
-import { ChatMessage } from 'src/models/chat.interface'
-import { useChatStore } from 'src/stores/chat.store'
+import { useChatMessageApi } from 'src/composables/chat-message-api.composable'
+import { useSubscriptionManager } from 'src/services/subscription-manager.service'
+import { PBCollection } from 'src/models/pb-collection.enum'
+import { PBChatMessage } from 'src/models/pb-chat-message.interface'
 
-function extractCreateDt(message?: ChatMessage) {
+function extractCreateDt(message?: PBChatMessage) {
   return message?.created ? new Date(message.created) : new Date()
 }
 
 function useHistoryLoader(chatId: Ref<string>) {
-  const pb = usePocketbase()
   const store = useMessageStore()
+  const { listMessagesBeforeCursorDate } = useChatMessageApi()
 
   async function loadOlderMessages(
     chatId: string,
-    message?: ChatMessage,
-    limit = 30
+    message?: PBChatMessage,
+    limit?: number
   ) {
-    const anchorDt = extractCreateDt(message)
-
-    const { items } = await pb
-      .collection(PbCollection.CHAT_MESSAGE)
-      .getList<ChatMessage>(1, limit, {
-        sort: '-created,-id', // sorting by id to keep sorting consistent for same-timestamp messages
-        filter: `created <= "${toFilterDate(anchorDt)}" && chat = "${chatId}"`,
-      })
+    const items = await listMessagesBeforeCursorDate(
+      {
+        chatId,
+        cursorDt: extractCreateDt(message),
+      },
+      {
+        limit,
+      }
+    )
 
     if (!message) {
       return items
@@ -60,12 +59,14 @@ function useHistoryLoader(chatId: Ref<string>) {
 }
 
 function useNewMessagesListener(chatId: Ref<string>) {
-  const { observable } = useMessageObservable()
+  const { getObservable } = useSubscriptionManager()
   const store = useMessageStore()
 
   let subscription: Subscription
   onBeforeMount(() => {
-    subscription = observable.subscribe(({ record, action }) => {
+    subscription = getObservable<PBChatMessage>(
+      PBCollection.CHAT_MESSAGE
+    ).subscribe(({ record, action }) => {
       if (action !== 'create' || record.chat !== chatId.value) {
         return
       }
@@ -81,38 +82,6 @@ function useNewMessagesListener(chatId: Ref<string>) {
   })
 }
 
-function useMessageSender(chatId: Ref<string>) {
-  const pb = usePocketbase()
-  const chatStore = useChatStore()
-
-  const chatMemberId = computed(() => {
-    const userId = pb.authStore.model?.id
-    if (!userId) {
-      return
-    }
-
-    const membersArr = Object.values(chatStore.chatMembers[chatId.value] ?? [])
-    return membersArr.find(({ user }) => user === userId)?.id
-  })
-
-  async function sendMessage(content: string) {
-    const message = await pb
-      .collection(PbCollection.CHAT_MESSAGE)
-      .create<ChatMessage>({
-        content,
-        sender: chatMemberId.value,
-        chat: chatId.value,
-      })
-
-    console.log(`Sent message ${message.id} to chatroom ${chatId.value}`)
-  }
-
-  return {
-    sendMessage,
-    chatMemberId,
-  }
-}
-
 export function useChatManager(chatId: Ref<string>) {
   useNewMessagesListener(chatId)
   const load = useHistoryLoader(chatId)
@@ -124,6 +93,5 @@ export function useChatManager(chatId: Ref<string>) {
      */
     history: computed(() => store.chats[chatId.value] ?? []),
     load,
-    ...useMessageSender(chatId),
   }
 }
