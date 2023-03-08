@@ -1,3 +1,11 @@
+<!--
+  Behavior:
+  If on desktop mode, show both the layout and the chat at all times. If there is no chat selected, show the index page.
+  If on mobile mode:
+    - If a chat is selected, show only the chat and hide the drawer
+    - If a chat is not selected (on chat index), show only the drawer
+-->
+
 <template>
   <q-page class="row">
     <div
