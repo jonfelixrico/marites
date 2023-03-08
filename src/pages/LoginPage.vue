@@ -1,6 +1,6 @@
 <template>
   <div class="fullscreen bg-grey-3 row justify-center items-center">
-    <q-card flat>
+    <q-card flat class="login-form">
       <q-card-section>
         <q-form @submit="authenticate" class="q-gutter-y-md">
           <div>
@@ -78,3 +78,10 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped lang="scss">
+.login-form {
+  width: 500px;
+  max-width: 80vw;
+}
+</style>
