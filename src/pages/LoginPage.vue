@@ -1,13 +1,28 @@
 <template>
-  <div class="fullscreen">
-    <!--
-      basic login impl
-      TODO flesh this out
-    -->
+  <div class="fullscreen bg-grey-3 column justify-center items-center">
     <q-form @submit="authenticate">
-      <q-input name="username" v-model="credentials.username" />
-      <q-input name="password" v-model="credentials.password" type="password" />
-      <q-btn label="Log In" type="submit" />
+      <q-card flat>
+        <q-card-section>
+          <div class="q-gutter-y-md">
+            <q-input name="username" outlined v-model="credentials.username" />
+            <q-input
+              name="password"
+              outlined
+              v-model="credentials.password"
+              type="password"
+            />
+            <div class="row">
+              <q-btn
+                unelevated
+                color="primary"
+                label="Log In"
+                type="submit"
+                class="col-12"
+              />
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
     </q-form>
   </div>
 </template>
