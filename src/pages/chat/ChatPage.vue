@@ -33,6 +33,7 @@
         @keypress.enter.exact.prevent="sendMessage"
         autogrow
         dense
+        :placeholder="$t('chat.textboxPlaceholder')"
       />
     </div>
   </div>
