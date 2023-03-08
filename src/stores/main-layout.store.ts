@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useCounterStore = defineStore('mainLayout', {
+export const useMainLayoutStore = defineStore('mainLayout', {
   state: () => ({
     showDrawer: false,
   }),
