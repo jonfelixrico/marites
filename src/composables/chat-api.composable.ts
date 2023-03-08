@@ -281,7 +281,7 @@ export function useChatApi() {
 
           return {
             action: PBSubscriptionAction.UPDATE,
-            record: await getChat(record.id),
+            record: await getChat(record.chat),
           }
         })
       )
