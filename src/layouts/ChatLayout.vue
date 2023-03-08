@@ -1,9 +1,9 @@
 <template>
   <q-page class="row">
-    <div class="col-2 column">
-      <div class="q-pa-xs">
+    <div class="col-2 column drawer">
+      <q-toolbar>
         <q-btn @click="setShowDrawer(true)" icon="menu" flat round dense />
-      </div>
+      </q-toolbar>
       <q-scroll-area class="col">
         <ChatList />
       </q-scroll-area>
@@ -30,3 +30,9 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped lang="scss">
+.drawer {
+  border-right: 1px $separator-color solid;
+}
+</style>
