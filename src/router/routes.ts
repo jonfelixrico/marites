@@ -15,11 +15,11 @@ const routes: RouteRecordRaw[] = [
 
   {
     path: '/home',
-    name: 'home',
     component: () => import('src/layouts/MainLayout.vue'),
     children: [
       {
         path: '',
+        name: 'home',
         component: () => import('src/layouts/ChatLayout.vue'),
         children: [
           {
