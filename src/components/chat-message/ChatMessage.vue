@@ -45,7 +45,7 @@ export default defineComponent({
 
       return (
         chatStore.indexedChatMembers?.[chat]?.[sender]?.username ??
-        t('chat.unkownUser')
+        t('chat.unknownUser')
       )
     })
 
