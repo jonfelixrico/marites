@@ -19,7 +19,7 @@ export default {
 
     addUserSuccess: {
       title: 'User added',
-      message: 'You have added user {username} to the chat',
+      message: 'You have added user {userId} to the chat',
     },
   },
 }
