@@ -17,7 +17,7 @@ server {
 
   # This is the prod equivalent of the Vite dev env reverse proxy
   location /pocketbase/ {
-    proxy_pass ${API_BASE_URL}/pocketbase;
+    proxy_pass ${API_BASE_URL}/;
   }
 
   location / {
