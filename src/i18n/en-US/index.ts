@@ -1,7 +1,7 @@
-// This is just an example,
-// so you can safely delete all default props below
+import session from './session'
+import chat from './chat'
 
 export default {
-  failed: 'Action failed',
-  success: 'Action was successful',
+  session,
+  chat,
 }

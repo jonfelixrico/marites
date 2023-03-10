@@ -1,1 +1,17 @@
 // app global css in SCSS form
+
+.border-bottom {
+  border-bottom: 1px $separator-color solid;
+}
+
+.border-left {
+  border-left: 1px $separator-color solid;
+}
+
+.border-right {
+  border-right: 1px $separator-color solid;
+}
+
+.border-top {
+  border-top: 1px $separator-color solid;
+}

@@ -1,0 +1,22 @@
+services:
+  pocketbase:
+    image: augustodelg/pocketbase:latest
+    restart: unless-stopped
+    volumes:
+      # Cant use directory binding since Linux (alpha envs) seem to prevent writes.
+      - pocketbase-data:/pb_data
+      # To pick up migration data
+      - ../pocketbase-migrations:/pb_migrations
+
+  client:
+    image: jonfelixrico/marites-client:alpha
+    restart: unless-stopped
+    ports:
+      - 8089:80
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    environment:
+      - API_BASE_URL=http://pocketbase:8090
+
+volumes:
+  pocketbase-data:
