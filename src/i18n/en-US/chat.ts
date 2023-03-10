@@ -5,5 +5,4 @@ export default {
   textboxPlaceholder: 'Write a message...',
 
   unknownUser: 'Unknown User',
-  you: 'You',
 }
