@@ -3,23 +3,23 @@ export default {
   dialog: {
     addUser: {
       title: 'Add user to chat',
-      message: 'Enter the username of the user to add to the chat',
+      message: 'Enter the id of the user to add to the chat',
       ok: 'Add user',
     },
 
     addUserError: {
       title: 'Cannot add user',
       message: {
-        notFound: 'Cannot find user with the username {username}',
-        alreadyAdded: 'User {username} is already in the chat!',
+        notFound: 'Cannot find user id {userId}',
+        alreadyAdded: 'User id {userId} is already in the chat!',
         generic:
-          'Something went wrong while trying to add user {username} into the chat',
+          'Something went wrong while trying to add user with id {userId} into the chat',
       },
     },
 
     addUserSuccess: {
       title: 'User added',
-      message: 'You have added user {username} to the chat',
+      message: 'You have added user {userId} to the chat',
     },
   },
 }

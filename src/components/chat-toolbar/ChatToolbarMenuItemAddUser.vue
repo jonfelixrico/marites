@@ -28,12 +28,12 @@ export default defineComponent({
   },
 
   methods: {
-    showErrorDialog(i18nSubpath: string, username: string) {
+    showErrorDialog(i18nSubpath: string, userId: string) {
       this.$q.dialog({
         title: this.$t('chat.toolbar.dialog.addUserError.title'),
         message: this.$t(
           `chat.toolbar.dialog.addUserError.message.${i18nSubpath}`,
-          { username }
+          { userId }
         ),
         ok: {
           unelevated: true,
@@ -41,15 +41,15 @@ export default defineComponent({
       })
     },
 
-    async processUserAdd(username: string) {
+    async processUserAdd(userId: string) {
       const { chatId } = this
 
       try {
-        await this.addUserToChat({ chatId, username })
+        await this.addUserToChat({ chatId, userId })
         this.$q.dialog({
           title: this.$t('chat.toolbar.dialog.addUserSuccess.title'),
           message: this.$t('chat.toolbar.dialog.addUserSuccess.message', {
-            username,
+            userId,
           }),
           ok: {
             noCaps: true,
@@ -59,21 +59,21 @@ export default defineComponent({
       } catch (e) {
         if (e instanceof ProjectError) {
           if (e.code === ProjectErrorCode.USER_USERNAME_NOT_FOUND) {
-            console.error('User %s was not found.', username)
-            this.showErrorDialog('notFound', username)
+            console.error('User %s was not found.', userId)
+            this.showErrorDialog('notFound', userId)
             return
           } else if (e.code === ProjectErrorCode.CHAT_MEMBER_ALREADY_JOINED) {
             console.warn(
               'User %s is already a member of chat %s',
-              username,
+              userId,
               chatId
             )
-            this.showErrorDialog('alreadyAdded', username)
+            this.showErrorDialog('alreadyAdded', userId)
             return
           }
         }
 
-        this.showErrorDialog('generic', username)
+        this.showErrorDialog('generic', userId)
         console.error('Error encountered', e)
       }
     },
@@ -99,10 +99,10 @@ export default defineComponent({
             noCaps: true,
           },
         })
-        .onOk(async (username) => {
+        .onOk(async (userId) => {
           try {
             this.$q.loading.show()
-            await this.processUserAdd(username)
+            await this.processUserAdd(userId)
           } finally {
             this.$q.loading.hide()
           }
