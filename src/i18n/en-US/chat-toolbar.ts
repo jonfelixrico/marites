@@ -3,7 +3,7 @@ export default {
   dialog: {
     addUser: {
       title: 'Add user to chat',
-      message: 'Enter the username of the user to add to the chat',
+      message: 'Enter the id of the user to add to the chat',
       ok: 'Add user',
     },
 
