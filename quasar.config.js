@@ -95,6 +95,13 @@ module.exports = configure(function (/* ctx */) {
     devServer: {
       // https: true
       open: false, // opens browser window automatically
+      proxy: {
+        '/pocketbase': {
+          target: 'http://localhost:8090',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/pocketbase/, ''),
+        },
+      },
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework

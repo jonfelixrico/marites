@@ -7,4 +7,4 @@ services:
       - 8090:8090
     volumes:
       - ./pocketbase-data:/pb_data
-      - ./pocketbase-migrations:/pb_migrations
+      - ../pocketbase-migrations:/pb_migrations

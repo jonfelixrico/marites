@@ -4,10 +4,10 @@ services:
     restart: unless-stopped
     volumes:
       - ./pocketbase-data:/pb_data
-      - ./pocketbase-migrations:/pb_migrations
+      - ../pocketbase-migrations:/pb_migrations
 
   client:
-    image: jonfelixrico/marites:alpha
+    image: jonfelixrico/marites-client:alpha
     restart: unless-stopped
     ports:
       - 8089:80
