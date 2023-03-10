@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-import { useChatStore } from 'src/stores/chat-v2.store'
+import { useChatStore } from 'src/stores/chat.store'
 import { APIChat } from 'src/models/api-chat.interface'
 
 export default defineComponent({

@@ -8,7 +8,7 @@
 import { computed, defineComponent, onBeforeMount, onBeforeUnmount } from 'vue'
 import ChatListItem from './ChatListItem.vue'
 import { useChatList } from './chat-list.composable'
-import { useChatStore } from 'src/stores/chat-v2.store'
+import { useChatStore } from 'src/stores/chat.store'
 import { orderBy } from 'lodash'
 import { APIChat } from 'src/models/api-chat.interface'
 

@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
-import { useChatStore } from 'src/stores/chat-v2.store'
+import { useChatStore } from 'src/stores/chat.store'
 import { computed, defineComponent } from 'vue'
 import ChatToolbarMenuButton from './ChatToolbarMenuButton.vue'
 

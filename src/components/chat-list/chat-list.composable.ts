@@ -1,4 +1,4 @@
-import { useChatStore } from 'src/stores/chat-v2.store'
+import { useChatStore } from 'src/stores/chat.store'
 import { useChatApi } from 'src/composables/chat-api.composable'
 import { APIChat } from 'src/models/api-chat.interface'
 import { PBSubscriptionAction } from 'src/models/pb-subscription-action.enum'
