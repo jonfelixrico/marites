@@ -16,8 +16,8 @@ server {
   charset utf-8;
 
   # This is the prod equivalent of the Vite dev env reverse proxy
-  location /api/ {
-    proxy_pass ${API_BASE_URL}/;
+  location /pocketbase/ {
+    proxy_pass ${API_BASE_URL}/pocketbase;
   }
 
   location / {
