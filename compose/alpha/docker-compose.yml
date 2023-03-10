@@ -1,0 +1,17 @@
+services:
+  pocketbase:
+    image: augustodelg/pocketbase:latest
+    restart: unless-stopped
+    volumes:
+      - ./pocketbase-data:/pb_data
+      - ./pocketbase-migrations:/pb_migrations
+
+  client:
+    image: jonfelixrico/marites:alpha
+    restart: unless-stopped
+    ports:
+      - 8089:80
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    environment:
+      - API_BASE_URL=http://pocketbase:8090
