@@ -24,7 +24,7 @@ interface APIChatJoinBody {
 
 interface APIAddUserToChatBody {
   chatId: string
-  username: string
+  userId: string
 }
 
 interface RawAPIChatMember extends BasePBRecord {
@@ -169,21 +169,6 @@ function useAddMemberMethods() {
     })
   }
 
-  async function getIdFromUsername(username: string): Promise<string> {
-    try {
-      const { id } = await pb
-        .collection(PBCollection.USER)
-        .getFirstListItem(`username = "${username}"`)
-      return id
-    } catch (e) {
-      if (e instanceof ClientResponseError && e.status === 404) {
-        throw new ProjectError(ProjectErrorCode.USER_USERNAME_NOT_FOUND)
-      }
-
-      throw e
-    }
-  }
-
   /**
    * Makes the session user add another user to the chat.
    *
@@ -191,8 +176,8 @@ function useAddMemberMethods() {
    * @param param0
    * @returns
    */
-  async function addUserToChat({ chatId, username }: APIAddUserToChatBody) {
-    await addToChatHelper(chatId, await getIdFromUsername(username))
+  async function addUserToChat({ chatId, userId }: APIAddUserToChatBody) {
+    await addToChatHelper(chatId, userId)
     return await getChat(chatId)
   }
 
