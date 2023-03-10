@@ -21,8 +21,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-import { useChatStore } from 'src/stores/chat-v2.store'
+import { useChatStore } from 'src/stores/chat.store'
 import { APIChat } from 'src/models/api-chat.interface'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   props: {
@@ -34,6 +35,11 @@ export default defineComponent({
 
   setup(props) {
     const store = useChatStore()
+    const { t } = useI18n()
+
+    const membersMap = computed(
+      () => store.indexedChatMembers[props.chat.id] ?? {}
+    )
 
     return {
       previewMessage: computed(() => {
@@ -45,9 +51,8 @@ export default defineComponent({
 
         return {
           ...message,
-          username: props.chat.members.find(
-            (member) => member.id === message.sender
-          )?.username,
+          username:
+            membersMap.value[message.sender]?.username ?? t('chat.unknownUser'),
         }
       }),
     }

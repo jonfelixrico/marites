@@ -1,6 +1,13 @@
+import { keyBy, mapValues } from 'lodash'
 import { defineStore } from 'pinia'
-import { APIChat } from 'src/models/api-chat.interface'
+import { APIChat, APIChatMember } from 'src/models/api-chat.interface'
 import { PBChatMessage } from 'src/models/pb-chat-message.interface'
+
+interface ChatMembersMap {
+  [chatId: string]: {
+    [userId: string]: APIChatMember
+  }
+}
 
 interface ChatStore {
   chats: {
@@ -21,6 +28,14 @@ export const useChatStore = defineStore('chat-v2', {
     chats: {},
     previewMessages: {},
   }),
+
+  getters: {
+    indexedChatMembers(): ChatMembersMap {
+      return mapValues(this.chats, ({ members }) =>
+        keyBy(members, ({ id }) => id)
+      )
+    },
+  },
 
   actions: {
     /**
