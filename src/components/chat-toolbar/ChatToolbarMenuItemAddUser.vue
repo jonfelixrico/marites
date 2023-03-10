@@ -28,12 +28,12 @@ export default defineComponent({
   },
 
   methods: {
-    showErrorDialog(i18nSubpath: string, username: string) {
+    showErrorDialog(i18nSubpath: string, userId: string) {
       this.$q.dialog({
         title: this.$t('chat.toolbar.dialog.addUserError.title'),
         message: this.$t(
           `chat.toolbar.dialog.addUserError.message.${i18nSubpath}`,
-          { username }
+          { userId }
         ),
         ok: {
           unelevated: true,
@@ -99,10 +99,10 @@ export default defineComponent({
             noCaps: true,
           },
         })
-        .onOk(async (username) => {
+        .onOk(async (userId) => {
           try {
             this.$q.loading.show()
-            await this.processUserAdd(username)
+            await this.processUserAdd(userId)
           } finally {
             this.$q.loading.hide()
           }
