@@ -5,20 +5,12 @@
       <div class="absolute fit scroll" @scroll.passive="scrollListener">
         <q-infinite-scroll @load="handleLoad" reverse>
           <div class="q-px-lg">
-            <q-chat-message
+            <ChatMessage
               v-for="message of history"
               :key="message.id"
-              :sent="userId === message.sender"
+              :message="message"
               @vnode-mounted="compensateScrollForNewMessage(message.id)"
-            >
-              <template #default>
-                <div style="white-space: pre" v-text="message.content" />
-              </template>
-
-              <template #stamp>
-                {{ message.created }}
-              </template>
-            </q-chat-message>
+            />
           </div>
         </q-infinite-scroll>
       </div>
@@ -50,6 +42,7 @@ import { useMessageStore } from 'src/stores/message.store'
 import { defineComponent, onBeforeUnmount, ref, Ref } from 'vue'
 import { useChatManager } from './chat-manager.composable'
 import { useChatScroll } from './chat-scroll.composable'
+import ChatMessage from 'components/chat-message/ChatMessage.vue'
 
 function useMessageClearOnUnmount(chatId: Ref<string>) {
   const store = useMessageStore()
@@ -59,7 +52,7 @@ function useMessageClearOnUnmount(chatId: Ref<string>) {
 }
 
 export default defineComponent({
-  components: { ChatToolbar },
+  components: { ChatToolbar, ChatMessage },
 
   setup() {
     const chatId = useChatIdFromRoute()
