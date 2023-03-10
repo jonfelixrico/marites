@@ -37,10 +37,13 @@ export default defineComponent({
     const store = useChatStore()
     const { t } = useI18n()
 
+    const membersMap = computed(
+      () => store.indexedChatMembers[props.chat.id] ?? {}
+    )
+
     return {
       previewMessage: computed(() => {
-        const chatId = props.chat.id
-        const message = store.previewMessages[chatId]
+        const message = store.previewMessages[props.chat.id]
 
         if (!message) {
           return null
@@ -49,8 +52,7 @@ export default defineComponent({
         return {
           ...message,
           username:
-            store.indexedChatMembers[chatId]?.[message.sender]?.username ??
-            t('chat.unknownUser'),
+            membersMap.value[message.sender]?.username ?? t('chat.unknownUser'),
         }
       }),
     }
