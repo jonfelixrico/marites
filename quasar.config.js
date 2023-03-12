@@ -81,7 +81,7 @@ module.exports = configure(function (/* ctx */) {
          *
          * Gotta use || instead of ?? here since BUILD_VERSION_OVERRIDE can be an empty string which will not proc ??
          */
-        BUILD_VERSION: ENV_VARS_FROM_FILE?.BUILD_VERSION_OVERRIDE || version,
+        BUILD_VERSION: process.env.BUILD_VERSION_OVERRIDE || version,
       },
 
       // rawDefine: {}
