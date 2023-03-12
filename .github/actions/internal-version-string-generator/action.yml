@@ -2,6 +2,7 @@ name: 'Internal version string generator'
 description: 'Generate different types of version strings for internal use'
 inputs:
   pre-release-label:
+    description: The pre-release label
     required: true
 outputs:
   docker:
