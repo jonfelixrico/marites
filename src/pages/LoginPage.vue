@@ -56,7 +56,7 @@
     </div>
 
     <div class="col-1 row items-end">
-      <div>{{ version }}</div>
+      <div>{{ $t('general.buildLabel', { version }) }}</div>
     </div>
   </div>
 </template>
