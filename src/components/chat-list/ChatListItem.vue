@@ -1,11 +1,10 @@
 <template>
-  <q-item
-    clickable
+  <q-card
+    flat
+    bordered
     @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
-    :active="chat.id === $route.params.chatId"
-    active-class="active-chat"
   >
-    <q-item-section>
+    <q-card-section>
       <div class="text-body1 text-weight-bold">
         {{ chat.name }}
       </div>
@@ -15,8 +14,8 @@
         </span>
         {{ previewMessage.content }}
       </div>
-    </q-item-section>
-  </q-item>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script lang="ts">

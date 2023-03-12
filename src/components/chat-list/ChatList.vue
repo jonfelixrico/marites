@@ -1,5 +1,7 @@
 <template>
-  <ChatListItem v-for="chat of chatList" :chat="chat" :key="chat.id" />
+  <div class="q-gutter-y-sm q-pa-sm">
+    <ChatListItem v-for="chat of chatList" :chat="chat" :key="chat.id" />
+  </div>
 </template>
 
 <script lang="ts">
