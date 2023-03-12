@@ -3,18 +3,17 @@
     flat
     bordered
     @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
+    class="q-pa-sm"
   >
-    <q-card-section>
-      <div class="text-body1 text-weight-bold">
-        {{ chat.name }}
-      </div>
-      <div v-if="previewMessage">
-        <span class="text-weight-bold text-primary">
-          {{ previewMessage.username }}:
-        </span>
-        {{ previewMessage.content }}
-      </div>
-    </q-card-section>
+    <div class="text-body1 text-weight-bold">
+      {{ chat.name }}
+    </div>
+    <div v-if="previewMessage">
+      <span class="text-weight-bold text-primary">
+        {{ previewMessage.username }}:
+      </span>
+      {{ previewMessage.content }}
+    </div>
   </q-card>
 </template>
 
