@@ -1,11 +1,5 @@
 <template>
-  <q-card
-    flat
-    bordered
-    @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
-    class="q-pa-sm relative-position"
-    v-ripple
-  >
+  <q-card flat bordered class="q-pa-sm">
     <div class="text-body1 text-weight-bold">
       {{ chat.name }}
     </div>

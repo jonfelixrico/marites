@@ -1,6 +1,13 @@
 <template>
   <div class="q-gutter-y-sm q-pa-sm">
-    <ChatListItem v-for="chat of chatList" :chat="chat" :key="chat.id" />
+    <ChatListItem
+      v-for="chat of chatList"
+      :chat="chat"
+      :key="chat.id"
+      @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
+      class="relative-position"
+      v-ripple
+    />
   </div>
 </template>
 
