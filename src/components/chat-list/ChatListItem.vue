@@ -3,7 +3,8 @@
     flat
     bordered
     @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
-    class="q-pa-sm"
+    class="q-pa-sm relative-position"
+    v-ripple
   >
     <div class="text-body1 text-weight-bold">
       {{ chat.name }}
