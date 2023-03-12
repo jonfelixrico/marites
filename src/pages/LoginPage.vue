@@ -1,54 +1,63 @@
 <template>
-  <div class="fullscreen bg-grey-2 row justify-center items-center">
-    <q-card flat class="login-form">
-      <q-card-section>
-        <q-form @submit="authenticate" class="q-gutter-y-sm">
-          <div>
-            <div class="text-weight-bold">
-              {{ $t('session.logInForm.username') }}
-            </div>
-            <q-input
-              name="username"
-              outlined
-              v-model="credentials.username"
-              autocomplete="username"
-              :rules="[
-                (val) => !!val || $t('session.logInForm.usernameRequired'),
-              ]"
-              dense
-            />
-          </div>
+  <div class="fullscreen bg-grey-2 column">
+    <!-- offset-* classes doesn't seem to work with column so we've no choice but to use an empty col instead -->
+    <div class="col-1" />
 
-          <div>
-            <div class="text-weight-bold">
-              {{ $t('session.logInForm.password') }}
+    <div class="col-10 row justify-center items-center">
+      <q-card flat class="login-form">
+        <q-card-section>
+          <q-form @submit="authenticate" class="q-gutter-y-sm">
+            <div>
+              <div class="text-weight-bold">
+                {{ $t('session.logInForm.username') }}
+              </div>
+              <q-input
+                name="username"
+                outlined
+                v-model="credentials.username"
+                autocomplete="username"
+                :rules="[
+                  (val) => !!val || $t('session.logInForm.usernameRequired'),
+                ]"
+                dense
+              />
             </div>
-            <q-input
-              name="password"
-              outlined
-              v-model="credentials.password"
-              type="password"
-              autocomplete="current-password"
-              :rules="[
-                (val) => !!val || $t('session.logInForm.passwordRequired'),
-              ]"
-              dense
-            />
-          </div>
 
-          <div class="row">
-            <q-btn
-              unelevated
-              color="primary"
-              :label="$t('session.logInForm.button')"
-              no-caps
-              type="submit"
-              class="col-12"
-            />
-          </div>
-        </q-form>
-      </q-card-section>
-    </q-card>
+            <div>
+              <div class="text-weight-bold">
+                {{ $t('session.logInForm.password') }}
+              </div>
+              <q-input
+                name="password"
+                outlined
+                v-model="credentials.password"
+                type="password"
+                autocomplete="current-password"
+                :rules="[
+                  (val) => !!val || $t('session.logInForm.passwordRequired'),
+                ]"
+                dense
+              />
+            </div>
+
+            <div class="row">
+              <q-btn
+                unelevated
+                color="primary"
+                :label="$t('session.logInForm.button')"
+                no-caps
+                type="submit"
+                class="col-12"
+              />
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </div>
+
+    <div class="col-1 row items-end">
+      <div>{{ version }}</div>
+    </div>
   </div>
 </template>
 
@@ -58,6 +67,7 @@ import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent, reactive } from 'vue'
 import { hasPBErrorStatus } from 'src/utils/pocketbase.util'
 import { useDialogHelper } from 'src/composables/dialog-helper.composable'
+import { getBuildVersion } from 'src/utils/app.util'
 
 export default defineComponent({
   setup() {
@@ -72,6 +82,7 @@ export default defineComponent({
       pb,
       credentials,
       ...useDialogHelper(),
+      version: getBuildVersion(),
     }
   },
 
