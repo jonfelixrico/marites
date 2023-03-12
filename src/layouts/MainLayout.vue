@@ -20,6 +20,7 @@
           </q-item>
         </q-list>
       </div>
+      <div>{{ $t('general.buildLabel', { version }) }}</div>
     </q-drawer>
 
     <q-page-container>
@@ -34,6 +35,7 @@ import { useMainLayoutStore } from 'stores/main-layout.store'
 import { useCreateChat } from './create-chat.composable'
 import { useSessionService } from 'src/services/session.service'
 import { useJoinChat } from './join-chat.composable'
+import { getBuildVersion } from 'src/utils/app.util'
 
 export default defineComponent({
   setup() {
@@ -63,6 +65,7 @@ export default defineComponent({
       promptLogOut,
       joinChat,
       showDrawer,
+      version: getBuildVersion(),
     }
   },
 })
