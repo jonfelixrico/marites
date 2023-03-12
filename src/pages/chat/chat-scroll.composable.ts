@@ -46,5 +46,6 @@ export function useChatScroll() {
   return {
     scrollListener,
     keepScrollAtBottom,
+    isScrollAtBottom,
   }
 }
