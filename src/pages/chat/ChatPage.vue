@@ -63,7 +63,7 @@ export default defineComponent({
     const { history, ...others } = useChatManager(chatId)
     const { createMessage } = useChatMessageApi()
 
-    const { scrollListener, keepScrollAtBottom, isScrollAtBottom } =
+    const { scrollListener, keepScrollAtBottom, ...scrollManager } =
       useChatScroll()
     function onMessageMount(messageId: string) {
       const arr = history.value
@@ -93,7 +93,7 @@ export default defineComponent({
       contentModel,
       sendMessage,
       scrollListener,
-      isScrollAtBottom,
+      ...scrollManager,
 
       compensateScrollForNewMessage: onMessageMount,
     }
