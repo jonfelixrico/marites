@@ -16,10 +16,10 @@ WORKDIR /app
 COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 
-# This will allow us to specify which build script to use. Defaults to just `build`.
-ARG BUILD_SCRIPT_NAME=build
+# Need to provide a default value or this will throw an error if none was provided
+ARG BUILD_VERSION_OVERRIDE=
 
-RUN pnpm $BUILD_SCRIPT_NAME
+RUN BUILD_VERSION_OVERRIDE=$BUILD_VERSION_OVERRIDE pnpm build
 RUN pnpm prune --prod
 
 # Stage 4: actually deploy the thing via nginx
