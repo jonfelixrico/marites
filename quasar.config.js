@@ -100,6 +100,13 @@ module.exports = configure(function (/* ctx */) {
             // if you want to use Vue I18n Legacy API, you need to set `compositionOnly: false`
             // compositionOnly: false,
 
+            /*
+             * Bug #58: i18n interpolation is broken in prod environments
+             * Fix was suggested by https://github.com/quasarframework/quasar/issues/13229#issuecomment-1115905093
+             * Seems to be a problem with the use of the Options API
+             */
+            runtimeOnly: false,
+
             // you need to set i18n resource including paths !
             include: path.resolve(__dirname, './src/i18n/**'),
           },
