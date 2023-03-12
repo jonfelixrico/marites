@@ -78,8 +78,10 @@ module.exports = configure(function (/* ctx */) {
          * BUILD_VERSION_OVERRIDE allows us to manipulate the version during the build time without mutating the package.json
          * "version" property. The former is much easier to do than the latter since we only need to set env vars via the CLI during
          * build time.
+         *
+         * Gotta use || instead of ?? here since BUILD_VERSION_OVERRIDE can be an empty string which will not proc ??
          */
-        BUILD_VERSION: ENV_VARS_FROM_FILE?.BUILD_VERSION_OVERRIDE ?? version,
+        BUILD_VERSION: ENV_VARS_FROM_FILE?.BUILD_VERSION_OVERRIDE || version,
       },
 
       // rawDefine: {}
