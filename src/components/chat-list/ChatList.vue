@@ -7,6 +7,7 @@
       @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
       class="relative-position"
       v-ripple
+      :active="chat.id === $route.params.chatId"
     />
   </div>
 </template>

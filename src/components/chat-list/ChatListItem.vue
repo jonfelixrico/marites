@@ -1,5 +1,5 @@
 <template>
-  <q-card flat bordered class="q-pa-sm">
+  <q-card flat bordered class="q-pa-sm hover-effects" :class="{ active }">
     <div class="text-body1 text-weight-bold">
       {{ chat.name }}
     </div>
@@ -27,6 +27,8 @@ export default defineComponent({
       type: Object as PropType<APIChat>,
       required: true,
     },
+
+    active: Boolean,
   },
 
   setup(props) {
@@ -57,16 +59,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.active-chat {
-  /*
-   * Since we want the "hover" effect, we have to utilize q-focus-helper.
-   * TODO find a better way for this. This is kind of hacky.
-   */
-  :deep(.q-focus-helper) {
-    opacity: 0.1;
-    background: $primary;
+.hover-effects {
+  &:hover {
+    background: rgba(white, 0.15);
   }
 
-  color: black;
+  &.active {
+    background: rgba($primary, 0.2);
+    border-color: $primary;
+  }
 }
 </style>
