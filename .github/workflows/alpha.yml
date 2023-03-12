@@ -1,9 +1,9 @@
-name: Alpha pipeline
+name: Develop pipeline
 
 on:
   push:
     branches:
-      - alpha-*
+      - develop-*
 
 jobs:
   build:
