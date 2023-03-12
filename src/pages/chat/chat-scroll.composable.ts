@@ -29,16 +29,20 @@ export function useChatScroll() {
     isScrollAtBottom.value = isAtEnd
   }, 250)
 
-  function keepScrollAtBottom() {
+  function scrollToBottom(duration?: number) {
     const el = scrollEl.value
     if (!el) {
       return
     }
 
+    const target = scroll.getScrollTarget(el)
+    const height = scroll.getScrollHeight(el)
+    scroll.setVerticalScrollPosition(target, height, duration)
+  }
+
+  function keepScrollAtBottom() {
     if (isScrollAtBottom.value) {
-      const target = scroll.getScrollTarget(el)
-      const height = scroll.getScrollHeight(el)
-      scroll.setVerticalScrollPosition(target, height)
+      scrollToBottom()
       console.debug('Scroll compensated.')
     }
   }
@@ -46,5 +50,7 @@ export function useChatScroll() {
   return {
     scrollListener,
     keepScrollAtBottom,
+    isScrollAtBottom,
+    scrollToBottom,
   }
 }

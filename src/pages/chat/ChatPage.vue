@@ -14,6 +14,19 @@
           </div>
         </q-infinite-scroll>
       </div>
+
+      <div
+        class="absolute fit q-pa-xs col column items-center justify-end no-pointer-events"
+        v-show="!isScrollAtBottom"
+      >
+        <q-btn
+          round
+          color="primary"
+          icon="arrow_downward"
+          @click="scrollToBottom(200)"
+          class="all-pointer-events"
+        />
+      </div>
     </div>
 
     <div class="q-pa-xs q-pt-none bg-white border-top">
@@ -63,7 +76,8 @@ export default defineComponent({
     const { history, ...others } = useChatManager(chatId)
     const { createMessage } = useChatMessageApi()
 
-    const { scrollListener, keepScrollAtBottom } = useChatScroll()
+    const { scrollListener, keepScrollAtBottom, ...scrollManager } =
+      useChatScroll()
     function onMessageMount(messageId: string) {
       const arr = history.value
       const lastMessageId = arr[arr.length - 1]?.id
@@ -92,6 +106,7 @@ export default defineComponent({
       contentModel,
       sendMessage,
       scrollListener,
+      ...scrollManager,
 
       compensateScrollForNewMessage: onMessageMount,
     }
