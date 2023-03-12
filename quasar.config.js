@@ -11,6 +11,13 @@
 const { configure } = require('quasar/wrappers')
 const path = require('path')
 
+const ENV_VARS_FROM_FILE =
+  require('dotenv-defaults').config({
+    defaults: './.defaults.env',
+  }).parsed ?? {}
+
+const { version } = require('./package.json')
+
 module.exports = configure(function (/* ctx */) {
   return {
     eslint: {
@@ -64,9 +71,16 @@ module.exports = configure(function (/* ctx */) {
       // publicPath: '/',
       // analyze: true,
 
-      env: require('dotenv-defaults').config({
-        defaults: './.defaults.env',
-      }).parsed,
+      env: {
+        ...ENV_VARS_FROM_FILE,
+
+        /*
+         * BUILD_VERSION_OVERRIDE allows us to manipulate the version during the build time without mutating the package.json
+         * "version" property. The former is much easier to do than the latter since we only need to set env vars via the CLI during
+         * build time.
+         */
+        BUILD_VERSION: ENV_VARS_FROM_FILE?.BUILD_VERSION_OVERRIDE ?? version,
+      },
 
       // rawDefine: {}
       // ignorePublicFolder: true,
