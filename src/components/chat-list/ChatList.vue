@@ -1,7 +1,15 @@
 <template>
-  <q-list>
-    <ChatListItem v-for="chat of chatList" :chat="chat" :key="chat.id" />
-  </q-list>
+  <div class="q-gutter-y-sm q-pa-sm">
+    <ChatListItem
+      v-for="chat of chatList"
+      :chat="chat"
+      :key="chat.id"
+      @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
+      class="relative-position"
+      v-ripple
+      :active="chat.id === $route.params.chatId"
+    />
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,22 +1,18 @@
 <template>
-  <q-item
-    clickable
-    @click="$router.push({ name: 'chat', params: { chatId: chat.id } })"
-    :active="chat.id === $route.params.chatId"
-    active-class="active-chat"
-  >
-    <q-item-section>
-      <div class="text-body1 text-weight-bold">
-        {{ chat.name }}
-      </div>
-      <div v-if="previewMessage">
-        <span class="text-weight-bold text-primary">
-          {{ previewMessage.username }}:
-        </span>
-        {{ previewMessage.content }}
-      </div>
-    </q-item-section>
-  </q-item>
+  <q-card flat bordered class="q-pa-sm hover-effects" :class="{ active }">
+    <div class="text-body1 text-weight-bold">
+      {{ chat.name }}
+    </div>
+    <div v-if="previewMessage">
+      <span class="text-weight-bold text-primary">
+        {{ previewMessage.username }}:
+      </span>
+      {{ previewMessage.content }}
+    </div>
+    <div v-else class="text-grey-7 text-italic">
+      {{ $t('chat.noMessages') }}
+    </div>
+  </q-card>
 </template>
 
 <script lang="ts">
@@ -31,6 +27,8 @@ export default defineComponent({
       type: Object as PropType<APIChat>,
       required: true,
     },
+
+    active: Boolean,
   },
 
   setup(props) {
@@ -61,16 +59,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.active-chat {
-  /*
-   * Since we want the "hover" effect, we have to utilize q-focus-helper.
-   * TODO find a better way for this. This is kind of hacky.
-   */
-  :deep(.q-focus-helper) {
-    opacity: 0.1;
-    background: $primary;
+.hover-effects {
+  &:hover {
+    background: rgba(white, 0.15);
   }
 
-  color: black;
+  &.active {
+    border-color: $primary;
+  }
 }
 </style>
