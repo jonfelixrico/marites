@@ -14,6 +14,9 @@
       </span>
       {{ previewMessage.content }}
     </div>
+    <div v-else class="text-grey-7 text-italic">
+      {{ $t('chat.noMessages') }}
+    </div>
   </q-card>
 </template>
 
