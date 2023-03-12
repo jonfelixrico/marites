@@ -65,7 +65,6 @@ export default defineComponent({
   }
 
   &.active {
-    background: rgba($primary, 0.2);
     border-color: $primary;
   }
 }
