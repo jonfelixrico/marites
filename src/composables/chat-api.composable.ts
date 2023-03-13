@@ -13,6 +13,7 @@ import { usePocketbase } from 'src/services/pocketbase.service'
 import { useSubscriptionManager } from 'src/services/subscription-manager.service'
 import { wrapString } from 'src/utils/pocketbase.util'
 import { useSessionApi } from './session-api.composable'
+import { nanoid } from 'nanoid'
 
 interface APICreateChatBody {
   name: string
@@ -221,9 +222,10 @@ export function useChatApi() {
   async function createChat({ name }: APICreateChatBody): Promise<APIChat> {
     const userId = getSessionUser().id
 
-    const { id } = await pb.collection(PBCollection.CHAT).create<APIChat>({
+    const { id } = await pb.collection(PBCollection.CHAT).create<PBChat>({
       name,
       owner: userId,
+      joinCode: nanoid(),
     })
 
     return await getChat(id)
