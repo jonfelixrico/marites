@@ -23,5 +23,9 @@ export default {
       title: 'User added',
       message: 'You have added user {userId} to the chat',
     },
+
+    showJoinCode: {
+      title: 'Join code',
+    },
   },
 }
