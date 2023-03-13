@@ -88,9 +88,14 @@ function useFetchMethods() {
     name,
     created,
     updated,
+    joinCode,
   }: PBChatExpanded): Promise<APIChat> {
     const apiMembers = await hydrateChatMembers(id)
     const members: APIChat['members'] = [
+      /**
+       * "Virtual" entry for chat owners.
+       * Owners do not have their own member entry since they're already been included via the "owner" field.
+       */
       {
         id: owner,
         username: expand.owner.username,
@@ -109,6 +114,7 @@ function useFetchMethods() {
       name,
       created,
       updated,
+      joinCode,
       members: sortBy(members, (member) => member.username),
     }
   }
