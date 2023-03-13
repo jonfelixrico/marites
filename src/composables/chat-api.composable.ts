@@ -113,7 +113,7 @@ function useFetchMethods() {
     }
   }
 
-  async function getChat(chatId: string) {
+  async function getChat(chatId: string): Promise<APIChat> {
     const rawChat = await pb
       .collection(PBCollection.CHAT)
       .getOne<PBChatExpanded>(chatId, {
@@ -123,9 +123,18 @@ function useFetchMethods() {
     return await hydrateChat(rawChat)
   }
 
+  async function getChatByJoinCode(joinCode: string): Promise<APIChat> {
+    const { id } = await pb
+      .collection(PBCollection.CHAT)
+      .getFirstListItem(`joinCode = ${wrapString(joinCode)}`)
+
+    return await getChat(id)
+  }
+
   return {
     getChat,
     hydrateChat,
+    getChatByJoinCode,
   }
 }
 
@@ -201,7 +210,7 @@ export function useChatApi() {
   const pb = usePocketbase()
   const { getSessionUser } = useSessionApi()
   const { getObservable } = useSubscriptionManager()
-  const { getChat, hydrateChat } = useFetchMethods()
+  const { getChat, hydrateChat, getChatByJoinCode } = useFetchMethods()
 
   async function createChat({ name }: APICreateChatBody): Promise<APIChat> {
     const userId = getSessionUser().id
@@ -279,5 +288,6 @@ export function useChatApi() {
     listChats,
     getChatListObservable,
     ...useAddMemberMethods(),
+    getChatByJoinCode,
   }
 }
