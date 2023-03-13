@@ -26,6 +26,11 @@ export default {
 
     showJoinCode: {
       title: 'Join code',
+      message: 'Please use the code {joinCode} to join this chat.',
     },
+  },
+
+  notif: {
+    joinCodeCopied: 'Join code has been copied',
   },
 }
