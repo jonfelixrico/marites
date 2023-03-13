@@ -1,5 +1,7 @@
 export default {
   addUser: 'Add user to chat',
+  showJoinCode: 'Show join code',
+
   dialog: {
     addUser: {
       title: 'Add user to chat',
