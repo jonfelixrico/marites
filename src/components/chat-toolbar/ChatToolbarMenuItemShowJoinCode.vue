@@ -14,7 +14,7 @@
       <q-card-section>
         <i18n-t keypath="chat.toolbar.dialog.showJoinCode.message" tag="div">
           <template #joinCode>
-            <q-btn dense no-caps unelevated @click="copyCode">
+            <q-btn dense no-caps unelevated @click="copyCode" v-close-popup>
               <div class="q-gutter-x-xs">
                 <span>{{ chat.joinCode }}</span>
                 <q-icon
