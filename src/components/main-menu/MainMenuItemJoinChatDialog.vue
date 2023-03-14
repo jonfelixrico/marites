@@ -2,7 +2,7 @@
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card>
       <q-card-section class="text-h6 q-pb-none">
-        {{ $t('mainMenu.joinChat.title') }}
+        {{ $t('mainMenu.dialog.joinChat.title') }}
       </q-card-section>
 
       <q-card-actions align="right">

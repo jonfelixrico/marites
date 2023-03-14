@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable>
+  <q-item clickable @click="openJoinChatDialog">
     <q-item-section>
       {{ $t('mainMenu.joinChat') }}
     </q-item-section>
@@ -9,7 +9,7 @@
 <script lang="ts">
 import { useQuasar } from 'quasar'
 import { defineComponent } from 'vue'
-import MainmenuItemJoinChatDialog from './MainmenuItemJoinChatDialog.vue'
+import MainMenuItemJoinChatDialog from './MainMenuItemJoinChatDialog.vue'
 
 export default defineComponent({
   setup() {
@@ -18,11 +18,13 @@ export default defineComponent({
     function openJoinChatDialog() {
       // TODO use custom component to make this comprehensive
       dialog({
-        component: MainmenuItemJoinChatDialog,
+        component: MainMenuItemJoinChatDialog,
       })
     }
 
-    return openJoinChatDialog
+    return {
+      openJoinChatDialog,
+    }
   },
 })
 </script>
