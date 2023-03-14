@@ -19,7 +19,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat no-caps type="submit">{{ $t('general.cancel') }}</q-btn>
+          <q-btn flat no-caps v-close-popup>{{ $t('general.cancel') }}</q-btn>
 
           <q-btn color="primary" no-caps unelevated type="submit">{{
             $t('mainMenu.dialog.joinChat.join')
