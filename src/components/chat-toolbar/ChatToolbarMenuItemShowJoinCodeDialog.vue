@@ -6,9 +6,20 @@
       </q-card-section>
 
       <q-card-section>
-        <i18n-t keypath="chat.toolbar.dialog.showJoinCode.message" tag="div">
+        <i18n-t
+          keypath="chat.toolbar.dialog.showJoinCode.message"
+          tag="div"
+          class="row items-center pre-wrap"
+        >
           <template #joinCode>
-            <q-btn dense no-caps unelevated @click="copyCode" v-close-popup>
+            <q-btn
+              dense
+              no-caps
+              flat
+              color="primary"
+              @click="copyCode"
+              v-close-popup
+            >
               <div class="q-gutter-x-xs">
                 <span>{{ joinCode }}</span>
                 <q-icon
