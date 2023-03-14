@@ -79,7 +79,6 @@ function useFetchMethods() {
     name,
     created,
     updated,
-    joinCode,
   }: PBChatExpanded): Promise<APIChat> {
     const rawMembers = await pb
       .collection(PBCollection.CHAT_USER_MEMBERSHIP)
@@ -111,7 +110,6 @@ function useFetchMethods() {
       name,
       created,
       updated,
-      joinCode,
       members: sortBy(members, (member) => member.username),
     }
   }
