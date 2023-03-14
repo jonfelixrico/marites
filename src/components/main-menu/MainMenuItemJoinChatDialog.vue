@@ -55,7 +55,7 @@ export default defineComponent({
     const pluginComp = useDialogPluginComponent()
 
     const { loading } = useQuasar()
-    const { getChatByJoinCode, joinChat } = useChatApi()
+    const { getChatIdByJoinCode, joinChat } = useChatApi()
 
     const inputModel = ref<string>('')
     const errorBanner = ref<ErrorBanner | null>(null)
@@ -65,7 +65,7 @@ export default defineComponent({
 
       try {
         loading.show()
-        const { id } = await getChatByJoinCode(joinCode)
+        const id = await getChatIdByJoinCode(joinCode)
         await joinChat({ chatId: id })
         pluginComp.onDialogOK()
       } catch (e) {
