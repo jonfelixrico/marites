@@ -73,14 +73,8 @@ interface PBChatExpanded extends PBChat {
 function useFetchMethods() {
   const pb = usePocketbase()
 
-  async function hydrateChat({
-    id,
-    owner,
-    expand,
-    name,
-    created,
-    updated,
-  }: PBChatExpanded): Promise<APIChat> {
+  async function hydrateChat(rawChat: PBChatExpanded): Promise<APIChat> {
+    const { id, owner, expand, created } = rawChat
     const rawMembers = await pb
       .collection(PBCollection.CHAT_USER_MEMBERSHIP)
       .getFullList<RawAPIChatMember>(200, {
@@ -106,11 +100,13 @@ function useFetchMethods() {
       ...rawMembers.map(processRawAPIChatMember),
     ]
 
+    const { joinCode } = await pb
+      .collection(PBCollection.CHAT_JOIN_CODE)
+      .getFirstListItem(`chat = ${wrapString(id)}`)
+
     return {
-      id,
-      name,
-      created,
-      updated,
+      ...rawChat,
+      joinCode,
       members: sortBy(members, (member) => member.username),
     }
   }

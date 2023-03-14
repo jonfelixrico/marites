@@ -10,4 +10,5 @@ export interface APIChatMember {
 export interface APIChat extends Omit<PBChat, 'owner'> {
   name: string
   members: APIChatMember[]
+  joinCode: string
 }
