@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card>
+    <q-card class="dialog-width">
       <q-form @submit.prevent="processJoin">
         <q-card-section class="text-h6 q-pb-none">
           {{ $t('mainMenu.dialog.joinChat.title') }}
