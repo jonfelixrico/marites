@@ -19,3 +19,11 @@
 .pre-wrap {
   white-space: pre-wrap;
 }
+
+.dialog-width {
+  width: 400px;
+
+  body.screen--xs & {
+    width: 90vw;
+  }
+}
