@@ -10,6 +10,8 @@ export default {
       error: {
         alreadyJoined: 'You already are a member of chat with code {joinCode}',
         notFound: 'No chat rooms match join code {joinCode}',
+        generic:
+          'Something went wrong while processing join code {joinCode}, please try again later.',
       },
 
       join: 'Find and join',
