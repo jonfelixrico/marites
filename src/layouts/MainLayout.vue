@@ -4,10 +4,10 @@
       <div class="col">
         <q-list>
           <q-item clickable @click="createChat">
-            <q-item-section> Create chat </q-item-section>
+            <q-item-section>{{ $t('mainMenu.createChat') }}</q-item-section>
           </q-item>
           <q-item clickable @click="joinChat">
-            <q-item-section> Join chat </q-item-section>
+            <q-item-section>{{ $t('mainMenu.joinChat') }}</q-item-section>
           </q-item>
           <q-item
             clickable
