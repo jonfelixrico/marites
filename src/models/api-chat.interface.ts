@@ -1,4 +1,4 @@
-import { BasePBRecord } from './pb-record.interface'
+import { PBChat } from './pb-chat.interface'
 
 export interface APIChatMember {
   id: string
@@ -7,7 +7,8 @@ export interface APIChatMember {
   joined: Date
 }
 
-export interface APIChat extends BasePBRecord {
+export interface APIChat extends Omit<PBChat, 'owner'> {
   name: string
   members: APIChatMember[]
+  joinCode: string
 }

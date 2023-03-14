@@ -4,6 +4,7 @@
     <q-menu>
       <q-list style="width: 250px; max-width: 80vw" dense>
         <ChatToolbarMenuItemAddUser v-close-popup />
+        <ChatToolbarMenuItemShowJoinCode v-close-popup />
       </q-list>
     </q-menu>
   </q-btn>
@@ -12,8 +13,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ChatToolbarMenuItemAddUser from './ChatToolbarMenuItemAddUser.vue'
+import ChatToolbarMenuItemShowJoinCode from './ChatToolbarMenuItemShowJoinCode.vue'
 
 export default defineComponent({
-  components: { ChatToolbarMenuItemAddUser },
+  components: { ChatToolbarMenuItemAddUser, ChatToolbarMenuItemShowJoinCode },
 })
 </script>

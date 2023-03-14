@@ -1,5 +1,7 @@
 export default {
   addUser: 'Add user to chat',
+  showJoinCode: 'Show join code',
+
   dialog: {
     addUser: {
       title: 'Add user to chat',
@@ -21,5 +23,14 @@ export default {
       title: 'User added',
       message: 'You have added user {userId} to the chat',
     },
+
+    showJoinCode: {
+      title: 'Join code',
+      message: 'Please use the code {joinCode} to join this chat.',
+    },
+  },
+
+  notif: {
+    joinCodeCopied: 'Join code has been copied',
   },
 }

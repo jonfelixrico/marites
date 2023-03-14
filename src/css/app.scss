@@ -15,3 +15,15 @@
 .border-top {
   border-top: 1px $separator-color solid;
 }
+
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+.dialog-width {
+  width: 400px;
+
+  body.screen--xs & {
+    width: 90vw;
+  }
+}

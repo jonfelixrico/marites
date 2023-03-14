@@ -13,6 +13,8 @@ import { usePocketbase } from 'src/services/pocketbase.service'
 import { useSubscriptionManager } from 'src/services/subscription-manager.service'
 import { wrapString } from 'src/utils/pocketbase.util'
 import { useSessionApi } from './session-api.composable'
+import { nanoid } from 'nanoid'
+import { PBChatJoinCode } from 'src/models/pb-chat-join-code.interface'
 
 interface APICreateChatBody {
   name: string
@@ -70,27 +72,21 @@ interface PBChatExpanded extends PBChat {
  */
 function useFetchMethods() {
   const pb = usePocketbase()
-  async function hydrateChatMembers(chatId: string): Promise<APIChatMember[]> {
-    const members = await pb
+
+  async function hydrateChat(rawChat: PBChatExpanded): Promise<APIChat> {
+    const { id, owner, expand, created } = rawChat
+    const rawMembers = await pb
       .collection(PBCollection.CHAT_USER_MEMBERSHIP)
       .getFullList<RawAPIChatMember>(200, {
-        filter: `chat.id = ${wrapString(chatId)}`,
+        filter: `chat.id = ${wrapString(id)}`,
         expand: 'user',
       })
 
-    return members.map(processRawAPIChatMember)
-  }
-
-  async function hydrateChat({
-    id,
-    owner,
-    expand,
-    name,
-    created,
-    updated,
-  }: PBChatExpanded): Promise<APIChat> {
-    const apiMembers = await hydrateChatMembers(id)
-    const members: APIChat['members'] = [
+    const members: APIChatMember[] = [
+      /**
+       * "Virtual" entry for chat owners.
+       * Owners do not have their own member entry since they're already been included via the "owner" field.
+       */
       {
         id: owner,
         username: expand.owner.username,
@@ -101,19 +97,21 @@ function useFetchMethods() {
          */
         joined: created,
       },
-      ...apiMembers,
+      ...rawMembers.map(processRawAPIChatMember),
     ]
 
+    const { joinCode } = await pb
+      .collection(PBCollection.CHAT_JOIN_CODE)
+      .getFirstListItem(`chat = ${wrapString(id)}`)
+
     return {
-      id,
-      name,
-      created,
-      updated,
+      ...rawChat,
+      joinCode,
       members: sortBy(members, (member) => member.username),
     }
   }
 
-  async function getChat(chatId: string) {
+  async function getChat(chatId: string): Promise<APIChat> {
     const rawChat = await pb
       .collection(PBCollection.CHAT)
       .getOne<PBChatExpanded>(chatId, {
@@ -123,9 +121,18 @@ function useFetchMethods() {
     return await hydrateChat(rawChat)
   }
 
+  async function getChatIdByJoinCode(joinCode: string): Promise<string> {
+    const { chat } = await pb
+      .collection(PBCollection.CHAT_JOIN_CODE)
+      .getFirstListItem<PBChatJoinCode>(`joinCode = ${wrapString(joinCode)}`)
+
+    return chat
+  }
+
   return {
     getChat,
     hydrateChat,
+    getChatIdByJoinCode,
   }
 }
 
@@ -201,14 +208,19 @@ export function useChatApi() {
   const pb = usePocketbase()
   const { getSessionUser } = useSessionApi()
   const { getObservable } = useSubscriptionManager()
-  const { getChat, hydrateChat } = useFetchMethods()
+  const { getChat, hydrateChat, getChatIdByJoinCode } = useFetchMethods()
 
   async function createChat({ name }: APICreateChatBody): Promise<APIChat> {
     const userId = getSessionUser().id
 
-    const { id } = await pb.collection(PBCollection.CHAT).create<APIChat>({
+    const { id } = await pb.collection(PBCollection.CHAT).create<PBChat>({
       name,
       owner: userId,
+    })
+
+    await pb.collection(PBCollection.CHAT_JOIN_CODE).create<PBChatJoinCode>({
+      chat: id,
+      joinCode: nanoid(),
     })
 
     return await getChat(id)
@@ -279,5 +291,6 @@ export function useChatApi() {
     listChats,
     getChatListObservable,
     ...useAddMemberMethods(),
+    getChatIdByJoinCode,
   }
 }
