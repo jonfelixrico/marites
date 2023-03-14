@@ -11,6 +11,8 @@ export default {
         alreadyJoined: 'You already are a member of chat with code {joinCode}',
         notFound: 'No chat rooms match join code {joinCode}',
       },
+
+      join: 'Find and join',
     },
   },
 }
