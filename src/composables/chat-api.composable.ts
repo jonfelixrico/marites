@@ -14,6 +14,7 @@ import { useSubscriptionManager } from 'src/services/subscription-manager.servic
 import { wrapString } from 'src/utils/pocketbase.util'
 import { useSessionApi } from './session-api.composable'
 import { nanoid } from 'nanoid'
+import { PBChatJoinCode } from 'src/models/pb-chat-join-code.interface'
 
 interface APICreateChatBody {
   name: string
@@ -125,11 +126,11 @@ function useFetchMethods() {
   }
 
   async function getChatByJoinCode(joinCode: string): Promise<APIChat> {
-    const { id } = await pb
+    const { chat } = await pb
       .collection(PBCollection.CHAT)
-      .getFirstListItem(`joinCode = ${wrapString(joinCode)}`)
+      .getFirstListItem<PBChatJoinCode>(`joinCode = ${wrapString(joinCode)}`)
 
-    return await getChat(id)
+    return await getChat(chat)
   }
 
   return {
@@ -219,6 +220,10 @@ export function useChatApi() {
     const { id } = await pb.collection(PBCollection.CHAT).create<PBChat>({
       name,
       owner: userId,
+    })
+
+    await pb.collection(PBCollection.CHAT_JOIN_CODE).create<PBChatJoinCode>({
+      chat: id,
       joinCode: nanoid(),
     })
 
