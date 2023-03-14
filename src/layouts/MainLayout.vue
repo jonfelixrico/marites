@@ -6,9 +6,7 @@
           <q-item clickable @click="createChat">
             <q-item-section>{{ $t('mainMenu.createChat') }}</q-item-section>
           </q-item>
-          <q-item clickable @click="joinChat">
-            <q-item-section>{{ $t('mainMenu.joinChat') }}</q-item-section>
-          </q-item>
+          <MainMenuItemJoinChat />
           <q-item
             clickable
             @click="promptLogOut"
@@ -36,8 +34,10 @@ import { useCreateChat } from './create-chat.composable'
 import { useSessionService } from 'src/services/session.service'
 import { useJoinChat } from './join-chat.composable'
 import { getBuildVersion } from 'src/utils/app.util'
+import MainMenuItemJoinChat from 'src/components/main-menu/MainMenuItemJoinChat.vue'
 
 export default defineComponent({
+  components: { MainMenuItemJoinChat },
   setup() {
     const createChat = useCreateChat()
     const joinChat = useJoinChat()
