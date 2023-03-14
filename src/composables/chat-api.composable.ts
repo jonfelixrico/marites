@@ -71,16 +71,6 @@ interface PBChatExpanded extends PBChat {
  */
 function useFetchMethods() {
   const pb = usePocketbase()
-  async function hydrateChatMembers(chatId: string): Promise<APIChatMember[]> {
-    const members = await pb
-      .collection(PBCollection.CHAT_USER_MEMBERSHIP)
-      .getFullList<RawAPIChatMember>(200, {
-        filter: `chat.id = ${wrapString(chatId)}`,
-        expand: 'user',
-      })
-
-    return members.map(processRawAPIChatMember)
-  }
 
   async function hydrateChat({
     id,
@@ -91,8 +81,14 @@ function useFetchMethods() {
     updated,
     joinCode,
   }: PBChatExpanded): Promise<APIChat> {
-    const apiMembers = await hydrateChatMembers(id)
-    const members: APIChat['members'] = [
+    const rawMembers = await pb
+      .collection(PBCollection.CHAT_USER_MEMBERSHIP)
+      .getFullList<RawAPIChatMember>(200, {
+        filter: `chat.id = ${wrapString(id)}`,
+        expand: 'user',
+      })
+
+    const members: APIChatMember[] = [
       /**
        * "Virtual" entry for chat owners.
        * Owners do not have their own member entry since they're already been included via the "owner" field.
@@ -107,7 +103,7 @@ function useFetchMethods() {
          */
         joined: created,
       },
-      ...apiMembers,
+      ...rawMembers.map(processRawAPIChatMember),
     ]
 
     return {
