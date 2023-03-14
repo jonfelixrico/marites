@@ -123,7 +123,7 @@ function useFetchMethods() {
 
   async function getChatByJoinCode(joinCode: string): Promise<APIChat> {
     const { chat } = await pb
-      .collection(PBCollection.CHAT)
+      .collection(PBCollection.CHAT_JOIN_CODE)
       .getFirstListItem<PBChatJoinCode>(`joinCode = ${wrapString(joinCode)}`)
 
     return await getChat(chat)
