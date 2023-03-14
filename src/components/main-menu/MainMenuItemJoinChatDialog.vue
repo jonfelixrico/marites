@@ -70,6 +70,7 @@ export default defineComponent({
         const id = await getChatIdByJoinCode(joinCode)
         await joinChat({ chatId: id })
         pluginComp.onDialogOK()
+
         router.push({
           name: 'chat',
           params: {
