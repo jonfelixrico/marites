@@ -15,7 +15,12 @@
             </i18n-t>
           </div>
 
-          <q-input dense v-model="inputModel" outlined />
+          <q-input
+            dense
+            v-model="inputModel"
+            outlined
+            :rules="[(val) => !!val || $t('mainMenu.dialog.joinChat.required')]"
+          />
         </q-card-section>
 
         <q-card-actions align="right">

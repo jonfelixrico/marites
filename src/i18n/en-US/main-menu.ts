@@ -15,6 +15,7 @@ export default {
       },
 
       join: 'Find and join',
+      required: 'Please write the join code',
     },
   },
 }
