@@ -29,6 +29,11 @@ export default {
       title: 'Join code',
       message: 'Please use the code {joinCode} to join this chat.',
     },
+
+    resetJoinCodePrompt: {
+      title: 'Reset join code',
+      message: 'Are you sure you want to reset the join code?',
+    },
   },
 
   notif: {
