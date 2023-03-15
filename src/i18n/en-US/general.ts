@@ -6,5 +6,10 @@ export default {
   yes: 'Yes',
   no: 'No',
 
-  genericErrorMessage: 'Something went wrong. Please try again later.',
+  dialog: {
+    genericError: {
+      title: 'Oops!',
+      message: 'Something went wrong. Please try again after a while.',
+    },
+  },
 }
