@@ -37,9 +37,21 @@ export function useChatJoinCodeAPI() {
       })
   }
 
+  async function createJoinCode(chatId: string) {
+    const joinCode = nanoid()
+
+    await pb.collection(PBCollection.CHAT_JOIN_CODE).create<PBChatJoinCode>({
+      chat: chatId,
+      joinCode,
+    })
+
+    return joinCode
+  }
+
   return {
     getIdFromJoinCode,
     resetJoinCode,
     getJoinCode,
+    createJoinCode,
   }
 }
