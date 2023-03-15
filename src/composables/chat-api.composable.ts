@@ -116,6 +116,8 @@ function useFetchMethods() {
     return await hydrateChat(rawChat)
   }
 
+  // TODO move all these join code stuff to their own sub-composable
+
   async function getChatIdByJoinCode(joinCode: string): Promise<string> {
     const { chat } = await pb
       .collection(PBCollection.CHAT_JOIN_CODE)
@@ -124,10 +126,35 @@ function useFetchMethods() {
     return chat
   }
 
+  async function getJoinCode(chatId: string): Promise<string> {
+    const { joinCode } = await pb
+      .collection(PBCollection.CHAT_JOIN_CODE)
+      .getFirstListItem<PBChatJoinCode>(`chat = ${wrapString(chatId)}`)
+
+    return joinCode
+  }
+
+  async function resetJoinCode(chatId: string) {
+    const collection = await pb.collection(PBCollection.CHAT_JOIN_CODE)
+
+    const { id } = await collection.getFirstListItem(
+      `chat = ${wrapString(chatId)}`
+    )
+    await pb
+      .collection(PBCollection.CHAT_JOIN_CODE)
+      .update<PBChatJoinCode>(id, {
+        chat: chatId,
+        joinCode: nanoid(),
+      })
+  }
+
   return {
     getChat,
     hydrateChat,
     getChatIdByJoinCode,
+
+    getJoinCode,
+    resetJoinCode,
   }
 }
 
