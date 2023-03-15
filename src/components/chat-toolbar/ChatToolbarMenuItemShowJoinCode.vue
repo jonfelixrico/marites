@@ -10,14 +10,11 @@
 import { useQuasar } from 'quasar'
 import { useDialogHelper } from 'src/composables/dialog-helper.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
-import { PBChatJoinCode } from 'src/models/pb-chat-join-code.interface'
-import { PBCollection } from 'src/models/pb-collection.enum'
-import { usePocketbase } from 'src/services/pocketbase.service'
 import { useChatStore } from 'src/stores/chat.store'
-import { wrapString } from 'src/utils/pocketbase.util'
 import { defineComponent, computed } from 'vue'
 import ChatToolbarMenuItemShowJoinCodeDialog from './ChatToolbarMenuItemShowJoinCodeDialog.vue'
 import { useI18n } from 'vue-i18n'
+import { useChatJoinCodeAPI } from 'src/composables/chat-join-code-api.composable'
 
 export default defineComponent({
   setup() {
@@ -27,23 +24,16 @@ export default defineComponent({
 
     const { dialog, loading } = useQuasar()
     const { showBasicDialog } = useDialogHelper()
-    const pb = usePocketbase()
     const { t } = useI18n()
+    const { getJoinCode } = useChatJoinCodeAPI()
 
     async function showDialog() {
       loading.show()
       try {
-        // TODO move to chat api
-        const { joinCode } = await pb
-          .collection(PBCollection.CHAT_JOIN_CODE)
-          .getFirstListItem<PBChatJoinCode>(
-            `chat = ${wrapString(chatId.value)}`
-          )
-
         dialog({
           component: ChatToolbarMenuItemShowJoinCodeDialog,
           componentProps: {
-            joinCode,
+            joinCode: await getJoinCode(chatId.value),
           },
         })
       } catch (e) {
