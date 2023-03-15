@@ -7,15 +7,11 @@
 </template>
 
 <script lang="ts">
-import { nanoid } from 'nanoid'
+import { useChatJoinCodeAPI } from 'src/composables/chat-join-code-api.composable'
 import { useDialogHelper } from 'src/composables/dialog-helper.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { useSessionApi } from 'src/composables/session-api.composable'
-import { PBChatJoinCode } from 'src/models/pb-chat-join-code.interface'
-import { PBCollection } from 'src/models/pb-collection.enum'
-import { usePocketbase } from 'src/services/pocketbase.service'
 import { useChatStore } from 'src/stores/chat.store'
-import { wrapString } from 'src/utils/pocketbase.util'
 import { defineComponent, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -31,8 +27,7 @@ export default defineComponent({
       return !!chat.members.find(({ id }) => id === sessionUserId)?.isOwner
     })
 
-    const pb = usePocketbase()
-
+    const { resetJoinCode } = useChatJoinCodeAPI()
     const dialogHelper = useDialogHelper()
     const { t } = useI18n()
 
@@ -45,19 +40,7 @@ export default defineComponent({
           cancelLabel: t('general.cancel'),
         })
         .onOk(async () => {
-          // TODO move these to chat API
-
-          const collection = await pb.collection(PBCollection.CHAT_JOIN_CODE)
-
-          const { id } = await collection.getFirstListItem(
-            `chat = ${wrapString(chatId.value)}`
-          )
-          await pb
-            .collection(PBCollection.CHAT_JOIN_CODE)
-            .update<PBChatJoinCode>(id, {
-              chat: chatId.value,
-              joinCode: nanoid(),
-            })
+          await resetJoinCode(chatId.value)
         })
     }
 
