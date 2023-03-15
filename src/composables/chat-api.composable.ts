@@ -100,13 +100,8 @@ function useFetchMethods() {
       ...rawMembers.map(processRawAPIChatMember),
     ]
 
-    const { joinCode } = await pb
-      .collection(PBCollection.CHAT_JOIN_CODE)
-      .getFirstListItem(`chat = ${wrapString(id)}`)
-
     return {
       ...rawChat,
-      joinCode,
       members: sortBy(members, (member) => member.username),
     }
   }
