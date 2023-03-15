@@ -13,8 +13,7 @@ import { usePocketbase } from 'src/services/pocketbase.service'
 import { useSubscriptionManager } from 'src/services/subscription-manager.service'
 import { wrapString } from 'src/utils/pocketbase.util'
 import { useSessionApi } from './session-api.composable'
-import { nanoid } from 'nanoid'
-import { PBChatJoinCode } from 'src/models/pb-chat-join-code.interface'
+import { useChatJoinCodeAPI } from './chat-join-code-api.composable'
 
 interface APICreateChatBody {
   name: string
@@ -116,45 +115,9 @@ function useFetchMethods() {
     return await hydrateChat(rawChat)
   }
 
-  // TODO move all these join code stuff to their own sub-composable
-
-  async function getChatIdByJoinCode(joinCode: string): Promise<string> {
-    const { chat } = await pb
-      .collection(PBCollection.CHAT_JOIN_CODE)
-      .getFirstListItem<PBChatJoinCode>(`joinCode = ${wrapString(joinCode)}`)
-
-    return chat
-  }
-
-  async function getJoinCode(chatId: string): Promise<string> {
-    const { joinCode } = await pb
-      .collection(PBCollection.CHAT_JOIN_CODE)
-      .getFirstListItem<PBChatJoinCode>(`chat = ${wrapString(chatId)}`)
-
-    return joinCode
-  }
-
-  async function resetJoinCode(chatId: string) {
-    const collection = await pb.collection(PBCollection.CHAT_JOIN_CODE)
-
-    const { id } = await collection.getFirstListItem(
-      `chat = ${wrapString(chatId)}`
-    )
-    await pb
-      .collection(PBCollection.CHAT_JOIN_CODE)
-      .update<PBChatJoinCode>(id, {
-        chat: chatId,
-        joinCode: nanoid(),
-      })
-  }
-
   return {
     getChat,
     hydrateChat,
-    getChatIdByJoinCode,
-
-    getJoinCode,
-    resetJoinCode,
   }
 }
 
@@ -230,7 +193,8 @@ export function useChatApi() {
   const pb = usePocketbase()
   const { getSessionUser } = useSessionApi()
   const { getObservable } = useSubscriptionManager()
-  const { getChat, hydrateChat, getChatIdByJoinCode } = useFetchMethods()
+  const { getChat, hydrateChat } = useFetchMethods()
+  const { createJoinCode } = useChatJoinCodeAPI()
 
   async function createChat({ name }: APICreateChatBody): Promise<APIChat> {
     const userId = getSessionUser().id
@@ -239,11 +203,7 @@ export function useChatApi() {
       name,
       owner: userId,
     })
-
-    await pb.collection(PBCollection.CHAT_JOIN_CODE).create<PBChatJoinCode>({
-      chat: id,
-      joinCode: nanoid(),
-    })
+    await createJoinCode(id)
 
     return await getChat(id)
   }
@@ -313,6 +273,5 @@ export function useChatApi() {
     listChats,
     getChatListObservable,
     ...useAddMemberMethods(),
-    getChatIdByJoinCode,
   }
 }
