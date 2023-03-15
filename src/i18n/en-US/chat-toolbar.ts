@@ -1,6 +1,7 @@
 export default {
   addUser: 'Add user to chat',
   showJoinCode: 'Show join code',
+  resetJoinCode: 'Reset join code',
 
   dialog: {
     addUser: {
