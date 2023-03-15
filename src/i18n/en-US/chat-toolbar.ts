@@ -38,5 +38,6 @@ export default {
 
   notif: {
     joinCodeCopied: 'Join code has been copied',
+    joinCodeReset: 'Join code has been reset',
   },
 }

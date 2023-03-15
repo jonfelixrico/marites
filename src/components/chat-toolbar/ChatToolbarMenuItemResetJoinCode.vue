@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts">
+import { useQuasar } from 'quasar'
 import { useChatJoinCodeAPI } from 'src/composables/chat-join-code-api.composable'
 import { useDialogHelper } from 'src/composables/dialog-helper.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
@@ -30,6 +31,7 @@ export default defineComponent({
     const { resetJoinCode } = useChatJoinCodeAPI()
     const dialogHelper = useDialogHelper()
     const { t } = useI18n()
+    const { notify } = useQuasar()
 
     function showDialog() {
       dialogHelper
@@ -40,7 +42,9 @@ export default defineComponent({
           cancelLabel: t('general.cancel'),
         })
         .onOk(async () => {
+          // TODO add error handling
           await resetJoinCode(chatId.value)
+          notify(t('chat.toolbar.notif.joinCodeReset'))
         })
     }
 
