@@ -43,6 +43,7 @@ import { hasPBErrorStatus } from 'src/utils/pocketbase.util'
 import { ProjectError } from 'src/models/project-error.class'
 import { ProjectErrorCode } from 'src/models/project-error-code.enum'
 import { useRouter } from 'vue-router'
+import { useChatJoinCodeAPI } from 'src/composables/chat-join-code-api.composable'
 
 interface ErrorBanner {
   joinCode: string
@@ -57,7 +58,8 @@ export default defineComponent({
 
     const { loading } = useQuasar()
     const router = useRouter()
-    const { getChatIdByJoinCode, joinChat } = useChatApi()
+    const { joinChat } = useChatApi()
+    const { getIdFromJoinCode } = useChatJoinCodeAPI()
 
     const inputModel = ref<string>('')
     const errorBanner = ref<ErrorBanner | null>(null)
@@ -67,7 +69,7 @@ export default defineComponent({
 
       try {
         loading.show()
-        const id = await getChatIdByJoinCode(joinCode)
+        const id = await getIdFromJoinCode(joinCode)
         await joinChat({ chatId: id })
         pluginComp.onDialogOK()
 
