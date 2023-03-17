@@ -3,6 +3,7 @@ export default {
   createChat: 'Create chat',
 
   dialog: {
+    // TODO rename to joinChatInput
     joinChat: {
       title: 'Join chat',
       message: 'Please enter the join code of the chat that you want to enter',
@@ -14,8 +15,19 @@ export default {
           'Something went wrong while processing join code {joinCode}, please try again later.',
       },
 
-      join: 'Find and join',
-      required: 'Please write the join code',
+      ok: 'Find chat',
+      required: 'Please fill in the join code',
     },
+
+    joinChatConfirm: {
+      title: 'Join chat confirmation',
+      message: 'Would you like to join {chatName}?',
+
+      ok: 'Yes, join',
+    },
+  },
+
+  notif: {
+    joinChatSuccess: 'You are now a member of {chatName}',
   },
 }

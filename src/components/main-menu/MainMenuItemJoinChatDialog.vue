@@ -27,7 +27,7 @@
           <q-btn flat no-caps v-close-popup>{{ $t('general.cancel') }}</q-btn>
 
           <q-btn color="primary" no-caps unelevated type="submit">{{
-            $t('mainMenu.dialog.joinChat.join')
+            $t('mainMenu.dialog.joinChat.ok')
           }}</q-btn>
         </q-card-actions>
       </q-form>
@@ -38,11 +38,10 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useDialogPluginComponent, useQuasar } from 'quasar'
-import { useChatApi } from 'src/composables/chat-api.composable'
 import { hasPBErrorStatus } from 'src/utils/pocketbase.util'
-import { ProjectError } from 'src/models/project-error.class'
-import { ProjectErrorCode } from 'src/models/project-error-code.enum'
-import { useRouter } from 'vue-router'
+import { useChatJoinCodeAPI } from 'src/composables/chat-join-code-api.composable'
+import { useChatMembershipAPI } from 'src/composables/chat-membership-api.composable'
+import { useSessionApi } from 'src/composables/session-api.composable'
 
 interface ErrorBanner {
   joinCode: string
@@ -56,8 +55,9 @@ export default defineComponent({
     const pluginComp = useDialogPluginComponent()
 
     const { loading } = useQuasar()
-    const router = useRouter()
-    const { getChatIdByJoinCode, joinChat } = useChatApi()
+    const { hasUserAlreadyJoined } = useChatMembershipAPI()
+    const { getIdFromJoinCode } = useChatJoinCodeAPI()
+    const { getSessionUser } = useSessionApi()
 
     const inputModel = ref<string>('')
     const errorBanner = ref<ErrorBanner | null>(null)
@@ -67,28 +67,21 @@ export default defineComponent({
 
       try {
         loading.show()
-        const id = await getChatIdByJoinCode(joinCode)
-        await joinChat({ chatId: id })
-        pluginComp.onDialogOK()
+        const id = await getIdFromJoinCode(joinCode)
 
-        router.push({
-          name: 'chat',
-          params: {
-            chatId: id,
-          },
-        })
+        if (await hasUserAlreadyJoined(id, getSessionUser().id)) {
+          errorBanner.value = {
+            key: 'mainMenu.dialog.joinChat.error.alreadyJoined',
+            joinCode,
+          }
+          return
+        }
+
+        pluginComp.onDialogOK(id)
       } catch (e) {
         if (hasPBErrorStatus(e, 404)) {
           errorBanner.value = {
             key: 'mainMenu.dialog.joinChat.error.notFound',
-            joinCode,
-          }
-        } else if (
-          e instanceof ProjectError &&
-          e.code === ProjectErrorCode.CHAT_MEMBER_ALREADY_JOINED
-        ) {
-          errorBanner.value = {
-            key: 'mainMenu.dialog.joinChat.error.alreadyJoined',
             joinCode,
           }
         } else {

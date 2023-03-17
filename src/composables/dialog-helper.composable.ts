@@ -1,4 +1,5 @@
 import { QDialogOptions, useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 
 interface BasicDialogInput {
   title: string
@@ -14,8 +15,15 @@ interface BasicDialogInput {
   cancelLabel?: string
 }
 
+interface BasicErrorDialogInput {
+  title?: string
+  message?: string
+  okLabel?: string
+}
+
 export function useDialogHelper() {
   const $q = useQuasar()
+  const { t } = useI18n()
 
   function showBasicDialog(
     input: BasicDialogInput,
@@ -47,7 +55,24 @@ export function useDialogHelper() {
     })
   }
 
+  function showBasicErrorDialog(
+    input?: BasicErrorDialogInput,
+    opts: QDialogOptions = {}
+  ) {
+    return $q.dialog({
+      ...opts,
+      title: input?.title ?? t('general.dialog.genericError.title'),
+      message: input?.message ?? t('general.dialog.genericError.message'),
+      ok: {
+        color: 'primary',
+        unelevated: true,
+        label: input?.okLabel ?? t('general.ok'),
+      },
+    })
+  }
+
   return {
     showBasicDialog,
+    showBasicErrorDialog,
   }
 }

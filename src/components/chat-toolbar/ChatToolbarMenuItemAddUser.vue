@@ -7,18 +7,18 @@
 </template>
 
 <script lang="ts">
-import { useChatApi } from 'src/composables/chat-api.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent } from 'vue'
 import { ProjectError } from 'src/models/project-error.class'
 import { ProjectErrorCode } from 'src/models/project-error-code.enum'
+import { useChatMembershipAPI } from 'src/composables/chat-membership-api.composable'
 
 export default defineComponent({
   setup() {
     const pb = usePocketbase()
     const chatId = useChatIdFromRoute()
-    const { addUserToChat } = useChatApi()
+    const { addUserToChat } = useChatMembershipAPI()
 
     return {
       pb,

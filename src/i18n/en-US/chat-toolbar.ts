@@ -1,6 +1,7 @@
 export default {
   addUser: 'Add user to chat',
   showJoinCode: 'Show join code',
+  resetJoinCode: 'Reset join code',
 
   dialog: {
     addUser: {
@@ -27,6 +28,17 @@ export default {
     showJoinCode: {
       title: 'Join code',
       message: 'Please use the code {joinCode} to join this chat.',
+    },
+
+    resetJoinCodePrompt: {
+      title: 'Reset join code',
+      message: 'Are you sure you want to reset the join code?',
+    },
+
+    resetJoinCodeSuccess: {
+      title: 'Reset join code',
+      message:
+        "The chat's join code has been reset. The new join code is {joinCode}",
     },
   },
 
