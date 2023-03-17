@@ -5,4 +5,5 @@ export enum PBCollection {
   CHAT_JOIN_CODE = 'chatJoinCode',
 
   USER = 'users',
+  USER_CODE = 'userCode',
 }
