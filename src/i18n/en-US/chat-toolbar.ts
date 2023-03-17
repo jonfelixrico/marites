@@ -34,10 +34,15 @@ export default {
       title: 'Reset join code',
       message: 'Are you sure you want to reset the join code?',
     },
+
+    resetJoinCodeSuccess: {
+      title: 'Reset join code',
+      message:
+        "The chat's join code has been reset. The new join code is {joinCode}",
+    },
   },
 
   notif: {
     joinCodeCopied: 'Join code has been copied',
-    joinCodeReset: 'Join code has been reset',
   },
 }

@@ -7,7 +7,6 @@
 </template>
 
 <script lang="ts">
-import { useQuasar } from 'quasar'
 import { useChatJoinCodeAPI } from 'src/composables/chat-join-code-api.composable'
 import { useDialogHelper } from 'src/composables/dialog-helper.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
@@ -29,23 +28,27 @@ export default defineComponent({
     })
 
     const { resetJoinCode } = useChatJoinCodeAPI()
-    const dialogHelper = useDialogHelper()
+    const { showBasicDialog } = useDialogHelper()
     const { t } = useI18n()
-    const { notify } = useQuasar()
 
     function showDialog() {
-      dialogHelper
-        .showBasicDialog({
-          title: t('chat.toolbar.dialog.resetJoinCodePrompt.title'),
-          message: t('chat.toolbar.dialog.resetJoinCodePrompt.message'),
-          okLabel: t('general.yes'),
-          cancelLabel: t('general.cancel'),
+      showBasicDialog({
+        title: t('chat.toolbar.dialog.resetJoinCodePrompt.title'),
+        message: t('chat.toolbar.dialog.resetJoinCodePrompt.message'),
+        okLabel: t('general.yes'),
+        cancelLabel: t('general.cancel'),
+      }).onOk(async () => {
+        // TODO add error handling
+        const newJoinCode = await resetJoinCode(chatId.value)
+
+        showBasicDialog({
+          title: t('chat.toolbar.dialog.resetJoinCodeSuccess.title'),
+          // TODO create custom dialog so that we can copy the functionality of ShowJoinCodeDialog
+          message: t('chat.toolbar.dialog.resetJoinCodeSuccess.message', {
+            joinCode: newJoinCode,
+          }),
         })
-        .onOk(async () => {
-          // TODO add error handling
-          await resetJoinCode(chatId.value)
-          notify(t('chat.toolbar.notif.joinCodeReset'))
-        })
+      })
     }
 
     return {
