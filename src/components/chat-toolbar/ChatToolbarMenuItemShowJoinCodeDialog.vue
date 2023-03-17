@@ -12,23 +12,7 @@
           class="row items-center pre-wrap"
         >
           <template #joinCode>
-            <q-btn
-              dense
-              no-caps
-              flat
-              color="primary"
-              @click="copyCode"
-              v-close-popup
-            >
-              <div class="q-gutter-x-xs">
-                <span>{{ joinCode }}</span>
-                <q-icon
-                  class="text-weight-bold"
-                  name="content_copy"
-                  size="xs"
-                />
-              </div>
-            </q-btn>
+            <ClickToCopyBtn :content="joinCode" @copy="showCopyNotif" />
           </template>
         </i18n-t>
       </q-card-section>
@@ -44,10 +28,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { copyToClipboard, useDialogPluginComponent, useQuasar } from 'quasar'
+import { useDialogPluginComponent, useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
+import ClickToCopyBtn from 'components/ClickToCopyBtn.vue'
 
 export default defineComponent({
+  components: { ClickToCopyBtn },
+
   props: {
     joinCode: {
       type: String,
@@ -57,17 +44,16 @@ export default defineComponent({
 
   emits: [...useDialogPluginComponent.emits],
 
-  setup(props) {
+  setup() {
     const { notify } = useQuasar()
     const { t } = useI18n()
 
-    async function copyCode() {
-      await copyToClipboard(props.joinCode)
+    async function showCopyNotif() {
       notify(t('chat.toolbar.notif.joinCodeCopied'))
     }
 
     return {
-      copyCode,
+      showCopyNotif,
       ...useDialogPluginComponent(),
     }
   },
