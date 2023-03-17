@@ -27,7 +27,7 @@
           <q-btn flat no-caps v-close-popup>{{ $t('general.cancel') }}</q-btn>
 
           <q-btn color="primary" no-caps unelevated type="submit">{{
-            $t('mainMenu.dialog.joinChat.join')
+            $t('mainMenu.dialog.joinChat.ok')
           }}</q-btn>
         </q-card-actions>
       </q-form>

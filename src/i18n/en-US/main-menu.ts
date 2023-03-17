@@ -15,8 +15,8 @@ export default {
           'Something went wrong while processing join code {joinCode}, please try again later.',
       },
 
-      join: 'Find and join',
-      required: 'Please write the join code',
+      ok: 'Find chat',
+      required: 'Please fill in the join code',
     },
 
     joinChatConfirm: {
