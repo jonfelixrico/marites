@@ -108,10 +108,19 @@ export function useChatFetchAPI() {
     return await Promise.all(rawChats.map(hydrateChat))
   }
 
+  async function getChatName(chatId: string) {
+    const rawChat = await pb
+      .collection(PBCollection.CHAT)
+      .getOne<PBChatExpanded>(chatId)
+
+    return rawChat?.name
+  }
+
   return {
     getChat,
     hydrateChat,
     listChats,
+    getChatName,
   }
 }
 
