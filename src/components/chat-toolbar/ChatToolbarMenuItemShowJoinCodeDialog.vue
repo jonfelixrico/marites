@@ -47,14 +47,16 @@ export default defineComponent({
   setup() {
     const { notify } = useQuasar()
     const { t } = useI18n()
+    const pluginComp = useDialogPluginComponent()
 
     async function showCopyNotif() {
       notify(t('chat.toolbar.notif.joinCodeCopied'))
+      pluginComp.onDialogOK()
     }
 
     return {
       showCopyNotif,
-      ...useDialogPluginComponent(),
+      ...pluginComp,
     }
   },
 })
