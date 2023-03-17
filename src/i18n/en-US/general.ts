@@ -8,7 +8,7 @@ export default {
 
   dialog: {
     genericError: {
-      title: 'Oops!',
+      title: 'Error',
       message: 'Something went wrong. Please try again after a while.',
     },
   },
