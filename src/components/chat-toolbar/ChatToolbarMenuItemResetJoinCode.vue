@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { useChatJoinCodeAPI } from 'src/composables/chat-join-code-api.composable'
-import { useDialogHelper } from 'src/composables/dialog-helper.composable'
+import { useDialogHelper } from 'src/composables/quasar-helper.composable'
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { useSessionApi } from 'src/composables/session-api.composable'
 import { useChatStore } from 'src/stores/chat.store'
