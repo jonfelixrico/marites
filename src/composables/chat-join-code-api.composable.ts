@@ -23,18 +23,22 @@ export function useChatJoinCodeAPI() {
     return joinCode
   }
 
-  async function resetJoinCode(chatId: string) {
+  async function resetJoinCode(chatId: string): Promise<string> {
     const collection = await pb.collection(PBCollection.CHAT_JOIN_CODE)
 
     const { id } = await collection.getFirstListItem(
       `chat = ${wrapString(chatId)}`
     )
+
+    const joinCode = nanoid()
     await pb
       .collection(PBCollection.CHAT_JOIN_CODE)
       .update<PBChatJoinCode>(id, {
         chat: chatId,
-        joinCode: nanoid(),
+        joinCode,
       })
+
+    return joinCode
   }
 
   async function createJoinCode(chatId: string) {
