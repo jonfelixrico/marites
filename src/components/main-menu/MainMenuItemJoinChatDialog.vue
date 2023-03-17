@@ -38,12 +38,12 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useDialogPluginComponent, useQuasar } from 'quasar'
-import { useChatApi } from 'src/composables/chat-api.composable'
 import { hasPBErrorStatus } from 'src/utils/pocketbase.util'
 import { ProjectError } from 'src/models/project-error.class'
 import { ProjectErrorCode } from 'src/models/project-error-code.enum'
 import { useRouter } from 'vue-router'
 import { useChatJoinCodeAPI } from 'src/composables/chat-join-code-api.composable'
+import { useChatMembershipAPI } from 'src/composables/chat-membership-api.composable'
 
 interface ErrorBanner {
   joinCode: string
@@ -58,7 +58,7 @@ export default defineComponent({
 
     const { loading } = useQuasar()
     const router = useRouter()
-    const { joinChat } = useChatApi()
+    const { joinChat } = useChatMembershipAPI()
     const { getIdFromJoinCode } = useChatJoinCodeAPI()
 
     const inputModel = ref<string>('')

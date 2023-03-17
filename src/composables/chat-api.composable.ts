@@ -1,5 +1,4 @@
 import { sortBy } from 'lodash'
-import { ClientResponseError } from 'pocketbase'
 import { merge, mergeMap } from 'rxjs'
 import { APIChat, APIChatMember } from 'src/models/api-chat.interface'
 import { PBChatUserMembership } from 'src/models/pb-chat-user-membership.interface'
@@ -7,8 +6,6 @@ import { PBChat } from 'src/models/pb-chat.interface'
 import { PBCollection } from 'src/models/pb-collection.enum'
 import { BasePBRecord } from 'src/models/pb-record.interface'
 import { PBSubscriptionAction } from 'src/models/pb-subscription-action.enum'
-import { ProjectErrorCode } from 'src/models/project-error-code.enum'
-import { ProjectError } from 'src/models/project-error.class'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { useSubscriptionManager } from 'src/services/subscription-manager.service'
 import { wrapString } from 'src/utils/pocketbase.util'
@@ -17,15 +14,6 @@ import { useChatJoinCodeAPI } from './chat-join-code-api.composable'
 
 interface APICreateChatBody {
   name: string
-}
-
-interface APIChatJoinBody {
-  chatId: string
-}
-
-interface APIAddUserToChatBody {
-  chatId: string
-  userId: string
 }
 
 interface RawAPIChatMember extends BasePBRecord {
@@ -64,12 +52,7 @@ interface PBChatExpanded extends PBChat {
   }
 }
 
-/**
- * Contains methods related to fetching chat data.
- * @private
- * @returns
- */
-function useFetchMethods() {
+export function useChatFetchAPI() {
   const pb = usePocketbase()
 
   async function hydrateChat(rawChat: PBChatExpanded): Promise<APIChat> {
@@ -115,99 +98,6 @@ function useFetchMethods() {
     return await hydrateChat(rawChat)
   }
 
-  return {
-    getChat,
-    hydrateChat,
-  }
-}
-
-/**
- * Contains methods related to joining people into chats.
- * @private
- */
-function useAddMemberMethods() {
-  const pb = usePocketbase()
-  const { getSessionUser } = useSessionApi()
-  const { getChat } = useFetchMethods()
-
-  async function hasUserAlreadyJoined(
-    chatId: string,
-    userId: string
-  ): Promise<boolean> {
-    try {
-      await pb
-        .collection(PBCollection.CHAT_USER_MEMBERSHIP)
-        .getFirstListItem(
-          `chat.id = ${wrapString(chatId)} && user.id = ${wrapString(userId)}`
-        )
-      return true
-    } catch (e) {
-      if (e instanceof ClientResponseError && e.status === 404) {
-        return false
-      }
-
-      throw e
-    }
-  }
-
-  async function addToChatHelper(chatId: string, userId: string) {
-    if (await hasUserAlreadyJoined(chatId, userId)) {
-      throw new ProjectError(ProjectErrorCode.CHAT_MEMBER_ALREADY_JOINED)
-    }
-
-    await pb.collection(PBCollection.CHAT_USER_MEMBERSHIP).create({
-      chat: chatId,
-      user: userId,
-    })
-  }
-
-  /**
-   * Makes the session user add another user to the chat.
-   *
-   * WARNING: does not do verification if the adder has the necessary rights.
-   * @param param0
-   * @returns
-   */
-  async function addUserToChat({ chatId, userId }: APIAddUserToChatBody) {
-    await addToChatHelper(chatId, userId)
-    return await getChat(chatId)
-  }
-
-  /**
-   * Makes the session user join a chat.
-   * @param param0
-   * @returns
-   */
-  async function joinChat({ chatId }: APIChatJoinBody): Promise<APIChat> {
-    await addToChatHelper(chatId, getSessionUser().id)
-    return await getChat(chatId)
-  }
-
-  return {
-    joinChat,
-    addUserToChat,
-  }
-}
-
-export function useChatApi() {
-  const pb = usePocketbase()
-  const { getSessionUser } = useSessionApi()
-  const { getObservable } = useSubscriptionManager()
-  const { getChat, hydrateChat } = useFetchMethods()
-  const { createJoinCode } = useChatJoinCodeAPI()
-
-  async function createChat({ name }: APICreateChatBody): Promise<APIChat> {
-    const userId = getSessionUser().id
-
-    const { id } = await pb.collection(PBCollection.CHAT).create<PBChat>({
-      name,
-      owner: userId,
-    })
-    await createJoinCode(id)
-
-    return await getChat(id)
-  }
-
   async function listChats() {
     const rawChats = await pb
       .collection(PBCollection.CHAT)
@@ -217,6 +107,18 @@ export function useChatApi() {
 
     return await Promise.all(rawChats.map(hydrateChat))
   }
+
+  return {
+    getChat,
+    hydrateChat,
+    listChats,
+  }
+}
+
+export function useChatReactiveAPI() {
+  const { getObservable } = useSubscriptionManager()
+  const { getSessionUser } = useSessionApi()
+  const { getChat } = useChatFetchAPI()
 
   function getChatListObservable() {
     const chat$ = getObservable<PBChat>(PBCollection.CHAT)
@@ -268,10 +170,40 @@ export function useChatApi() {
   }
 
   return {
-    createChat,
-    getChat,
-    listChats,
     getChatListObservable,
-    ...useAddMemberMethods(),
+  }
+}
+
+export function useChatApi() {
+  const pb = usePocketbase()
+  const { getSessionUser } = useSessionApi()
+  const fetchAPI = useChatFetchAPI()
+  const { createJoinCode } = useChatJoinCodeAPI()
+
+  async function createChat({ name }: APICreateChatBody): Promise<APIChat> {
+    const userId = getSessionUser().id
+
+    const { id } = await pb.collection(PBCollection.CHAT).create<PBChat>({
+      name,
+      owner: userId,
+    })
+    await createJoinCode(id)
+
+    return await fetchAPI.getChat(id)
+  }
+
+  return {
+    createChat,
+
+    /**
+     * Use this composable directly
+     * @deprecated
+     */
+    ...fetchAPI,
+
+    /**
+     * Use this composable directly
+     */
+    ...useChatReactiveAPI(),
   }
 }
