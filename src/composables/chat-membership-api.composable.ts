@@ -78,5 +78,6 @@ export function useChatMembershipAPI() {
   return {
     joinChat,
     addUserToChat,
+    hasUserAlreadyJoined,
   }
 }
