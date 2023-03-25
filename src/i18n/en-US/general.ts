@@ -2,6 +2,8 @@ export default {
   buildLabel: 'Build {version}',
   ok: 'Ok',
   cancel: 'Cancel',
+  close: 'Close',
+  dismiss: 'Dismiss',
 
   yes: 'Yes',
   no: 'No',
