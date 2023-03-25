@@ -10,14 +10,14 @@ export function useUserCodeAPI() {
   async function getUserFromUserCode(code: string) {
     const { user } = await pb
       .collection(PBCollection.USER_CODE)
-      .getFirstListItem(`code = ${wrapString(code)}`)
+      .getFirstListItem<PBUserCode>(`code = ${wrapString(code)}`)
     return user
   }
 
   async function getUserCode(userId: string) {
     const { code } = await pb
       .collection(PBCollection.USER_CODE)
-      .getFirstListItem(`user = ${wrapString(userId)}`)
+      .getFirstListItem<PBUserCode>(`user = ${wrapString(userId)}`)
     return code
   }
 
@@ -26,7 +26,7 @@ export function useUserCodeAPI() {
 
     let recordId: string | null = null
     try {
-      const { id } = await collection.getFirstListItem(
+      const { id } = await collection.getFirstListItem<PBUserCode>(
         `user = ${wrapString(userId)}`
       )
       recordId = id
@@ -43,13 +43,13 @@ export function useUserCodeAPI() {
         'No user code record found. Creating one with code %s',
         newUserCode
       )
-      await collection.create({
+      await collection.create<PBUserCode>({
         user: userId,
         code: newUserCode,
       } as PBUserCode)
     } else {
       console.log('Resetting user code %s', newUserCode)
-      await collection.update(recordId, {
+      await collection.update<PBUserCode>(recordId, {
         code: newUserCode,
       } as PBUserCode)
     }
