@@ -1,7 +1,21 @@
 <!-- This snippet below is a template for creating dialog plugin components -->
 
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide"></q-dialog>
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
+    <q-card class="dialog-width">
+      <q-card-section class="q-pb-none text-h6">
+        <!-- title -->
+      </q-card-section>
+
+      <q-card-section>
+        <!-- content -->
+      </q-card-section>
+
+      <q-card-actions>
+        <!-- buttons -->
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
