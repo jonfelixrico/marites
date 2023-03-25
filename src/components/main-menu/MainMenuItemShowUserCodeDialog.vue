@@ -1,7 +1,7 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card>
-      <q-card-section class="q-pb-none">
+      <q-card-section class="q-pb-none text-h6">
         {{ t('mainMenu.dialog.userCodeShow.title') }}
       </q-card-section>
 
@@ -13,11 +13,10 @@
       </q-card-section>
 
       <q-card-actions align="between">
-        <q-btn no-caps flat color="danger">
+        <q-btn no-caps flat color="negative">
           {{ t('mainMenu.dialog.userCodeShow.reset') }}
         </q-btn>
-        <!-- TODO add autofocus if applicable -->
-        <q-btn no-caps unelevated color="primary">
+        <q-btn no-caps unelevated color="primary" v-close-popup autofocus>
           {{ t('general.close') }}
         </q-btn>
       </q-card-actions>
