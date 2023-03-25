@@ -14,30 +14,42 @@ export function useUserCodeAPI() {
     return user
   }
 
-  async function getUserCode(userId: string) {
-    const collection = pb.collection(PBCollection.USER_CODE)
-
+  /**
+   * Fetches the code of a user.
+   * @param userId
+   * @returns
+   */
+  async function getUserCode(userId: string): Promise<string | null> {
     try {
-      const { code } = await collection.getFirstListItem<PBUserCode>(
-        `user = ${wrapString(userId)}`
-      )
+      const { code } = await pb
+        .collection(PBCollection.USER_CODE)
+        .getFirstListItem<PBUserCode>(`user = ${wrapString(userId)}`)
       return code
     } catch (e) {
-      /*
-       * A 404 error means that the code has not been generated for the user.
-       * We will be generatin them outside past this try-catch.
-       *
-       * Non-404 errors are unexpected so we will be re-throwing them for caller
-       * handling.
-       */
-      if (!hasPBErrorStatus(e, 404)) {
-        throw e
+      if (hasPBErrorStatus(e, 404)) {
+        return null
       }
+
+      // non-404 errors are unexpected, so we have to re-throw them
+      throw e
+    }
+  }
+
+  /**
+   * Fetches the code of a user.
+   * If the user has not been given a code yet, one will be regenerated.
+   * @param userId
+   * @returns
+   */
+  async function prepareUserCode(userId: string) {
+    const userCode = await getUserCode(userId)
+    if (userCode) {
+      return userCode
     }
 
     console.warn('No user code generated yet. Generating...')
     const newUserCode = nanoid()
-    await collection.create<PBUserCode>({
+    await pb.collection(PBCollection.USER_CODE).create<PBUserCode>({
       user: userId,
       code: newUserCode,
     } as PBUserCode)
@@ -45,6 +57,12 @@ export function useUserCodeAPI() {
     return newUserCode
   }
 
+  /**
+   * Resets the code for a given user.
+   *
+   * @param userId
+   * @returns
+   */
   async function resetUserCode(userId: string) {
     const collection = pb.collection(PBCollection.USER_CODE)
 
@@ -65,6 +83,7 @@ export function useUserCodeAPI() {
     getUserFromUserCode,
     resetUserCode,
     getUserCode,
+    prepareUserCode,
   }
 }
 
