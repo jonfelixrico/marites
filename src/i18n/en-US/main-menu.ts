@@ -48,6 +48,7 @@ export default {
       title: 'Reset user code',
       message:
         'Your user code has been reset. Your new user code is {userCode}',
+      copyNotif: 'User code has been copied to clipboard',
     },
   },
 

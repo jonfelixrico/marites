@@ -37,13 +37,14 @@ import ClickToCopyBtn from 'components/ClickToCopyBtn.vue'
 import { useDialogHelper } from 'src/composables/quasar-helper.composable'
 import { useUserCodeAPI } from 'src/composables/user-api.composable'
 import { useSessionApi } from 'src/composables/session-api.composable'
+import UserCodeResetSuccessDialog from './UserCodeResetSuccessDialog.vue'
 
 function useResetUserCode() {
   const { t } = useI18n()
   const { showBasicDialog, showBasicErrorDialog } = useDialogHelper()
   const { resetUserCode } = useUserCodeAPI()
   const { getSessionUser } = useSessionApi()
-  const { loading } = useQuasar()
+  const { loading, dialog } = useQuasar()
 
   function showPrompt() {
     return new Promise<boolean>((resolve) => {
@@ -59,12 +60,11 @@ function useResetUserCode() {
   }
 
   function showSuccessDialog(userCode: string) {
-    showBasicDialog({
-      title: t('mainMenu.dialog.userCodeResetSuccess.title'),
-      // TODO use custom dialog for the copy button for userCode
-      message: t('mainMenu.dialog.userCodeResetSuccess.message', {
+    dialog({
+      component: UserCodeResetSuccessDialog,
+      componentProps: {
         userCode,
-      }),
+      },
     })
   }
 
