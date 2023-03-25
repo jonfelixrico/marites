@@ -1,7 +1,7 @@
-import { nanoid } from 'nanoid'
 import { PBCollection } from 'src/models/pb-collection.enum'
 import { PBUserCode } from 'src/models/pb-user-code.interface'
 import { usePocketbase } from 'src/services/pocketbase.service'
+import { generateShortId } from 'src/utils/id-generate.util'
 import { hasPBErrorStatus, wrapString } from 'src/utils/pocketbase.util'
 
 export function useUserCodeAPI() {
@@ -48,7 +48,7 @@ export function useUserCodeAPI() {
     }
 
     console.warn('No user code generated yet. Generating...')
-    const newUserCode = nanoid()
+    const newUserCode = generateShortId()
     await pb.collection(PBCollection.USER_CODE).create<PBUserCode>({
       user: userId,
       code: newUserCode,
@@ -70,7 +70,7 @@ export function useUserCodeAPI() {
       `user = ${wrapString(userId)}`
     )
 
-    const newUserCode = nanoid()
+    const newUserCode = generateShortId()
     console.log('Resetting with new user code %s', newUserCode)
     await collection.update<PBUserCode>(recordId, {
       code: newUserCode,
