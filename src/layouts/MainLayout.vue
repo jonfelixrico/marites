@@ -37,7 +37,7 @@ import { useSessionService } from 'src/services/session.service'
 import { useJoinChat } from './join-chat.composable'
 import { getBuildVersion } from 'src/utils/app.util'
 import MainMenuItemJoinChat from 'src/components/main-menu/MainMenuItemJoinChat.vue'
-import MainMenuItemShowUserCode from 'src/components/main-menu/MainMenuItemShowUserCode.vue'
+import MainMenuItemShowUserCode from 'src/components/main-menu/show-user-code/MainMenuItemShowUserCode.vue'
 
 export default defineComponent({
   components: { MainMenuItemJoinChat, MainMenuItemShowUserCode },
