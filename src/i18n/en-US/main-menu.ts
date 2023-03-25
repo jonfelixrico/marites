@@ -32,6 +32,7 @@ export default {
       message: 'Your user code is {userCode}',
 
       reset: 'Reset my user code',
+      copyNotif: 'User code has been copied to clipboard',
     },
 
     userCodeResetConfirm: {
