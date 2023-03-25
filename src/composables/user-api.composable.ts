@@ -15,44 +15,48 @@ export function useUserCodeAPI() {
   }
 
   async function getUserCode(userId: string) {
-    const { code } = await pb
-      .collection(PBCollection.USER_CODE)
-      .getFirstListItem<PBUserCode>(`user = ${wrapString(userId)}`)
-    return code
-  }
-
-  async function resetUserCode(userId: string) {
     const collection = pb.collection(PBCollection.USER_CODE)
 
-    let recordId: string | null = null
     try {
-      const { id } = await collection.getFirstListItem<PBUserCode>(
+      const { code } = await collection.getFirstListItem<PBUserCode>(
         `user = ${wrapString(userId)}`
       )
-      recordId = id
+      return code
     } catch (e) {
-      // user has no code yet
+      /*
+       * A 404 error means that the code has not been generated for the user.
+       * We will be generatin them outside past this try-catch.
+       *
+       * Non-404 errors are unexpected so we will be re-throwing them for caller
+       * handling.
+       */
       if (!hasPBErrorStatus(e, 404)) {
         throw e
       }
     }
 
+    console.warn('No user code generated yet. Generating...')
     const newUserCode = nanoid()
-    if (!recordId) {
-      console.warn(
-        'No user code record found. Creating one with code %s',
-        newUserCode
-      )
-      await collection.create<PBUserCode>({
-        user: userId,
-        code: newUserCode,
-      } as PBUserCode)
-    } else {
-      console.log('Resetting user code %s', newUserCode)
-      await collection.update<PBUserCode>(recordId, {
-        code: newUserCode,
-      } as PBUserCode)
-    }
+    await collection.create<PBUserCode>({
+      user: userId,
+      code: newUserCode,
+    } as PBUserCode)
+    console.info('Generated user code %s', newUserCode)
+    return newUserCode
+  }
+
+  async function resetUserCode(userId: string) {
+    const collection = pb.collection(PBCollection.USER_CODE)
+
+    const { id: recordId } = await collection.getFirstListItem<PBUserCode>(
+      `user = ${wrapString(userId)}`
+    )
+
+    const newUserCode = nanoid()
+    console.log('Resetting with new user code %s', newUserCode)
+    await collection.update<PBUserCode>(recordId, {
+      code: newUserCode,
+    } as PBUserCode)
 
     return newUserCode
   }
