@@ -1,5 +1,3 @@
-<!-- This snippet below is a template for creating dialog plugin components -->
-
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="dialog-width">
