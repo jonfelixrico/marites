@@ -50,6 +50,7 @@ export function useDialogHelper() {
             flat: true,
             noCaps: true,
             label: input.cancelLabel,
+            color: 'black',
           }
         : undefined, // no cancelLabel provided = no cancel button at all
     })
