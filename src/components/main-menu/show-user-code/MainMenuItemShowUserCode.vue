@@ -11,7 +11,7 @@ import { useQuasar } from 'quasar'
 import { useSessionApi } from 'src/composables/session-api.composable'
 import { useUserCodeAPI } from 'src/composables/user-api.composable'
 import { defineComponent } from 'vue'
-import MainMenuItemShowUserCodeDialog from './MainMenuItemShowUserCodeDialog.vue'
+import MainMenuItemShowUserCodeDialog from './ShowUserCodeDialog.vue'
 
 export default defineComponent({
   setup() {
