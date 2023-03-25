@@ -21,7 +21,7 @@ export default defineComponent({
 
     async function getUserCode() {
       const userId = sessionAPI.getSessionUser().id
-      return await codeAPI.getUserCode(userId)
+      return await codeAPI.prepareUserCode(userId)
     }
 
     async function showDialog() {
