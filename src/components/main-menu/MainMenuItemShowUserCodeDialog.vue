@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialogRef" @hide="onDialogHide">
-    <q-card>
+    <q-card class="dialog-width">
       <q-card-section class="q-pb-none text-h6">
         {{ t('mainMenu.dialog.userCodeShow.title') }}
       </q-card-section>
