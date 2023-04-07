@@ -15,9 +15,9 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
-      - name: Get version from package.json
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@main
+      - name: Extract version components
+        uses: './.github/actions/internal-version-string-generator'
+        id: version
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to Docker Hub
@@ -31,5 +31,5 @@ jobs:
           push: true
           tags: |
             jonfelixrico/marites:latest
-            jonfelixrico/marites:${{ steps.version-generator.outputs.major }}
-            jonfelixrico/marites:${{ steps.version-generator.outputs.major }}.${{ steps.version-generator.outputs.minor }}
+            jonfelixrico/marites:${{ steps.version.outputs.major }}
+            jonfelixrico/marites:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
