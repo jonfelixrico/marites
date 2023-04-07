@@ -36,3 +36,4 @@ runs:
           echo Minor: ${{ steps.semver-parser.outputs.minor }}
           echo Patch: ${{ steps.semver-parser.outputs.patch }}
           echo Build: ${{ steps.commit.outputs.short }}
+        shell: bash
