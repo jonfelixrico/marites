@@ -2,21 +2,33 @@ import { PBCollection } from 'src/models/pb-collection.enum'
 import { PBUserCode } from 'src/models/pb-user-code.interface'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { generateShortId } from 'src/utils/id-generate.util'
-import { hasPBErrorStatus, wrapString } from 'src/utils/pocketbase.util'
+import {
+  hasPBErrorStatus,
+  isPBError404,
+  wrapString,
+} from 'src/utils/pocketbase.util'
 
 export function useUserCodeAPI() {
   const pb = usePocketbase()
 
   /**
-   * @throws whenever there are no users associated with the given code
    * @param code
-   * @returns user id associated with the given code
+   * @returns Resolves user id string if there is a user associated with the code and null if
+   * none.
    */
-  async function getUserFromUserCode(code: string): Promise<string> {
-    const { user } = await pb
-      .collection(PBCollection.USER_CODE)
-      .getFirstListItem<PBUserCode>(`code = ${wrapString(code)}`)
-    return user
+  async function getUserFromUserCode(code: string): Promise<string | null> {
+    try {
+      const { user } = await pb
+        .collection(PBCollection.USER_CODE)
+        .getFirstListItem<PBUserCode>(`code = ${wrapString(code)}`)
+      return user
+    } catch (e) {
+      if (isPBError404(e)) {
+        return null
+      }
+
+      throw e
+    }
   }
 
   /**

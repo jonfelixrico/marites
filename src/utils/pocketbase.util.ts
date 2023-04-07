@@ -22,3 +22,11 @@ export function wrapString(toWrap: string): string {
 export function hasPBErrorStatus(error: unknown, has: number): boolean {
   return error instanceof ClientResponseError && error.status === has
 }
+
+type PocketBase404Error = ClientResponseError & {
+  status: 404
+}
+
+export function isPBError404(error: unknown): error is PocketBase404Error {
+  return hasPBErrorStatus(error, 404)
+}
