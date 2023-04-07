@@ -1,0 +1,26 @@
+name: Verification
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    description: Run the linter
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+      - name: Set up node
+        uses: './.github/actions/set-up-node'
+      - name: Run lint
+        run: pnpm lint
+
+  static-check:
+    runs-on: ubuntu-latest
+    description: Static-check if the code works by building
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+      - name: Set up node
+        uses: './.github/actions/set-up-node'
+      - name: Run lint
+        run: pnpm build
