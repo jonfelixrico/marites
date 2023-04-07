@@ -1,0 +1,18 @@
+name: 'Set up node env'
+description: 'Sets up node + npm, and does dependency installation'
+runs:
+  using: composite
+  steps:
+    # no need to checkout code since we expect it to be done in the parent workflow
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 7
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16.x
+        cache: 'pnpm'
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      shell: bash # required, see https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#runsstepsshell

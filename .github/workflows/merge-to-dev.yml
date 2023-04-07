@@ -1,4 +1,4 @@
-name: Develop pipeline
+name: On merge to dev
 
 on:
   push:
@@ -6,7 +6,11 @@ on:
       - develop-*
 
 jobs:
+  verify:
+    uses: './.github/workflows/verify-reusable.yml'
+
   build:
+    needs: [verify]
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code

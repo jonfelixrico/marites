@@ -1,0 +1,25 @@
+name: Verification
+
+on:
+  workflow_call:
+
+jobs:
+  lint: # Verify if the code follows standards
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+      - name: Set up node
+        uses: './.github/actions/set-up-node'
+      - name: Run lint
+        run: pnpm lint
+
+  build: # Verify if the app can build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+      - name: Set up node
+        uses: './.github/actions/set-up-node'
+      - name: Run lint
+        run: pnpm build
