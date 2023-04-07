@@ -15,9 +15,9 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
-      - name: Get version from package.json
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@main
+      - name: Extract version components
+        uses: './.github/actions/extract-semver-components'
+        id: version
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to Docker Hub
@@ -29,4 +29,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jonfelixrico/marites-client:${{steps.package-version.outputs.current-version}},jonfelixrico/marites-client:latest
+          tags: |
+            jonfelixrico/marites:latest
+            jonfelixrico/marites:${{ steps.version.outputs.major }}
+            jonfelixrico/marites:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}

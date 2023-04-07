@@ -1,0 +1,38 @@
+name: 'Internal version string generator'
+description: 'Generate different types of version strings for internal use'
+outputs:
+  major:
+    description: Major version of the app
+    value: ${{ steps.semver-parser.outputs.major }}
+  minor:
+    description: Minor version of the app
+    value: ${{ steps.semver-parser.outputs.minor }}
+  patch:
+    description: Patch version of the app
+    value: ${{ steps.semver-parser.outputs.patch }}
+  build:
+    description: SHA of the HEAD commit
+    value: ${{ steps.commit.outputs.short }}
+runs:
+  using: composite
+  steps:
+    - name: Get version from package.json
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@main
+
+    - name: Parse semver string
+      id: semver-parser
+      uses: booxmedialtd/ws-action-parse-semver@v1
+      with:
+        input_string: ${{ steps.package-version.outputs.current-version }}
+
+    - name: Get HEAD commit hash
+      id: commit
+      uses: pr-mpt/actions-commit-hash@v2
+
+    - name: 'Show generated strings'
+        run: |
+          echo Major: ${{ steps.semver-parser.outputs.major }}
+          echo Minor: ${{ steps.semver-parser.outputs.minor }}
+          echo Patch: ${{ steps.semver-parser.outputs.patch }}
+          echo Build: ${{ steps.commit.outputs.short }}

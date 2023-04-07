@@ -16,15 +16,9 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v3
 
-      - name: Generate version strings
-        uses: './.github/actions/internal-version-string-generator'
-        id: version-generator
-        with:
-          pre-release-label: alpha
-      - name: 'Show generated strings'
-        run: |
-          echo Docker string: ${{ steps.version-generator.outputs.docker }}
-          echo App string: ${{ steps.version-generator.outputs.app }}
+      - name: Extract version components
+        uses: './.github/actions/extract-semver-components'
+        id: version
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -37,5 +31,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jonfelixrico/marites-client:${{ steps.version-generator.outputs.docker }},jonfelixrico/marites-client:alpha
-          build-args: BUILD_VERSION_OVERRIDE=${{ steps.version-generator.outputs.app }}
+          tags: |
+            jonfelixrico/marites:alpha
+            jonfelixrico/marites:alpha-${{ steps.version.outputs.major }}
+            jonfelixrico/marites:alpha-${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
+          build-args: BUILD_VERSION_OVERRIDE=${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}-alpha+${{ steps.version.outputs.build }}
