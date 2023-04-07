@@ -5,7 +5,7 @@ import { ProjectErrorCode } from 'src/models/project-error-code.enum'
 import { ProjectError } from 'src/models/project-error.class'
 import { useChatFetchAPI } from './chat-api.composable'
 import { PBCollection } from 'src/models/pb-collection.enum'
-import { hasPBErrorStatus, wrapString } from 'src/utils/pocketbase.util'
+import { isPBError404, wrapString } from 'src/utils/pocketbase.util'
 import { APIChat } from 'src/models/api-chat.interface'
 
 interface APIChatJoinBody {
@@ -34,7 +34,7 @@ export function useChatMembershipAPI() {
         )
       return true
     } catch (e) {
-      if (hasPBErrorStatus(e, 404)) {
+      if (isPBError404(e)) {
         return false
       }
 
