@@ -4,10 +4,8 @@ on:
   workflow_call:
 
 jobs:
-  lint:
+  lint: # Verify if the code follows standards
     runs-on: ubuntu-latest
-    description: Verify if the code follows standards
-
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
@@ -16,10 +14,8 @@ jobs:
       - name: Run lint
         run: pnpm lint
 
-  build:
+  build: # Verify if the app can build
     runs-on: ubuntu-latest
-    description: Verify if the app can build
-
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
