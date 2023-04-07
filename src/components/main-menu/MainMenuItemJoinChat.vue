@@ -10,7 +10,7 @@
 import { useQuasar } from 'quasar'
 import { useChatFetchAPI } from 'src/composables/chat-api.composable'
 import { useChatMembershipAPI } from 'src/composables/chat-membership-api.composable'
-import { useDialogHelper } from 'src/composables/dialog-helper.composable'
+import { useDialogHelper } from 'src/composables/quasar-helper.composable'
 import { defineComponent } from 'vue'
 import MainMenuItemJoinChatDialog from './MainMenuItemJoinChatDialog.vue'
 import { useI18n } from 'vue-i18n'

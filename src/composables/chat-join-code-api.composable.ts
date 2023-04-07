@@ -1,8 +1,8 @@
-import { nanoid } from 'nanoid'
 import { PBChatJoinCode } from 'src/models/pb-chat-join-code.interface'
 import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { wrapString } from 'src/utils/pocketbase.util'
+import { generateShortId } from './../utils/id-generate.util'
 
 export function useChatJoinCodeAPI() {
   const pb = usePocketbase()
@@ -30,7 +30,7 @@ export function useChatJoinCodeAPI() {
       `chat = ${wrapString(chatId)}`
     )
 
-    const joinCode = nanoid()
+    const joinCode = generateShortId()
     await pb
       .collection(PBCollection.CHAT_JOIN_CODE)
       .update<PBChatJoinCode>(id, {
@@ -42,7 +42,7 @@ export function useChatJoinCodeAPI() {
   }
 
   async function createJoinCode(chatId: string) {
-    const joinCode = nanoid()
+    const joinCode = generateShortId()
 
     await pb.collection(PBCollection.CHAT_JOIN_CODE).create<PBChatJoinCode>({
       chat: chatId,

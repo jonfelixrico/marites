@@ -2,11 +2,13 @@
   <q-layout view="hHh Lpr lFf">
     <q-drawer v-model="showDrawer" class="column" behavior="mobile">
       <div class="col">
+        <!-- TODO make a separate component to contain main menu items -->
         <q-list>
           <q-item clickable @click="createChat">
             <q-item-section>{{ $t('mainMenu.createChat') }}</q-item-section>
           </q-item>
           <MainMenuItemJoinChat />
+          <MainMenuItemShowUserCode />
           <q-item
             clickable
             @click="promptLogOut"
@@ -35,9 +37,11 @@ import { useSessionService } from 'src/services/session.service'
 import { useJoinChat } from './join-chat.composable'
 import { getBuildVersion } from 'src/utils/app.util'
 import MainMenuItemJoinChat from 'src/components/main-menu/MainMenuItemJoinChat.vue'
+import MainMenuItemShowUserCode from 'src/components/main-menu/show-user-code/MainMenuItemShowUserCode.vue'
 
 export default defineComponent({
-  components: { MainMenuItemJoinChat },
+  components: { MainMenuItemJoinChat, MainMenuItemShowUserCode },
+
   setup() {
     const createChat = useCreateChat()
     const joinChat = useJoinChat()

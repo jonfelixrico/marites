@@ -1,6 +1,7 @@
 export default {
   joinChat: 'Join chat',
   createChat: 'Create chat',
+  showUserCode: 'Show my user code',
 
   dialog: {
     // TODO rename to joinChatInput
@@ -24,6 +25,30 @@ export default {
       message: 'Would you like to join {chatName}?',
 
       ok: 'Yes, join',
+    },
+
+    userCodeShow: {
+      title: 'Show user code',
+      message: 'Your user code is {userCode}',
+
+      reset: 'Reset my user code',
+      copyNotif: 'User code has been copied to clipboard',
+    },
+
+    userCodeResetConfirm: {
+      title: 'Reset user code',
+      message:
+        'Your current code will no longer be valid once you proceed. You will be given a new user code instead. Proceed?',
+
+      ok: 'Yes, reset my code',
+      cancel: 'No',
+    },
+
+    userCodeResetSuccess: {
+      title: 'Reset user code',
+      message:
+        'Your user code has been reset. Your new user code is {userCode}',
+      copyNotif: 'User code has been copied to clipboard',
     },
   },
 

@@ -66,7 +66,7 @@ import { PBCollection } from 'src/models/pb-collection.enum'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent, reactive } from 'vue'
 import { hasPBErrorStatus } from 'src/utils/pocketbase.util'
-import { useDialogHelper } from 'src/composables/dialog-helper.composable'
+import { useDialogHelper } from 'src/composables/quasar-helper.composable'
 import { getBuildVersion } from 'src/utils/app.util'
 
 export default defineComponent({

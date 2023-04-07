@@ -6,6 +6,7 @@ specifiers:
   '@quasar/extras': ^1.0.0
   '@types/dotenv-defaults': ^2.0.1
   '@types/lodash': ^4.14.191
+  '@types/nanoid-dictionary': ^4.2.0
   '@types/node': ^12.20.21
   '@typescript-eslint/eslint-plugin': ^5.10.0
   '@typescript-eslint/parser': ^5.10.0
@@ -17,6 +18,7 @@ specifiers:
   eslint-plugin-vue: ^9.0.0
   lodash: ^4.17.21
   nanoid: ^4.0.1
+  nanoid-dictionary: ^4.3.0
   pinia: ^2.0.11
   pocketbase: ^0.10.1
   prettier: ^2.5.1
@@ -33,6 +35,7 @@ dependencies:
   dotenv-defaults: 5.0.2
   lodash: 4.17.21
   nanoid: 4.0.1
+  nanoid-dictionary: 4.3.0
   pinia: 2.0.30_hmuptsblhheur2tugfgucj7gc4
   pocketbase: 0.10.1
   quasar: 2.11.5
@@ -46,6 +49,7 @@ devDependencies:
   '@quasar/app-vite': 1.2.0_ewnratr6apnmwwdetlmkfbqona
   '@types/dotenv-defaults': 2.0.1
   '@types/lodash': 4.14.191
+  '@types/nanoid-dictionary': 4.2.0
   '@types/node': 12.20.55
   '@typescript-eslint/eslint-plugin': 5.50.0_go4drrxstycfikanvu45pi4vgq
   '@typescript-eslint/parser': 5.50.0_4vsywjlpuriuw3tl5oq6zy5a64
@@ -403,6 +407,10 @@ packages:
 
   /@types/mime/3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
+    dev: true
+
+  /@types/nanoid-dictionary/4.2.0:
+    resolution: {integrity: sha512-DyQddKC2AYsInXBMqKSwhom4gpouV8SF1smsCPSzR8hp20vZJ5o5Yxg7qXThCHwr/H6VMq01UArEGbF0q2FXig==}
     dev: true
 
   /@types/node/12.20.55:
@@ -2319,6 +2327,10 @@ packages:
   /mute-stream/0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
     dev: true
+
+  /nanoid-dictionary/4.3.0:
+    resolution: {integrity: sha512-Xw1+/QnRGWO1KJ0rLfU1xR85qXmAHyLbE3TUkklu9gOIDburP6CsUnLmTaNECGpBh5SHb2uPFmx0VT8UPyoeyw==}
+    dev: false
 
   /nanoid/3.3.4:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}

@@ -13,10 +13,9 @@ export default {
     addUserError: {
       title: 'Cannot add user',
       message: {
-        notFound: 'Cannot find user id {userId}',
-        alreadyAdded: 'User id {userId} is already in the chat!',
-        generic:
-          'Something went wrong while trying to add user with id {userId} into the chat',
+        notFound: 'Cannot find user associated with code {code}',
+        alreadyAdded: 'User with code {code} is already in the chat!',
+        generic: 'Something went wrong while trying to process code {code}',
       },
     },
 
