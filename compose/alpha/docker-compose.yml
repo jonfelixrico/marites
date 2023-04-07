@@ -9,7 +9,7 @@ services:
       - ../pocketbase-migrations:/pb_migrations
 
   client:
-    image: jonfelixrico/marites-client:alpha
+    image: jonfelixrico/marites:alpha
     restart: unless-stopped
     ports:
       - 8089:80
