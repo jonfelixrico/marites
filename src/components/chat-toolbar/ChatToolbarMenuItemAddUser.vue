@@ -30,12 +30,12 @@ export default defineComponent({
   },
 
   methods: {
-    showErrorDialog(i18nSubpath: string, userId: string) {
+    showErrorDialog(i18nSubpath: string, code: string) {
       this.$q.dialog({
         title: this.$t('chat.toolbar.dialog.addUserError.title'),
         message: this.$t(
           `chat.toolbar.dialog.addUserError.message.${i18nSubpath}`,
-          { userId }
+          { code }
         ),
         ok: {
           unelevated: true,
