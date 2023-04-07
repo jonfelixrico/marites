@@ -3,7 +3,7 @@ name: Verification
 jobs:
   lint:
     runs-on: ubuntu-latest
-    description: Run the linter
+    description: Verify if the code follows standards
 
     steps:
       - name: Check out the code
@@ -13,9 +13,9 @@ jobs:
       - name: Run lint
         run: pnpm lint
 
-  static-check:
+  build:
     runs-on: ubuntu-latest
-    description: Static-check if the code works by building
+    description: Verify if the app can build
 
     steps:
       - name: Check out the code
