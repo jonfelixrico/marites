@@ -10,20 +10,22 @@
 import { useChatIdFromRoute } from 'src/composables/route-chat-id.composable'
 import { usePocketbase } from 'src/services/pocketbase.service'
 import { defineComponent } from 'vue'
-import { ProjectError } from 'src/models/project-error.class'
-import { ProjectErrorCode } from 'src/models/project-error-code.enum'
 import { useChatMembershipAPI } from 'src/composables/chat-membership-api.composable'
+import { useUserCodeAPI } from 'src/composables/user-api.composable'
 
 export default defineComponent({
   setup() {
     const pb = usePocketbase()
     const chatId = useChatIdFromRoute()
-    const { addUserToChat } = useChatMembershipAPI()
+    const { addUserToChat, hasUserAlreadyJoined } = useChatMembershipAPI()
+    const { getUserFromUserCode } = useUserCodeAPI()
 
     return {
       pb,
       chatId,
       addUserToChat,
+      getUserFromUserCode,
+      hasUserAlreadyJoined,
     }
   },
 
@@ -41,10 +43,23 @@ export default defineComponent({
       })
     },
 
-    async processUserAdd(userId: string) {
+    async processUserAdd(code: string) {
       const { chatId } = this
 
       try {
+        const userId = await this.getUserFromUserCode(code)
+        if (!userId) {
+          this.showErrorDialog('notFound', code)
+          console.warn('Did not find user associated with code %s', code)
+          return
+        }
+
+        if (await this.hasUserAlreadyJoined(chatId, userId)) {
+          this.showErrorDialog('alreadyAdded', userId)
+          console.warn('User %s has already joined chat %s', userId, chatId)
+          return
+        }
+
         await this.addUserToChat({ chatId, userId })
         this.$q.dialog({
           title: this.$t('chat.toolbar.dialog.addUserSuccess.title'),
@@ -57,23 +72,7 @@ export default defineComponent({
           },
         })
       } catch (e) {
-        if (e instanceof ProjectError) {
-          if (e.code === ProjectErrorCode.USER_USERNAME_NOT_FOUND) {
-            console.error('User %s was not found.', userId)
-            this.showErrorDialog('notFound', userId)
-            return
-          } else if (e.code === ProjectErrorCode.CHAT_MEMBER_ALREADY_JOINED) {
-            console.warn(
-              'User %s is already a member of chat %s',
-              userId,
-              chatId
-            )
-            this.showErrorDialog('alreadyAdded', userId)
-            return
-          }
-        }
-
-        this.showErrorDialog('generic', userId)
+        this.showErrorDialog('generic', code)
         console.error('Error encountered', e)
       }
     },
