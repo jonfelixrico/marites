@@ -31,9 +31,9 @@ runs:
       uses: pr-mpt/actions-commit-hash@v2
 
     - name: 'Show generated strings'
-        run: |
-          echo Major: ${{ steps.semver-parser.outputs.major }}
-          echo Minor: ${{ steps.semver-parser.outputs.minor }}
-          echo Patch: ${{ steps.semver-parser.outputs.patch }}
-          echo Build: ${{ steps.commit.outputs.short }}
-        shell: bash
+      run: |
+        echo Major: ${{ steps.semver-parser.outputs.major }}
+        echo Minor: ${{ steps.semver-parser.outputs.minor }}
+        echo Patch: ${{ steps.semver-parser.outputs.patch }}
+        echo Build: ${{ steps.commit.outputs.short }}
+      shell: bash
