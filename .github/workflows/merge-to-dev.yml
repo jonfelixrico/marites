@@ -16,7 +16,7 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v3
 
-      - name: Generate version strings
+      - name: Extract version components
         uses: './.github/actions/internal-version-string-generator'
         id: version
 
