@@ -6,7 +6,11 @@ on:
       - master
 
 jobs:
+  verify:
+    uses: './.github/workflows/verify-reusable.yml'
+
   build:
+    needs: [verify]
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
