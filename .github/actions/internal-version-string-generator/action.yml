@@ -1,16 +1,6 @@
 name: 'Internal version string generator'
 description: 'Generate different types of version strings for internal use'
-inputs:
-  pre-release-label:
-    description: The pre-release label
-    required: true
 outputs:
-  docker: #deprecated
-    description: Version string for docker
-    value: ${{ inputs.pre-release-label }}-${{ steps.semver-parser.outputs.major }}.${{ steps.semver-parser.outputs.minor }}
-  app: #deprecated
-    description: Version string to be displayed by the app during runtime
-    value: ${{ steps.package-version.outputs.current-version }}-${{ inputs.pre-release-label }}+${{ steps.commit.outputs.short }}
   major:
     description: Major version of the app
     value: ${{ steps.semver-parser.outputs.major }}
