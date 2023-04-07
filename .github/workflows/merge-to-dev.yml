@@ -37,5 +37,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jonfelixrico/marites-client:${{ steps.version-generator.outputs.docker }},jonfelixrico/marites-client:alpha
-          build-args: BUILD_VERSION_OVERRIDE=${{ steps.version-generator.outputs.app }}
+          tags: |
+            jonfelixrico/marites:alpha
+            jonfelixrico/marites:alpha-${{ steps.version-generator.outputs.major }}
+            jonfelixrico/marites:alpha-${{ steps.version-generator.outputs.major }}.${{ steps.version-generator.outputs.minor }}
+          build-args: BUILD_VERSION_OVERRIDE=${{ steps.version-generator.outputs.major }}.${{ steps.version-generator.outputs.minor }}.${{ steps.version-generator.outputs.patch }}-alpha+${{ steps.version-generator.outputs.sha }}
