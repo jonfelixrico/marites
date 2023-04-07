@@ -2,7 +2,8 @@ name: On PR activity
 
 on:
   pull_request_target:
-    branches: '*'
+    branches:
+      - '*'
 
 jobs:
   verify:
