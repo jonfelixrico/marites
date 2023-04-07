@@ -8,8 +8,9 @@ export function useUserCodeAPI() {
   const pb = usePocketbase()
 
   /**
+   * @throws whenever there are no users associated with the given code
    * @param code
-   * @returns User id associated with the given code
+   * @returns user id associated with the given code
    */
   async function getUserFromUserCode(code: string): Promise<string> {
     const { user } = await pb
