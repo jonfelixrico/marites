@@ -35,4 +35,4 @@ jobs:
             jonfelixrico/marites:alpha
             jonfelixrico/marites:alpha-${{ steps.version.outputs.major }}
             jonfelixrico/marites:alpha-${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
-          build-args: BUILD_VERSION_OVERRIDE=${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}-alpha+${{ steps.version.outputs.sha }}
+          build-args: BUILD_VERSION_OVERRIDE=${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}-alpha+${{ steps.version.outputs.build }}

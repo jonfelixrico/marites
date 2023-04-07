@@ -10,7 +10,7 @@ outputs:
   patch:
     description: Patch version of the app
     value: ${{ steps.semver-parser.outputs.patch }}
-  sha:
+  build:
     description: SHA of the HEAD commit
     value: ${{ steps.commit.outputs.short }}
 runs:
@@ -35,4 +35,4 @@ runs:
           echo Major: ${{ steps.semver-parser.outputs.major }}
           echo Minor: ${{ steps.semver-parser.outputs.minor }}
           echo Patch: ${{ steps.semver-parser.outputs.patch }}
-          echo SHA: ${{ steps.commit.outputs.short }}
+          echo Build: ${{ steps.commit.outputs.short }}
