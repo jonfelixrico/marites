@@ -7,7 +7,11 @@ import { hasPBErrorStatus, wrapString } from 'src/utils/pocketbase.util'
 export function useUserCodeAPI() {
   const pb = usePocketbase()
 
-  async function getUserFromUserCode(code: string) {
+  /**
+   * @param code
+   * @returns User id associated with the given code
+   */
+  async function getUserFromUserCode(code: string): Promise<string> {
     const { user } = await pb
       .collection(PBCollection.USER_CODE)
       .getFirstListItem<PBUserCode>(`code = ${wrapString(code)}`)
